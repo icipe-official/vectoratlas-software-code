@@ -36,6 +36,7 @@ html_show_sourcelink = False
 html_js_files = ['custom.js']
 locale_dirs = ['locale/']
 gettext_compact = False
+figure_language_filename = '{root}.{language}{ext}'
 
 html_theme_options = {
     'logo_only': False,

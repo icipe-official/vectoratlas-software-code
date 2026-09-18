@@ -4,7 +4,6 @@
 # package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Vector Atlas Help \n"
@@ -22,7 +21,7 @@ msgstr ""
 
 #: ../../finding-out-about-the-project/news.md:1
 msgid "News"
-msgstr ""
+msgstr "Actualités"
 
 #: ../../finding-out-about-the-project/news.md:3
 msgid ""
@@ -30,6 +29,10 @@ msgid ""
 "and encourage collaboration, this is done by publishing news stories and "
 "case studies about how the data is being gathered, built and used."
 msgstr ""
+"L'un des principaux objectifs du Vector Atlas est de dialoguer avec la "
+"communauté et d'encourager la collaboration. Cela se fait en publiant des"
+" actualités et des études de cas sur la manière dont les données sont "
+"collectées, construites et utilisées."
 
 #: ../../finding-out-about-the-project/news.md:5
 msgid ""
@@ -38,26 +41,32 @@ msgid ""
 "Navigate there either from the `News` button in the top navigation bar or"
 " from the `More news...` button on the home page."
 msgstr ""
+"La page d'accueil affiche les 3 dernières actualités, mais l'historique "
+"complet est disponible sur la page principale des "
+"[actualités](https://vectoratlas.icipe.org/news). Vous pouvez y accéder "
+"soit via le bouton `News` de la barre de navigation supérieure, soit via "
+"le bouton `More news...` de la page d'accueil."
 
 #: ../../finding-out-about-the-project/news.md:7
 msgid "![news](../news.png)"
-msgstr ""
+msgstr "![actualités](../news.png)"
 
 #: ../../finding-out-about-the-project/news.md:7
 msgid "news"
-msgstr ""
+msgstr "actualités"
 
 #: ../../finding-out-about-the-project/news.md:9
 msgid ""
 "Only the summary is shown on the news page, clicking on the `More "
 "details` button will take you to the full article."
 msgstr ""
+"Seul le résumé est affiché sur la page des actualités ; cliquer sur le "
+"bouton `More details` vous mènera à l'article complet."
 
 #: ../../finding-out-about-the-project/news.md:11
 msgid "![news details](news-details.png)"
-msgstr ""
+msgstr "![détails de l'actualité](news-details.png)"
 
 #: ../../finding-out-about-the-project/news.md:11
 msgid "news details"
-msgstr ""
-
+msgstr "détails de l'actualité"

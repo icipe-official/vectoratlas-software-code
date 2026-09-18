@@ -4,7 +4,6 @@
 # package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Vector Atlas Help \n"
@@ -22,7 +21,7 @@ msgstr ""
 
 #: ../../finding-out-about-the-project/about-us.md:1
 msgid "About us"
-msgstr ""
+msgstr "À propos de nous"
 
 #: ../../finding-out-about-the-project/about-us.md:3
 msgid ""
@@ -30,12 +29,14 @@ msgid ""
 "about what the goals of the project are, who the team are, who our "
 "partners are and how to contact the team."
 msgstr ""
+"La page [à propos](https://vectoratlas.icipe.org/about) fournit des "
+"détails sur les objectifs du projet, la composition de l'équipe, nos "
+"partenaires et la manière de contacter l'équipe."
 
 #: ../../finding-out-about-the-project/about-us.md:5
-msgid "![about](about.png)"
-msgstr ""
+msgid "![about](images/about.png)"
+msgstr "![à propos](images/about.png)"
 
 #: ../../finding-out-about-the-project/about-us.md:5
 msgid "about"
-msgstr ""
-
+msgstr "à propos"

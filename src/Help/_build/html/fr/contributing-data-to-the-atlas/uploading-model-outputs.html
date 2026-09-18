@@ -1,0 +1,155 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Uploading model overlays &mdash; Documentation Vector Atlas Help 1.0</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=4958b51b" />
+
+  
+    <link rel="shortcut icon" href="../_static/Animals-Mosquito-icon.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=7a28dfa3"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/translations.js?v=e6b791cb"></script>
+      <script src="../_static/custom.js?v=3ab31e08"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Recherche" href="../search.html" />
+    <link rel="prev" title="Réviser des données" href="reviewing-data.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Vector Atlas Help
+              <img src="../_static/vector-atlas-logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Démarrage rapide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quick-start.html">Guide de démarrage rapide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Explorer les données</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../exploring-the-data/using-the-map.html">Accéder à la carte</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exploring-the-data/using-the-map.html#filtering-data">Filtrer les données</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../exploring-the-data/using-the-map.html#area-select-mode">Mode de sélection par zone</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../exploring-the-data/using-the-map.html#getting-more-information-about-points">Obtenir plus d’informations sur les points</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exploring-the-data/using-the-map.html#overlaying-surfaces">Superposer des surfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exploring-the-data/using-the-map.html#altering-the-base-map">Modifier le fond de carte</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exploring-the-data/learning-about-species.html">En savoir plus sur les différentes espèces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exploring-the-data/listing-the-sources.html">Lister les sources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exploring-the-data/downloading-data.html">Télécharger des données</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">En savoir plus sur le projet</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../finding-out-about-the-project/news.html">Actualités</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../finding-out-about-the-project/about-us.html">À propos de nous</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contribuer des données à l'Atlas</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="signing-up-to-the-site.html">S’inscrire sur le site</a></li>
+<li class="toctree-l1"><a class="reference internal" href="creating-sources.html">Créer des sources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="uploading-data.html">TÉLÉVERSEMENT DE DONNÉES</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="uploading-data.html#downloading-templates">Télécharger les modèles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="uploading-data.html#uploading-data">Téléverser des données</a></li>
+<li class="toctree-l2"><a class="reference internal" href="uploading-data.html#visualization-of-uploaded-datasets-by-reviewer-manager">Visualisation des jeux de données téléversés par le gestionnaire des réviseurs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="uploading-data.html#assignment-of-uploaded-datasets-to-reviewers">Attribution des jeux de données téléversés aux réviseurs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="uploading-data.html#approval-of-uploaded-datasets">Approbation des jeux de données téléversés</a></li>
+<li class="toctree-l2"><a class="reference internal" href="uploading-data.html#ingestion-to-va-database-and-notifying-the-uploader">Intégration à la base de données du VA et notification au téléverseur</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="reviewing-data.html">Réviser des données</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Uploading model overlays</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Vector Atlas Help</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Uploading model overlays</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="uploading-model-overlays">
+<h1>Uploading model overlays<a class="headerlink" href="#uploading-model-overlays" title="Lien vers cette rubrique"></a></h1>
+<p>Uploading model overlays requires the <code class="docutils literal notranslate"><span class="pre">Uploader</span></code> role.</p>
+<p>To upload model overlays, go to the <a class="reference external" href="https://vectoratlas.icipe.org/dataHub">data hub</a> page and click on <code class="docutils literal notranslate"><span class="pre">Upload</span> <span class="pre">Model</span></code>.</p>
+<p><img alt="Page Data Hub" src="../_images/datahub.png" /></p>
+<p>The model upload page requires a display name, maximum value for the data and the model file itself. The display name is the name used on the map in overlays section of the map tools.</p>
+<p>La valeur maximale est nécessaire car la superposition est transformée en une version en tuiles pour être utilisée sur la carte — cela implique de réajuster l’échelle des données pour correspondre à la palette de couleurs en niveaux de gris utilisée par le système. Cela permet également de comparer équitablement deux superpositions : supposons que deux superpositions représentent un pourcentage, mais que la première ait des valeurs comprises entre 0 et 10 tandis que la seconde soit comprise entre 0 et 90. Si le système ajustait l’échelle en fonction de la valeur maximale propre à chaque jeu de données, la comparaison ne serait pas équitable ; en indiquant au système que les deux ont une valeur maximale de 100, les deux couches peuvent alors être comparées.</p>
+<p>The model file must currently be a geotiff so that we can support transformation into an mbtiles format. In the future there is planned support for shape files as well as external tile servers (via wms).</p>
+<p><img alt="Page de téléversement du modèle" src="../_images/model-upload.png" /></p>
+<p>Once you click <code class="docutils literal notranslate"><span class="pre">Upload</span> <span class="pre">model</span></code> then the system will notify when the file has been uploaded and that it’s started to run the transformation, it will then notify again if the transformation is successful or fails.</p>
+<p><img alt="Transformation du modèle" src="../_images/model-transform.png" /></p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pied de page">
+        <a href="reviewing-data.html" class="btn btn-neutral float-left" title="Réviser des données" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Précédent</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2026, ICIPE.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

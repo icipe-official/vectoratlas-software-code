@@ -4,7 +4,6 @@
 # package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Vector Atlas Help \n"
@@ -22,43 +21,41 @@ msgstr ""
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:1
 msgid "Signing up to the site"
-msgstr ""
+msgstr "S'inscrire sur le site"
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:3
 msgid ""
 "Most operations do not require a log in as the data is intended to be "
 "open. The time that a log in is required is when contributing data to the"
-" site, this means we can assign roles to users who are uploaders, those "
-"who are reviewers and those who are editors for the site."
+" atlas."
 msgstr ""
-
-#: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:5
-msgid ""
-"To sign up to the site, click on the `Login` button in the top right of "
-"the navigation menu."
-msgstr ""
+"La plupart des opérations ne nécessitent pas de connexion, car les "
+"données sont conçues pour être ouvertes. La connexion n'est requise que "
+"pour contribuer des données à l'atlas."
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:7
 msgid "![log in](login.png)"
-msgstr ""
+msgstr "![se connecter](login.png)"
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:7
 msgid "log in"
-msgstr ""
+msgstr "se connecter"
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:9
 msgid ""
 "This will redirect you to the Vector Atlas' authentication provider, "
 "Auth0. Click on the `Sign up` option below the \"Continue\" button."
 msgstr ""
+"Cela vous redirigera vers le fournisseur d'authentification du Vector "
+"Atlas, Auth0. Cliquez sur l'option `Sign up` sous le bouton « Continue »."
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:11
 msgid "![sign up](sign-up.png)"
-msgstr ""
+msgstr "![s'inscrire](sign-up.png)"
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:11
 msgid "sign up"
-msgstr ""
+msgstr "s'inscrire"
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:13
 msgid ""
@@ -66,6 +63,9 @@ msgid ""
 "register you for the site and redirect you to the homepage but you won't "
 "have any roles by this point."
 msgstr ""
+"Saisissez votre adresse e-mail, créez un mot de passe et cliquez sur "
+"`Continue`. Cela vous inscrira sur le site et vous redirigera vers la "
+"page d'accueil, mais vous n'aurez encore aucun rôle attribué à ce stade."
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:15
 msgid ""
@@ -73,18 +73,24 @@ msgid ""
 "address by clicking on a button in the email. Once this verification is "
 "done then the system team can assign roles."
 msgstr ""
+"Vous recevrez un e-mail d'Auth0 vous demandant de vérifier votre adresse "
+"e-mail en cliquant sur un bouton dans le message. Une fois cette "
+"vérification effectuée, l'équipe du système pourra vous attribuer des "
+"rôles."
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:17
 msgid "To request new roles, go to the `Settings` page in the user menu."
 msgstr ""
+"Pour demander de nouveaux rôles, rendez-vous sur la page `Settings` dans "
+"le menu utilisateur."
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:19
 msgid "![user settings](user-settings.png)"
-msgstr ""
+msgstr "![paramètres utilisateur](user-settings.png)"
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:19
 msgid "user settings"
-msgstr ""
+msgstr "paramètres utilisateur"
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:21
 msgid ""
@@ -94,6 +100,13 @@ msgid ""
 "published, editor to edit news and species information, admin to be a "
 "site admin."
 msgstr ""
+"Sur la page des paramètres utilisateur, cliquez sur le bouton `Request "
+"additional roles` pour ouvrir le formulaire des rôles. Sélectionnez les "
+"rôles dont vous avez besoin : téléverseur (uploader) pour téléverser des "
+"données ou des superpositions de modèles, réviseur (reviewer) pour "
+"réviser les données avant leur publication, éditeur (editor) pour "
+"modifier les actualités et les informations sur les espèces, "
+"administrateur (admin) pour être administrateur du site."
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:23
 msgid ""
@@ -101,14 +114,18 @@ msgid ""
 "then email the admins with your requested roles, Auth0 id and the reason "
 "for the request. They should then respond directly to you."
 msgstr ""
+"Indiquez un motif pour votre demande, puis cliquez sur soumettre la "
+"demande ; cela enverra un e-mail aux administrateurs avec les rôles "
+"demandés, votre identifiant Auth0 et le motif de la demande. Ils devraient"
+" ensuite vous répondre directement."
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:25
 msgid "![role request](role-request.png)"
-msgstr ""
+msgstr "![demande de rôle](role-request.png)"
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:25
 msgid "role request"
-msgstr ""
+msgstr "demande de rôle"
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:27
 msgid ""
@@ -119,12 +136,18 @@ msgid ""
 " the message that you are not an uploader and be directed to the user "
 "settings page."
 msgstr ""
+"De la même façon, vous n'avez pas besoin de connaître à l'avance les "
+"rôles dont vous aurez besoin. Le système affichera un message de non-"
+"autorisation si vous tentez d'effectuer une opération pour laquelle vous "
+"n'avez pas le rôle requis. Par exemple, si vous accédez à la page Data "
+"Hub et sélectionnez `Upload Model`, vous recevrez un message indiquant "
+"que vous n'êtes pas téléverseur, et serez redirigé vers la page des "
+"paramètres utilisateur."
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:29
 msgid "![not an uploader](not-an-uploader.png)"
-msgstr ""
+msgstr "![non téléverseur](not-an-uploader.png)"
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:29
 msgid "not an uploader"
-msgstr ""
-
+msgstr "non téléverseur"

@@ -1,20 +1,14 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2026, ICIPE
-# This file is distributed under the same license as the Vector Atlas Help
-# package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
-#
-#, fuzzy
+# Translation of uploading-data.md to Portuguese
 msgid ""
 msgstr ""
-"Project-Id-Version: Vector Atlas Help \n"
+"Project-Id-Version: Vector Atlas Help\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-26 12:50+0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2026-09-15 18:11+0300\n"
+"PO-Revision-Date: 2026-09-08 12:00+0000\n"
+"Last-Translator: Vector Atlas Team\n"
 "Language: pt\n"
 "Language-Team: pt <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -22,59 +16,66 @@ msgstr ""
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:1
 msgid "DATA UPLOAD"
-msgstr ""
+msgstr "CARREGAMENTO DE DADOS"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:3
 msgid "Click on the `upload` link in the navigation bar."
-msgstr ""
+msgstr "Clique na ligação de carregamento na barra de navegação."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:4
 msgid "You will be directed to the upload interface."
-msgstr ""
+msgstr "Será redirecionado para a interface de carregamento."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:6
 msgid "![Data Upload](UploadPage.png)"
 msgstr ""
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:6
+#, fuzzy
 msgid "Data Upload"
-msgstr ""
+msgstr "CARREGAMENTO DE DADOS"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:8
 msgid "Downloading Templates"
-msgstr ""
+msgstr "Descarregar Modelos"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:10
 msgid "Templates help users upload data in a system-compatible format."
 msgstr ""
+"Os modelos ajudam os utilizadores a carregar dados num formato compatível"
+" com o sistema."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:11
 msgid ""
 "Click on the `download arrow icons` on the right side of the panel to "
 "download templates."
 msgstr ""
+"Clique nos ícones de seta de descarga no lado direito do painel para "
+"descarregar os modelos."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:12
 msgid "Four major templates are available:"
-msgstr ""
+msgstr "Estão disponíveis quatro modelos principais:"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:13
 msgid "**First template**: Contains the \"Occurrence\" section only."
-msgstr ""
+msgstr "Primeiro modelo: Contém apenas a secção «Ocorrência»."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:14
 msgid "**Second template**: Contains \"Occurrence\" and \"Bionomics\" sections."
-msgstr ""
+msgstr "Segundo modelo: Contém as secções «Ocorrência» e «Bionomia»."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:15
 msgid "**Third template**: Contains \"Occurrence\" and \"IR Bioassays\" sections."
-msgstr ""
+msgstr "Terceiro modelo: Contém as secções «Ocorrência» e «Bioensaios de RI»."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:16
 msgid ""
 "**Final template**: Contains all three sections: \"Occurrence,\" "
 "\"Bionomics,\" and \"Insecticide Resistance.\""
 msgstr ""
+"Modelo final: Contém todas as três secções: «Ocorrência», «Bionomia» e "
+"«Resistência a Inseticidas»."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:18
 msgid "![Templates section](templatesSection.png)"
@@ -86,43 +87,47 @@ msgstr ""
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:20
 msgid "Uploading Data"
-msgstr ""
+msgstr "Carregar Dados"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:22
 msgid "After downloading and filling out the template:"
-msgstr ""
+msgstr "Após descarregar e preencher o modelo:"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:23
 msgid "Click on the `Upload Data` icon."
-msgstr ""
+msgstr "Clique no ícone Carregar Dados."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:24
 msgid "Follow the four-step upload process."
-msgstr ""
+msgstr "Siga o processo de carregamento em quatro passos."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:25
 msgid "**Step 1**: Select the dataset and enter details:"
-msgstr ""
+msgstr "Passo 1: Selecione o conjunto de dados e introduza os detalhes:"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:26
 msgid ""
 "Dataset title, description, authors, affiliated institutions, and DOI (if"
 " available)."
 msgstr ""
+"Título do conjunto de dados, descrição, autores, instituições afiliadas e"
+" DOI (se disponível)."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:27
 msgid "**Step 2**: Choose to either:"
-msgstr ""
+msgstr "Passo 2: Escolha uma das opções:"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:28
 msgid "Upload directly to blob storage for review, OR"
-msgstr ""
+msgstr "Carregar diretamente para o armazenamento blob para revisão, OU"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:29
 msgid ""
 "Continue with column matching and validation before uploading to blob "
 "storage."
 msgstr ""
+"Continuar com a correspondência de colunas e validação antes de carregar "
+"para o armazenamento blob."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:31
 msgid "![Upload section](uploadSection.png)"
@@ -134,31 +139,31 @@ msgstr ""
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:33
 msgid "Visualization of Uploaded Datasets by Reviewer Manager"
-msgstr ""
+msgstr "Visualização de Conjuntos de Dados Carregados pelo Gestor de Revisores"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:35
 msgid "Navigate to the `Uploaded Datasets` page:"
-msgstr ""
+msgstr "Navegue para a página Conjuntos de Dados Carregados:"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:36
 msgid "Click `More` in the top navigation and select `Datasets`."
-msgstr ""
+msgstr "Clique em Mais na navegação superior e selecione Conjuntos de Dados."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:37
 msgid "Filter datasets using checkboxes:"
-msgstr ""
+msgstr "Filtre os conjuntos de dados utilizando as caixas de seleção:"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:38
 msgid "Assigned to you."
-msgstr ""
+msgstr "Atribuídos a si."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:39
 msgid "Pending assignment."
-msgstr ""
+msgstr "Atribuição pendente."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:40
 msgid "Pending approval."
-msgstr ""
+msgstr "Aprovação pendente."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:42
 msgid "![Uploaded Datasets](DatasetsList.png)"
@@ -166,27 +171,29 @@ msgstr ""
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:42
 msgid "Uploaded Datasets"
-msgstr ""
+msgstr "Aprovação de Conjuntos de Dados Carregados"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:44
 msgid "Assignment of Uploaded Datasets to Reviewers"
-msgstr ""
+msgstr "Atribuição de Conjuntos de Dados Carregados a Revisores"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:46
 msgid ""
 "Reviewer managers can assign datasets by clicking the three dots in the "
 "action column."
 msgstr ""
+"Os gestores de revisores podem atribuir conjuntos de dados clicando nos "
+"três pontos na coluna de ação."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:47
 msgid "**Before assignment**: Status is `Pending`."
-msgstr ""
+msgstr "Antes da atribuição: O estado é Pendente."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:48
 msgid ""
 "**After assigning a primary reviewer**: Status changes to `Primary "
 "Review`."
-msgstr ""
+msgstr "Após atribuir um revisor principal: O estado muda para Revisão Principal."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:50
 msgid ""
@@ -206,54 +213,60 @@ msgstr ""
 #: ../../contributing-data-to-the-atlas/uploading-data.md:53
 msgid "Primary reviewers must review the dataset before re-uploading."
 msgstr ""
+"Os revisores principais devem rever o conjunto de dados antes de voltar a"
+" carregar."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:54
 msgid ""
 "The reviewer manager can assign a tertiary reviewer, changing the status "
 "to `Tertiary Review`."
 msgstr ""
+"O gestor de revisores pode atribuir um revisor terciário, alterando o "
+"estado para Revisão Terciária."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:55
 msgid "Reviewers can:"
-msgstr ""
+msgstr "Os revisores podem:"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:56
 msgid "Request a dataset re-upload from the primary reviewer."
-msgstr ""
+msgstr "Solicitar um novo carregamento do conjunto de dados ao revisor principal."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:57
 msgid "Send an email to the uploader or tertiary reviewer."
-msgstr ""
+msgstr "Enviar um e-mail para o carregador ou revisor terciário."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:58
 msgid "Reject the dataset if it does not meet the required standards."
-msgstr ""
+msgstr "Rejeitar o conjunto de dados se este não cumprir os padrões exigidos."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:60
 msgid "![Assign Primary Review](AssignPrimaryReview.png)"
-msgstr ""
+msgstr "Após atribuir um revisor principal: O estado muda para Revisão Principal."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:62
 msgid "Approval of Uploaded Datasets"
-msgstr ""
+msgstr "Aprovação de Conjuntos de Dados Carregados"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:64
 msgid ""
 "Once all necessary steps are completed, the dataset can be approved by "
 "the reviewer manager."
 msgstr ""
+"Assim que todos os passos necessários forem concluídos, o conjunto de "
+"dados pode ser aprovado pelo gestor de revisores."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:65
 msgid "The reviewer manager can also:"
-msgstr ""
+msgstr "O gestor de revisores também pode:"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:66
 msgid "Validate the dataset before approval."
-msgstr ""
+msgstr "Validar o conjunto de dados antes da aprovação."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:67
 msgid "Send an email for further communication."
-msgstr ""
+msgstr "Enviar um e-mail para comunicações adicionais."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:69
 msgid "![Validate Dataset](ValidateDataset.png)"
@@ -261,21 +274,25 @@ msgstr ""
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:69
 msgid "Validate Dataset"
-msgstr ""
+msgstr "Validar o conjunto de dados antes da aprovação."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:71
 msgid "Ingestion to VA Database and Notifying the Uploader"
-msgstr ""
+msgstr "Ingestão na Base de Dados do VA e Notificação do Carregador"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:73
 msgid ""
 "Once the dataset is approved, it is automatically ingested into the "
 "Vector Atlas database."
 msgstr ""
+"Assim que o conjunto de dados é aprovado, é automaticamente ingerido na "
+"base de dados do Vector Atlas."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:74
 msgid ""
 "The dataset is stored in the database and appears on the map, making it "
 "visible to all users."
 msgstr ""
+"O conjunto de dados é armazenado na base de dados e aparece no mapa, "
+"tornando-se visível para todos os utilizadores."
 

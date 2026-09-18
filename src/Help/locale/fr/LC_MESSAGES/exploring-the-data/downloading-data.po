@@ -4,7 +4,6 @@
 # package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Vector Atlas Help \n"
@@ -22,7 +21,7 @@ msgstr ""
 
 #: ../../exploring-the-data/downloading-data.md:1
 msgid "Downloading data"
-msgstr ""
+msgstr "Télécharger des données"
 
 #: ../../exploring-the-data/downloading-data.md:3
 msgid ""
@@ -31,6 +30,11 @@ msgid ""
 "data, whether that is an image of the current selection of data or the "
 "raw data itself."
 msgstr ""
+"Les données peuvent être téléchargées depuis le système à partir de la "
+"page de la carte. La dernière section des outils de la carte, à gauche, "
+"comporte des boutons permettant de télécharger différentes données, qu'il"
+" s'agisse d'une image de la sélection actuelle de données ou des données "
+"brutes elles-mêmes."
 
 #: ../../exploring-the-data/downloading-data.md:5
 msgid ""
@@ -38,28 +42,37 @@ msgid ""
 "current state of the map showing only the data that results from the "
 "filters as well as an area polygon if one has been selected."
 msgstr ""
+"Le bouton `Download map image` téléchargera un fichier image montrant "
+"l'état actuel de la carte, n'affichant que les données résultant des "
+"filtres, ainsi qu'un polygone de zone si un a été sélectionné."
 
 #: ../../exploring-the-data/downloading-data.md:7
 msgid ""
 "The `Download filtered data` button will download a csv with the raw data"
 " relating to the filtered points and can be used for further analysis."
 msgstr ""
+"Le bouton `Download filtered data` téléchargera un fichier csv contenant "
+"les données brutes relatives aux points filtrés, utilisable pour des "
+"analyses complémentaires."
 
 #: ../../exploring-the-data/downloading-data.md:9
 msgid "An example of the input and output of the map image is shown below."
 msgstr ""
+"Un exemple de l'entrée et de la sortie de l'image de la carte est présenté"
+" ci-dessous."
 
 #: ../../exploring-the-data/downloading-data.md:11
 msgid ""
 "![download map input](download-input.png) ![download output](download-"
 "output.png)"
 msgstr ""
+"![entrée du téléchargement de la carte](download-input.png) ![sortie du "
+"téléchargement](download-output.png)"
 
 #: ../../exploring-the-data/downloading-data.md:11
 msgid "download map input"
-msgstr ""
+msgstr "entrée du téléchargement de la carte"
 
 #: ../../exploring-the-data/downloading-data.md:11
 msgid "download output"
-msgstr ""
-
+msgstr "sortie du téléchargement"

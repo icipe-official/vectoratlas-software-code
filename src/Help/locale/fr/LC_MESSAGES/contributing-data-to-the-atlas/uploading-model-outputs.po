@@ -4,7 +4,6 @@
 # package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Vector Atlas Help \n"
@@ -20,37 +19,46 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: ../../contributing-data-to-the-atlas/uploading-model-outputs.md:1
-msgid "Uploading model overlays"
-msgstr ""
+#: ../../contributing-data-to-the-atlas/uploading--outputs.md:1
+msgid "Uploading  overlays"
+msgstr "Téléverser des superpositions de modèles"
 
-#: ../../contributing-data-to-the-atlas/uploading-model-outputs.md:3
-msgid "Uploading model overlays requires the `Uploader` role."
+#: ../../contributing-data-to-the-atlas/uploading--outputs.md:3
+msgid "Uploading  overlays requires the `Uploader` role."
 msgstr ""
+"Le téléversement de superpositions de modèles nécessite le rôle "
+"`Uploader`."
 
-#: ../../contributing-data-to-the-atlas/uploading-model-outputs.md:5
+#: ../../contributing-data-to-the-atlas/uploading--outputs.md:5
 msgid ""
-"To upload model overlays, go to the [data "
+"To upload  overlays, go to the [data "
 "hub](https://vectoratlas.icipe.org/dataHub) page and click on `Upload "
 "Model`."
 msgstr ""
+"Pour téléverser des superpositions de modèles, rendez-vous sur la page "
+"[data hub](https://vectoratlas.icipe.org/dataHub) et cliquez sur `Upload "
+"Model`."
 
-#: ../../contributing-data-to-the-atlas/uploading-model-outputs.md:7
-msgid "![Data Hub page](datahub.png)"
-msgstr ""
+#: ../../contributing-data-to-the-atlas/uploading--outputs.md:7
+msgid "![Data Hub page](images/datahub.png)"
+msgstr "![Page Data Hub](images/datahub.png)"
 
-#: ../../contributing-data-to-the-atlas/uploading-model-outputs.md:7
+#: ../../contributing-data-to-the-atlas/uploading--outputs.md:7
 msgid "Data Hub page"
-msgstr ""
+msgstr "Page Data Hub"
 
-#: ../../contributing-data-to-the-atlas/uploading-model-outputs.md:9
+#: ../../contributing-data-to-the-atlas/uploading--outputs.md:9
 msgid ""
-"The model upload page requires a display name, maximum value for the data"
-" and the model file itself. The display name is the name used on the map "
+"The  upload page requires a display name, maximum value for the data"
+" and the  file itself. The display name is the name used on the map "
 "in overlays section of the map tools."
 msgstr ""
+"La page de téléversement de modèle requiert un nom d'affichage, une "
+"valeur maximale pour les données, ainsi que le fichier du modèle "
+"lui-même. Le nom d'affichage est le nom utilisé sur la carte, dans la "
+"section des superpositions des outils de la carte."
 
-#: ../../contributing-data-to-the-atlas/uploading-model-outputs.md:11
+#: ../../contributing-data-to-the-atlas/uploading--outputs.md:11
 msgid ""
 "The maximum value is needed because the overlay is transformed into a "
 "tiled version for use in the map - this involves re-scaling the data to "
@@ -61,34 +69,51 @@ msgid ""
 "then it wouldn't be a fair comparison, by telling the system both have a "
 "maximum value of 100 then the two layers can be compared."
 msgstr ""
+"La valeur maximale est nécessaire car la superposition est transformée en"
+" une version en tuiles pour être utilisée sur la carte — cela implique de"
+" réajuster l'échelle des données pour correspondre à la palette de "
+"couleurs en niveaux de gris utilisée par le système. Cela permet "
+"également de comparer équitablement deux superpositions : supposons que "
+"deux superpositions représentent un pourcentage, mais que la première ait"
+" des valeurs comprises entre 0 et 10 tandis que la seconde soit comprise "
+"entre 0 et 90. Si le système ajustait l'échelle en fonction de la valeur "
+"maximale propre à chaque jeu de données, la comparaison ne serait pas "
+"équitable ; en indiquant au système que les deux ont une valeur maximale "
+"de 100, les deux couches peuvent alors être comparées."
 
-#: ../../contributing-data-to-the-atlas/uploading-model-outputs.md:13
+#: ../../contributing-data-to-the-atlas/uploading--outputs.md:13
 msgid ""
-"The model file must currently be a geotiff so that we can support "
+"The  file must currently be a geotiff so that we can support "
 "transformation into an mbtiles format. In the future there is planned "
 "support for shape files as well as external tile servers (via wms)."
 msgstr ""
+"Le fichier du modèle doit actuellement être au format geotiff afin de "
+"permettre la transformation au format mbtiles. La prise en charge des "
+"fichiers shape ainsi que des serveurs de tuiles externes (via wms) est "
+"prévue à l'avenir."
 
-#: ../../contributing-data-to-the-atlas/uploading-model-outputs.md:15
-msgid "![Model upload page](model-upload.png)"
-msgstr ""
+#: ../../contributing-data-to-the-atlas/uploading--outputs.md:15
+msgid "![Model upload page](images/-upload.png)"
+msgstr "![Page de téléversement du modèle](images/-upload.png)"
 
-#: ../../contributing-data-to-the-atlas/uploading-model-outputs.md:15
+#: ../../contributing-data-to-the-atlas/uploading--outputs.md:15
 msgid "Model upload page"
-msgstr ""
+msgstr "Page de téléversement du modèle"
 
-#: ../../contributing-data-to-the-atlas/uploading-model-outputs.md:17
+#: ../../contributing-data-to-the-atlas/uploading--outputs.md:17
 msgid ""
-"Once you click `Upload model` then the system will notify when the file "
+"Once you click `Upload ` then the system will notify when the file "
 "has been uploaded and that it's started to run the transformation, it "
 "will then notify again if the transformation is successful or fails."
 msgstr ""
+"Une fois que vous cliquez sur `Upload `, le système vous informe "
+"lorsque le fichier a été téléversé et que la transformation a commencé, "
+"puis vous informe à nouveau si la transformation a réussi ou échoué."
 
-#: ../../contributing-data-to-the-atlas/uploading-model-outputs.md:19
-msgid "![Model transform](model-transform.png)"
-msgstr ""
+#: ../../contributing-data-to-the-atlas/uploading--outputs.md:19
+msgid "![Model transform](images/-transform.png)"
+msgstr "![Transformation du modèle](images/-transform.png)"
 
-#: ../../contributing-data-to-the-atlas/uploading-model-outputs.md:19
+#: ../../contributing-data-to-the-atlas/uploading--outputs.md:19
 msgid "Model transform"
-msgstr ""
-
+msgstr "Transformation du modèle"

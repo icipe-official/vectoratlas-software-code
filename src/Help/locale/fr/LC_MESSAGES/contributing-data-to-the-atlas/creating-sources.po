@@ -4,7 +4,6 @@
 # package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Vector Atlas Help \n"
@@ -22,7 +21,7 @@ msgstr ""
 
 #: ../../contributing-data-to-the-atlas/creating-sources.md:1
 msgid "Creating sources"
-msgstr ""
+msgstr "Créer des sources"
 
 #: ../../contributing-data-to-the-atlas/creating-sources.md:3
 msgid ""
@@ -30,12 +29,15 @@ msgid ""
 "Add Source` option in the navigation menu. Fill in the details for a "
 "source and click `Submit`. Use the `Reset` button to clear the form."
 msgstr ""
+"Pour créer une source, vous devez avoir le rôle `uploader`. Rendez-vous "
+"sur l'option `More > Add Source` dans le menu de navigation. Remplissez "
+"les détails de la source et cliquez sur `Submit`. Utilisez le bouton "
+"`Reset` pour vider le formulaire."
 
 #: ../../contributing-data-to-the-atlas/creating-sources.md:5
 msgid "![Add source](add-source.png)"
-msgstr ""
+msgstr "![Ajouter une source](add-source.png)"
 
 #: ../../contributing-data-to-the-atlas/creating-sources.md:5
 msgid "Add source"
-msgstr ""
-
+msgstr "Ajouter une source"

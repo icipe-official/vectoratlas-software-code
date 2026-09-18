@@ -4,7 +4,6 @@
 # package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Vector Atlas Help \n"
@@ -22,7 +21,7 @@ msgstr ""
 
 #: ../../exploring-the-data/using-the-map.md:1
 msgid "Using the map"
-msgstr ""
+msgstr "Utiliser la carte"
 
 #: ../../exploring-the-data/using-the-map.md:3
 msgid ""
@@ -30,10 +29,13 @@ msgid ""
 "explore the data that the Atlas holds; this data can be filtered, "
 "examined and downloaded."
 msgstr ""
+"La principale fonctionnalité du Vector Atlas est la vue cartographique, "
+"qui permet d'explorer les données contenues dans l'Atlas ; ces données "
+"peuvent être filtrées, examinées et téléchargées."
 
 #: ../../exploring-the-data/using-the-map.md:5
 msgid "Getting to the map"
-msgstr ""
+msgstr "Accéder à la carte"
 
 #: ../../exploring-the-data/using-the-map.md:6
 msgid ""
@@ -41,14 +43,18 @@ msgid ""
 "in the top navigation bar - both will redirect to the "
 "[/map](https://vectoratlas.icipe.org/map) route."
 msgstr ""
+"Pour accéder à la carte, cliquez sur la carte de la page d'accueil, ou "
+"utilisez le lien de la carte dans la barre de navigation supérieure : les"
+" deux vous redirigeront vers la page "
+"[/map](https://vectoratlas.icipe.org/map)."
 
 #: ../../exploring-the-data/using-the-map.md:8
 msgid "![getting-to-the-data](getting-to-the-map.png \"Getting to the data\")"
-msgstr ""
+msgstr "![accéder-aux-données](images/getting-to-the-map.png \"Accéder aux données\")"
 
 #: ../../exploring-the-data/using-the-map.md:8
 msgid "getting-to-the-data"
-msgstr ""
+msgstr "accéder-aux-données"
 
 #: ../../exploring-the-data/using-the-map.md:10
 msgid ""
@@ -56,48 +62,54 @@ msgid ""
 "filtering, displaying overlays, altering the display of base layers and "
 "downloading data."
 msgstr ""
+"Les outils de la carte se trouvent dans le menu de gauche et comprennent "
+"des outils de filtrage, d'affichage des superpositions, de modification "
+"de l'affichage des couches de base et de téléchargement des données."
 
 #: ../../exploring-the-data/using-the-map.md:13
 msgid "Filtering data"
-msgstr ""
+msgstr "Filtrer les données"
 
 #: ../../exploring-the-data/using-the-map.md:15
 msgid ""
 "Multiple data filters can be applied using the filters available in the "
 "first section of the tools on the left. Data can be filtered by:"
 msgstr ""
+"Plusieurs filtres de données peuvent être appliqués grâce aux filtres "
+"disponibles dans la première section des outils à gauche. Les données "
+"peuvent être filtrées par :"
 
 #: ../../exploring-the-data/using-the-map.md:16
 msgid "country,"
-msgstr ""
+msgstr "pays,"
 
 #: ../../exploring-the-data/using-the-map.md:17
 msgid "species,"
-msgstr ""
+msgstr "espèce,"
 
 #: ../../exploring-the-data/using-the-map.md:18
 msgid "season,"
-msgstr ""
+msgstr "saison,"
 
 #: ../../exploring-the-data/using-the-map.md:19
 msgid "control,"
-msgstr ""
+msgstr "moyen de contrôle,"
 
 #: ../../exploring-the-data/using-the-map.md:20
 msgid "whether adult data is present,"
-msgstr ""
+msgstr "présence de données sur les adultes,"
 
 #: ../../exploring-the-data/using-the-map.md:21
 msgid "whether larval data is present,"
-msgstr ""
+msgstr "présence de données sur les larves,"
 
 #: ../../exploring-the-data/using-the-map.md:22
 msgid "the time range of the data (down to month and year)"
-msgstr ""
+msgstr "la période des données (jusqu'au mois et à l'année)"
 
 #: ../../exploring-the-data/using-the-map.md:23
 msgid "selected area (more details below)"
-msgstr ""
+msgstr "zone sélectionnée (plus de détails ci-dessous)"
 
 #: ../../exploring-the-data/using-the-map.md:25
 msgid ""
@@ -107,32 +119,42 @@ msgid ""
 "selecting Uganda and Sudan in the countries filter will get all data for "
 "both countries."
 msgstr ""
+"Les différents filtres agissent comme une condition ET : par exemple, "
+"sélectionner l'Ouganda et An. arabiensis n'affiche que les données situées"
+" en Ouganda pour l'espèce An. arabiensis. En revanche, au sein d'un même "
+"filtre, la condition est de type OU : par exemple, sélectionner l'Ouganda"
+" et le Soudan dans le filtre des pays affichera toutes les données pour "
+"les deux pays."
 
 #: ../../exploring-the-data/using-the-map.md:27
 msgid "![filters](filters.png)"
-msgstr ""
-
+msgstr "![filtres](images/filters.png)"
 #: ../../exploring-the-data/using-the-map.md:27
 msgid "filters"
-msgstr ""
-
+msgstr "filtres"
+#: ../../exploring-the-data/using-the-map.md:33
+msgid "![area mode](area-select-mode.png)"
+msgstr "![mode zone](images/area-select-mode.png)"
 #: ../../exploring-the-data/using-the-map.md:29
 msgid "Area select mode"
-msgstr ""
+msgstr "Mode de sélection par zone"
 
 #: ../../exploring-the-data/using-the-map.md:31
 msgid ""
 "Data can also be filtered by area; to activate the area select mode, "
 "click on the mode button below the \"Select by area\" filter."
 msgstr ""
+"Les données peuvent également être filtrées par zone ; pour activer le "
+"mode de sélection par zone, cliquez sur le bouton de mode situé sous le "
+"filtre « Sélectionner par zone »."
 
 #: ../../exploring-the-data/using-the-map.md:33
 msgid "![area mode](area-select-mode.png)"
-msgstr ""
+msgstr "![mode zone](area-select-mode.png)"
 
 #: ../../exploring-the-data/using-the-map.md:33
 msgid "area mode"
-msgstr ""
+msgstr "mode zone"
 
 #: ../../exploring-the-data/using-the-map.md:35
 msgid ""
@@ -143,14 +165,21 @@ msgid ""
 "completed, the first polygon is removed once the second is completed - "
 "i.e there is only ever one polygon at once."
 msgstr ""
+"Cela modifie le mode de la carte de sorte que chaque clic ajoute un point"
+" au contour du polygone de sélection ; cliquer à nouveau sur le point de "
+"départ ferme le polygone. Une fois le polygone terminé, les données sont "
+"filtrées selon cette zone. Un nouveau polygone peut être créé après que "
+"le premier est terminé ; le premier polygone est supprimé dès que le "
+"second est terminé — il n'y a donc jamais qu'un seul polygone actif à la"
+" fois."
 
 #: ../../exploring-the-data/using-the-map.md:37
 msgid "![area filter](area-filter.png)"
-msgstr ""
+msgstr "![filtre par zone](images/area-filter.png)"
 
 #: ../../exploring-the-data/using-the-map.md:37
 msgid "area filter"
-msgstr ""
+msgstr "filtre par zone"
 
 #: ../../exploring-the-data/using-the-map.md:39
 msgid ""
@@ -159,10 +188,15 @@ msgid ""
 "polygon to get more information. Clicking on the `Remove selection` "
 "button will clear the polygon and remove any area filter on the data."
 msgstr ""
+"Cliquer à nouveau sur le bouton du mode zone le désactive, mais ne "
+"supprime pas le polygone sélectionné. Vous pouvez ainsi cliquer sur des "
+"points à l'intérieur du polygone pour obtenir plus d'informations. "
+"Cliquer sur le bouton `Remove selection` effacera le polygone et "
+"supprimera tout filtre de zone appliqué aux données."
 
 #: ../../exploring-the-data/using-the-map.md:41
 msgid "Getting more information about points"
-msgstr ""
+msgstr "Obtenir plus d'informations sur les points"
 
 #: ../../exploring-the-data/using-the-map.md:43
 msgid ""
@@ -170,24 +204,29 @@ msgid ""
 "showing extra details about each of the points under the click (which "
 "could be many points close together)."
 msgstr ""
+"Cliquer sur des points de la carte ouvre le panneau d'informations à "
+"droite, affichant des détails supplémentaires sur chacun des points situés"
+" sous le clic (qui peuvent être nombreux et rapprochés)."
 
 #: ../../exploring-the-data/using-the-map.md:45
 msgid "![point details](point-details.png)"
-msgstr ""
+msgstr "![détails du point](point-details.png)"
 
 #: ../../exploring-the-data/using-the-map.md:45
-msgid "point details"
-msgstr ""
+msgid "![point details](point-details.png)"
+msgstr "![détails du point](images/point-details.png)"
 
 #: ../../exploring-the-data/using-the-map.md:47
 msgid ""
 "The details panel can be closed with the close button in the top left of "
 "the panel."
 msgstr ""
+"Le panneau de détails peut être fermé grâce au bouton de fermeture situé "
+"en haut à gauche du panneau."
 
 #: ../../exploring-the-data/using-the-map.md:49
 msgid "Overlaying surfaces"
-msgstr ""
+msgstr "Superposer des surfaces"
 
 #: ../../exploring-the-data/using-the-map.md:51
 msgid ""
@@ -195,24 +234,30 @@ msgid ""
 "together and combined with the data to find new insights. Each overlay "
 "can be turned on and off independently."
 msgstr ""
+"Les superpositions offrent divers résultats de modélisation qui peuvent "
+"être visualisés ensemble et combinés aux données pour découvrir de "
+"nouvelles perspectives. Chaque superposition peut être activée ou "
+"désactivée indépendamment."
 
 #: ../../exploring-the-data/using-the-map.md:53
 msgid "![overlays](overlays.png)"
-msgstr ""
+msgstr "![superpositions](images/overlays.png)"
 
 #: ../../exploring-the-data/using-the-map.md:53
 msgid "overlays"
-msgstr ""
+msgstr "superpositions"
 
 #: ../../exploring-the-data/using-the-map.md:55
 msgid ""
 "Currently the order of the overlays can't be changed but this is a "
 "planned feature for the future."
 msgstr ""
+"Actuellement, l'ordre des superpositions ne peut pas être modifié, mais "
+"cette fonctionnalité est prévue à l'avenir."
 
 #: ../../exploring-the-data/using-the-map.md:59
 msgid "Altering the base map"
-msgstr ""
+msgstr "Modifier le fond de carte"
 
 #: ../../exploring-the-data/using-the-map.md:61
 msgid ""
@@ -220,12 +265,15 @@ msgid ""
 "This provides the capability to customise the visualisation that can then"
 " be downloaded for reports and publications."
 msgstr ""
+"Le fond de carte peut être modifié en activant ou désactivant des "
+"fonctionnalités et des couches. Cela permet de personnaliser la "
+"visualisation, qui peut ensuite être téléchargée pour des rapports et des"
+" publications."
 
 #: ../../exploring-the-data/using-the-map.md:63
 msgid "![changing the base map](changing-base-map.png)"
-msgstr ""
+msgstr "![modification du fond de carte](images/changing-base-map.png)"
 
 #: ../../exploring-the-data/using-the-map.md:63
 msgid "changing the base map"
-msgstr ""
-
+msgstr "modification du fond de carte"

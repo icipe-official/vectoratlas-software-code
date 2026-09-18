@@ -1,8 +1,6 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) 2026, ICIPE
-# This file is distributed under the same license as the Vector Atlas Help
-# package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+# This file is distributed under the same license as the Vector Atlas Help package.
 #
 #, fuzzy
 msgid ""
@@ -18,11 +16,10 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.18.0\n"
 
 #: ../../exploring-the-data/learning-about-species.md:1
 msgid "Learning about different species"
-msgstr ""
+msgstr "Saber mais sobre as diferentes espécies"
 
 #: ../../exploring-the-data/learning-about-species.md:3
 msgid ""
@@ -32,26 +29,30 @@ msgid ""
 " the top navigation menu under `More > Species List`. This includes "
 "information about the species, its history and distribution."
 msgstr ""
+"O Vector Atlas inclui informações detalhadas sobre as diferentes espécies de "
+"mosquitos na página [Lista de espécies](https://vectoratlas.icipe.org/species), "
+"acessível no menu superior em `Mais > Lista de Espécies`. Inclui dados sobre "
+"a espécie, a sua história e distribuição."
 
 #: ../../exploring-the-data/learning-about-species.md:5
 msgid "![species list](species-list.png)"
-msgstr ""
+msgstr "![lista de espécies](species-list.png)"
 
 #: ../../exploring-the-data/learning-about-species.md:5
 msgid "species list"
-msgstr ""
+msgstr "lista de espécies"
 
 #: ../../exploring-the-data/learning-about-species.md:7
 msgid ""
 "Clicking on one of the items in the list will take you to a page with "
 "more details about that given species."
 msgstr ""
+"Clicar num dos itens da lista redireciona para uma página com mais detalhes sobre a espécie."
 
 #: ../../exploring-the-data/learning-about-species.md:9
 msgid "![species details](species-details.png)"
-msgstr ""
+msgstr "![detalhes da espécie](species-details.png)"
 
 #: ../../exploring-the-data/learning-about-species.md:9
 msgid "species details"
-msgstr ""
-
+msgstr "detalhes da espécie"

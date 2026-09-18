@@ -2,19 +2,18 @@
 # Copyright (C) 2026, ICIPE
 # This file is distributed under the same license as the Vector Atlas Help
 # package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Vector Atlas Help \n"
+"Project-Id-Version: Vector Atlas Help\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-26 12:50+0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2026-09-15 18:11+0300\n"
+"PO-Revision-Date: 2026-09-08 12:00+0000\n"
+"Last-Translator: Vector Atlas Team\n"
 "Language: pt\n"
 "Language-Team: pt <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -22,7 +21,7 @@ msgstr ""
 
 #: ../../finding-out-about-the-project/about-us.md:1
 msgid "About us"
-msgstr ""
+msgstr "Sobre nós"
 
 #: ../../finding-out-about-the-project/about-us.md:3
 msgid ""
@@ -30,12 +29,19 @@ msgid ""
 "about what the goals of the project are, who the team are, who our "
 "partners are and how to contact the team."
 msgstr ""
+"A página `about` fornece detalhes sobre os objetivos do projeto, quem faz"
+" parte da equipa, quem são os nossos parceiros e como contactar a equipa."
 
 #: ../../finding-out-about-the-project/about-us.md:5
+#, fuzzy
 msgid "![about](about.png)"
-msgstr ""
+msgstr "![Página Sobre nós](about.png)"
 
 #: ../../finding-out-about-the-project/about-us.md:5
+#, fuzzy
 msgid "about"
-msgstr ""
+msgstr "Sobre nós"
+
+#~ msgid "About page"
+#~ msgstr "Página Sobre nós"
 

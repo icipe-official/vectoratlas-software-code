@@ -1,0 +1,195 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Accéder à la carte &mdash; Documentation Vector Atlas Help 1.0</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=4958b51b" />
+
+  
+    <link rel="shortcut icon" href="../_static/Animals-Mosquito-icon.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=7a28dfa3"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/translations.js?v=e6b791cb"></script>
+      <script src="../_static/custom.js?v=3ab31e08"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Recherche" href="../search.html" />
+    <link rel="next" title="En savoir plus sur les différentes espèces" href="learning-about-species.html" />
+    <link rel="prev" title="Guide de démarrage rapide" href="../quick-start.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Vector Atlas Help
+              <img src="../_static/vector-atlas-logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Démarrage rapide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quick-start.html">Guide de démarrage rapide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Explorer les données</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Accéder à la carte</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#filtering-data">Filtrer les données</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#area-select-mode">Mode de sélection par zone</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#getting-more-information-about-points">Obtenir plus d’informations sur les points</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#overlaying-surfaces">Superposer des surfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#altering-the-base-map">Modifier le fond de carte</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learning-about-species.html">En savoir plus sur les différentes espèces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="listing-the-sources.html">Lister les sources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="downloading-data.html">Télécharger des données</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">En savoir plus sur le projet</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../finding-out-about-the-project/news.html">Actualités</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../finding-out-about-the-project/about-us.html">À propos de nous</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contribuer des données à l'Atlas</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing-data-to-the-atlas/signing-up-to-the-site.html">S’inscrire sur le site</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing-data-to-the-atlas/creating-sources.html">Créer des sources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing-data-to-the-atlas/uploading-data.html">TÉLÉVERSEMENT DE DONNÉES</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../contributing-data-to-the-atlas/uploading-data.html#downloading-templates">Télécharger les modèles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing-data-to-the-atlas/uploading-data.html#uploading-data">Téléverser des données</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing-data-to-the-atlas/uploading-data.html#visualization-of-uploaded-datasets-by-reviewer-manager">Visualisation des jeux de données téléversés par le gestionnaire des réviseurs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing-data-to-the-atlas/uploading-data.html#assignment-of-uploaded-datasets-to-reviewers">Attribution des jeux de données téléversés aux réviseurs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing-data-to-the-atlas/uploading-data.html#approval-of-uploaded-datasets">Approbation des jeux de données téléversés</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing-data-to-the-atlas/uploading-data.html#ingestion-to-va-database-and-notifying-the-uploader">Intégration à la base de données du VA et notification au téléverseur</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing-data-to-the-atlas/reviewing-data.html">Réviser des données</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing-data-to-the-atlas/uploading-model-outputs.html">Uploading model overlays</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Vector Atlas Help</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Accéder à la carte</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p>Utiliser la carte</p>
+<p>La principale fonctionnalité du Vector Atlas est la vue cartographique, qui permet d’explorer les données contenues dans l’Atlas ; ces données peuvent être filtrées, examinées et téléchargées.</p>
+<section id="getting-to-the-map">
+<h1>Accéder à la carte<a class="headerlink" href="#getting-to-the-map" title="Lien vers cette rubrique"></a></h1>
+<p>Pour accéder à la carte, cliquez sur la carte de la page d’accueil, ou utilisez le lien de la carte dans la barre de navigation supérieure : les deux vous redirigeront vers la page <a class="reference external" href="https://vectoratlas.icipe.org/map">/map</a>.</p>
+<p><img alt="accéder-aux-données" src="../_images/getting-to-the-map.png" /></p>
+<p>Les outils de la carte se trouvent dans le menu de gauche et comprennent des outils de filtrage, d’affichage des superpositions, de modification de l’affichage des couches de base et de téléchargement des données.</p>
+<!-- <img src={require('./map-tools.png').default} alt="map tools" style={{width: '100%', maxWidth: '700px'}} /> -->
+</section>
+<section id="filtering-data">
+<h1>Filtrer les données<a class="headerlink" href="#filtering-data" title="Lien vers cette rubrique"></a></h1>
+<p>Plusieurs filtres de données peuvent être appliqués grâce aux filtres disponibles dans la première section des outils à gauche. Les données peuvent être filtrées par :</p>
+<ul class="simple">
+<li><p>pays,</p></li>
+<li><p>espèce,</p></li>
+<li><p>saison,</p></li>
+<li><p>moyen de contrôle,</p></li>
+<li><p>présence de données sur les adultes,</p></li>
+<li><p>présence de données sur les larves,</p></li>
+<li><p>la période des données (jusqu’au mois et à l’année)</p></li>
+<li><p>zone sélectionnée (plus de détails ci-dessous)</p></li>
+</ul>
+<p>Les différents filtres agissent comme une condition ET : par exemple, sélectionner l’Ouganda et An. arabiensis n’affiche que les données situées en Ouganda pour l’espèce An. arabiensis. En revanche, au sein d’un même filtre, la condition est de type OU : par exemple, sélectionner l’Ouganda et le Soudan dans le filtre des pays affichera toutes les données pour les deux pays.</p>
+<p><img alt="filtres" src="../_images/filters.png" /></p>
+<section id="area-select-mode">
+<h2>Mode de sélection par zone<a class="headerlink" href="#area-select-mode" title="Lien vers cette rubrique"></a></h2>
+<p>Les données peuvent également être filtrées par zone ; pour activer le mode de sélection par zone, cliquez sur le bouton de mode situé sous le filtre « Sélectionner par zone ».</p>
+<p><img alt="mode zone" src="../_images/area-select-mode.png" /></p>
+<p>Cela modifie le mode de la carte de sorte que chaque clic ajoute un point au contour du polygone de sélection ; cliquer à nouveau sur le point de départ ferme le polygone. Une fois le polygone terminé, les données sont filtrées selon cette zone. Un nouveau polygone peut être créé après que le premier est terminé ; le premier polygone est supprimé dès que le second est terminé — il n’y a donc jamais qu’un seul polygone actif à la fois.</p>
+<p><img alt="filtre par zone" src="../_images/area-filter.png" /></p>
+<p>Cliquer à nouveau sur le bouton du mode zone le désactive, mais ne supprime pas le polygone sélectionné. Vous pouvez ainsi cliquer sur des points à l’intérieur du polygone pour obtenir plus d’informations. Cliquer sur le bouton <code class="docutils literal notranslate"><span class="pre">Remove</span> <span class="pre">selection</span></code> effacera le polygone et supprimera tout filtre de zone appliqué aux données.</p>
+</section>
+</section>
+<section id="getting-more-information-about-points">
+<h1>Obtenir plus d’informations sur les points<a class="headerlink" href="#getting-more-information-about-points" title="Lien vers cette rubrique"></a></h1>
+<p>Cliquer sur des points de la carte ouvre le panneau d’informations à droite, affichant des détails supplémentaires sur chacun des points situés sous le clic (qui peuvent être nombreux et rapprochés).</p>
+<p><img alt="point details" src="../_images/point-details.png" /></p>
+<p>Le panneau de détails peut être fermé grâce au bouton de fermeture situé en haut à gauche du panneau.</p>
+</section>
+<section id="overlaying-surfaces">
+<h1>Superposer des surfaces<a class="headerlink" href="#overlaying-surfaces" title="Lien vers cette rubrique"></a></h1>
+<p>Les superpositions offrent divers résultats de modélisation qui peuvent être visualisés ensemble et combinés aux données pour découvrir de nouvelles perspectives. Chaque superposition peut être activée ou désactivée indépendamment.</p>
+<p><img alt="superpositions" src="../_images/overlays.png" /></p>
+<p>Actuellement, l’ordre des superpositions ne peut pas être modifié, mais cette fonctionnalité est prévue à l’avenir.</p>
+</section>
+<section id="altering-the-base-map">
+<h1>Modifier le fond de carte<a class="headerlink" href="#altering-the-base-map" title="Lien vers cette rubrique"></a></h1>
+<p>Le fond de carte peut être modifié en activant ou désactivant des fonctionnalités et des couches. Cela permet de personnaliser la visualisation, qui peut ensuite être téléchargée pour des rapports et des publications.</p>
+<p><img alt="modification du fond de carte" src="../_images/changing-base-map.png" /></p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pied de page">
+        <a href="../quick-start.html" class="btn btn-neutral float-left" title="Guide de démarrage rapide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Précédent</a>
+        <a href="learning-about-species.html" class="btn btn-neutral float-right" title="En savoir plus sur les différentes espèces" accesskey="n" rel="next">Suivant <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2026, ICIPE.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

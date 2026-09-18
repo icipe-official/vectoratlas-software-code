@@ -1,8 +1,6 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) 2026, ICIPE
-# This file is distributed under the same license as the Vector Atlas Help
-# package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+# This file is distributed under the same license as the Vector Atlas Help package.
 #
 #, fuzzy
 msgid ""
@@ -22,7 +20,7 @@ msgstr ""
 
 #: ../../quick-start.md:1
 msgid "Quick start guide"
-msgstr ""
+msgstr "Guia de início rápido"
 
 #: ../../quick-start.md:3
 msgid ""
@@ -31,6 +29,10 @@ msgid ""
 "guide to understand what the Vector Atlas can do and how you can explore "
 "the data."
 msgstr ""
+"As secções à esquerda apresentam uma descrição mais detalhada dos "
+"diferentes fluxos de trabalho do sistema, mas este guia oferece uma visão "
+"rápida para compreender o que o Vector Atlas pode fazer e como pode explorar "
+"os dados."
 
 #: ../../quick-start.md:5
 msgid ""
@@ -41,32 +43,40 @@ msgid ""
 "button, read the latest news from the team as well as learning about the "
 "project and the team with the `Find out more` button."
 msgstr ""
+"A página [Inicial](https://vectoratlas.icipe.org/) é o ponto de entrada "
+"para os utilizadores e apresenta o objetivo do Vector Atlas: fornecer dados "
+"prontos para análise e modelos espaciais adaptados ao controlo de vetores da "
+"malária. Pode aceder ao mapa através do botão `Explorar os dados`, ler as "
+"últimas notícias da equipa e saber mais sobre o projeto e a equipa através "
+"do botão `Saber mais`."
 
 #: ../../quick-start.md:7
 msgid "![home page](homepage.png)"
-msgstr ""
+msgstr "![página inicial](homepage.png)"
 
 #: ../../quick-start.md:7
 msgid "home page"
-msgstr ""
+msgstr "página inicial"
 
 #: ../../quick-start.md:9
 msgid ""
 "Click on `Explore the data` to navigate to the map page. This displays "
 "all of the data within the system that has been published."
 msgstr ""
+"Clique em `Explorar os dados` para navegar para a página do mapa. Esta exibe "
+"todos os dados publicados no sistema."
 
 #: ../../quick-start.md:13
 msgid "Click on the filter icon on the map tools in the left hand menu."
-msgstr ""
+msgstr "Clique no ícone de filtro nas ferramentas do mapa no menu à esquerda."
 
 #: ../../quick-start.md:15
 msgid "![map tools](map-tools.png)"
-msgstr ""
+msgstr "![ferramentas do mapa](map-tools.png)"
 
 #: ../../quick-start.md:15
 msgid "map tools"
-msgstr ""
+msgstr "ferramentas do mapa"
 
 #: ../../quick-start.md:17
 msgid ""
@@ -76,14 +86,18 @@ msgid ""
 "map either with the scroll wheel, the buttons in the top left of the map "
 "or pinching if on a touch device."
 msgstr ""
+"Isto abre os filtros onde pode selecionar países e/ou espécies para filtrar. "
+"Filtre por `Uganda` e pela espécie `An. funestus` para ver como os dados são "
+"reduzidos no mapa. Também pode aproximar e afastar o mapa utilizando a roda do "
+"rato, os botões no canto superior esquerdo ou o gesto de pinça em dispositivos táteis."
 
 #: ../../quick-start.md:19
 msgid "![filtered data](filtered-data.png)"
-msgstr ""
+msgstr "![dados filtrados](filtered-data.png)"
 
 #: ../../quick-start.md:19
 msgid "filtered data"
-msgstr ""
+msgstr "dados filtrados"
 
 #: ../../quick-start.md:21
 msgid ""
@@ -92,28 +106,33 @@ msgid ""
 "points of your polygon and then click the first one again to complete the"
 " polygon. Click the mode button again to turn the mode off."
 msgstr ""
+"Pode refinar ainda mais com a ferramenta de seleção por zona. Ative o modo "
+"clicando no botão abaixo do filtro \"Selecionar por zona\", clique nos "
+"pontos do polígono e clique novamente no primeiro ponto para o concluir. "
+"Clique novamente no botão do modo para o desativar."
 
 #: ../../quick-start.md:23
 msgid "![area select](area-select.png)"
-msgstr ""
+msgstr "![seleção por zona](area-select.png)"
 
 #: ../../quick-start.md:23
 msgid "area select"
-msgstr ""
+msgstr "seleção por zona"
 
 #: ../../quick-start.md:25
 msgid ""
 "Expand the overlays section and click on the check box for an overlay to "
 "turn it on."
 msgstr ""
+"Expanda a secção de sobreposições e marque a caixa de seleção para ativar uma sobreposição."
 
 #: ../../quick-start.md:27
 msgid "![overlays](overlays.png)"
-msgstr ""
+msgstr "![sobreposições](overlays.png)"
 
 #: ../../quick-start.md:27
 msgid "overlays"
-msgstr ""
+msgstr "sobreposições"
 
 #: ../../quick-start.md:29
 msgid ""
@@ -121,14 +140,17 @@ msgid ""
 "section. Click on `Download map image` to get a copy of your map that can"
 " be used in a report. The output would look like the image below."
 msgstr ""
+"Desloque-se até à última secção de ferramentas do mapa e expanda a secção "
+"`Descarregar`. Clique em `Descarregar imagem do mapa` para obter uma cópia do seu "
+"mapa para relatórios. O resultado assemelha-se à imagem abaixo."
 
 #: ../../quick-start.md:31
 msgid "![downloaded map](downloaded-map.png)"
-msgstr ""
+msgstr "![mapa descarregado](downloaded-map.png)"
 
 #: ../../quick-start.md:31
 msgid "downloaded map"
-msgstr ""
+msgstr "mapa descarregado"
 
 #: ../../quick-start.md:33
 msgid ""
@@ -138,12 +160,15 @@ msgid ""
 " or find out more about the project in the "
 "[About](https://vectoratlas.icipe.org/about) page."
 msgstr ""
+"Este é o processo básico para explorar, visualizar e descarregar dados. Pode "
+"acompanhar as últimas notícias do projeto através da hiperligação "
+"[Notícias](https://vectoratlas.icipe.org/news) na barra superior ou "
+"saber mais na página [Sobre](https://vectoratlas.icipe.org/about)."
 
 #: ../../quick-start.md:35
 msgid "![news](news.png)"
-msgstr ""
+msgstr "![notícias](news.png)"
 
 #: ../../quick-start.md:35
 msgid "news"
-msgstr ""
-
+msgstr "notícias"

@@ -1,20 +1,14 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2026, ICIPE
-# This file is distributed under the same license as the Vector Atlas Help
-# package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
-#
-#, fuzzy
+# Translation of reviewing-data.md to Portuguese
 msgid ""
 msgstr ""
-"Project-Id-Version: Vector Atlas Help \n"
+"Project-Id-Version: Vector Atlas Help\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-26 12:50+0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2026-09-15 18:11+0300\n"
+"PO-Revision-Date: 2026-09-08 12:00+0000\n"
+"Last-Translator: Vector Atlas Team\n"
 "Language: pt\n"
 "Language-Team: pt <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -22,7 +16,7 @@ msgstr ""
 
 #: ../../contributing-data-to-the-atlas/reviewing-data.md:1
 msgid "Reviewing data"
-msgstr ""
+msgstr "Revisar dados"
 
 #: ../../contributing-data-to-the-atlas/reviewing-data.md:3
 msgid ""
@@ -30,6 +24,9 @@ msgid ""
 "to all users with the `reviewer` role, containing a link to the review "
 "page:"
 msgstr ""
+"Quando os dados forem carregados com sucesso, o sistema enviará um e-mail"
+" a todos os utilizadores com a função de `revisor`, contendo uma ligação "
+"para a página de revisão:"
 
 #: ../../contributing-data-to-the-atlas/reviewing-data.md:5
 msgid "![Review page](review.png)"
@@ -44,6 +41,8 @@ msgid ""
 "To see the data uploaded, click the `DOWNLOAD DATA` button. This will "
 "download the data as a csv file."
 msgstr ""
+"Para ver os dados carregados, clique no botão `DOWNLOAD DATA`. Isto irá "
+"descarregar os dados como um ficheiro CSV."
 
 #: ../../contributing-data-to-the-atlas/reviewing-data.md:9
 msgid ""
@@ -52,6 +51,11 @@ msgid ""
 "send an email to the uploader and all other reviewers with the comments. "
 "It will also change the status of the dataset to 'In review':"
 msgstr ""
+"Para deixar comentários sobre os dados para o carregador corrigir, "
+"digite-os na caixa `Review Comments` e clique em `REQUEST CHANGES`. Isto "
+"enviará um e-mail ao carregador e a todos os outros revisores com os "
+"comentários. Também alterará o estado do conjunto de dados para “Em "
+"revisão”:"
 
 #: ../../contributing-data-to-the-atlas/reviewing-data.md:11
 msgid "![Review page In review](reviewed.png)"
@@ -67,6 +71,9 @@ msgid ""
 "email to the uploader and all other reviewers, saying that you have "
 "approved the data."
 msgstr ""
+"Para aprovar os dados, clique no botão `APPROVE DATA`. Isto enviará um "
+"e-mail ao carregador e a todos os outros revisores, indicando que aprovou"
+" os dados."
 
 #: ../../contributing-data-to-the-atlas/reviewing-data.md:15
 msgid ""
@@ -74,6 +81,9 @@ msgid ""
 "approved, the data will be made public, and the review page will be "
 "updated:"
 msgstr ""
+"São necessárias duas aprovações para aprovar totalmente os dados - assim "
+"que dois revisores aprovarem, os dados serão tornados públicos e a página"
+" de revisão será atualizada:"
 
 #: ../../contributing-data-to-the-atlas/reviewing-data.md:17
 msgid "![Review page Approved](approved.png)"

@@ -2,14 +2,13 @@
 # Copyright (C) 2026, ICIPE
 # This file is distributed under the same license as the Vector Atlas Help
 # package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Vector Atlas Help \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-26 12:50+0300\n"
+"POT-Creation-Date: 2026-09-15 18:11+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pt\n"
@@ -22,28 +21,38 @@ msgstr ""
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:1
 msgid "Signing up to the site"
-msgstr ""
+msgstr "Registar-se no site"
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:3
+
 msgid ""
 "Most operations do not require a log in as the data is intended to be "
 "open. The time that a log in is required is when contributing data to the"
 " site, this means we can assign roles to users who are uploaders, those "
 "who are reviewers and those who are editors for the site."
 msgstr ""
+"A maioria das operações não requer login, uma vez que os dados se "
+"destinam a ser abertos. O login é necessário quando se contribui com "
+"dados para o site; isto permite-nos atribuir funções aos utilizadores, "
+"como responsáveis ​​pelo envio, revisores e editores do site.\" msgstr \""
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:5
 msgid ""
 "To sign up to the site, click on the `Login` button in the top right of "
 "the navigation menu."
 msgstr ""
-
-#: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:7
-msgid "![log in](login.png)"
+"Para se registar no site, clique no botão `Login` no canto superior direito "
+"do menu de navegação."
 msgstr ""
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:7
-msgid "log in"
+msgid "![log in](
+    login.png)"
+msgstr ""
+
+#: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:7
+msgid "log in(
+    login.png)"
 msgstr ""
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:9
@@ -51,9 +60,14 @@ msgid ""
 "This will redirect you to the Vector Atlas' authentication provider, "
 "Auth0. Click on the `Sign up` option below the \"Continue\" button."
 msgstr ""
+"Isto irá redirecioná-lo para o fornecedor de autenticação do Vector Atlas, o "
+"Auth0. Clique na opção `Sign up` (Registar-se) abaixo do botão \"Continue\" "
+"(Continuar)."
+msgstr ""
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:11
-msgid "![sign up](sign-up.png)"
+msgid "![sign up](
+    sign-up.png)"
 msgstr ""
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:11
@@ -66,6 +80,9 @@ msgid ""
 "register you for the site and redirect you to the homepage but you won't "
 "have any roles by this point."
 msgstr ""
+"Introduza o seu e-mail, crie uma palavra-passe e clique em `Continue`. Isto irá registar "
+"o no site e redirecioná-lo-á para a página inicial, mas, nesse momento, "
+"ainda não terá nenhuma função atribuída."
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:15
 msgid ""
@@ -73,18 +90,25 @@ msgid ""
 "address by clicking on a button in the email. Once this verification is "
 "done then the system team can assign roles."
 msgstr ""
+"Receberá um e-mail do Auth0 a solicitar a verificação do seu endereço "
+"de e-mail ao clicar num botão contido na mensagem. Após esta verificação, "
+"a equipa do sistema poderá atribuir-lhe funções."
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:17
 msgid "To request new roles, go to the `Settings` page in the user menu."
 msgstr ""
+"Para solicitar novas funções, aceda à página `Definições` no menu do utilizador."
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:19
-msgid "![user settings](user-settings.png)"
+msgid "![user settings](
+    user-settings.png)"
 msgstr ""
+
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:19
 msgid "user settings"
 msgstr ""
+"definições do utilizador"
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:21
 msgid ""
@@ -94,6 +118,11 @@ msgid ""
 "published, editor to edit news and species information, admin to be a "
 "site admin."
 msgstr ""
+"Na página de definições do utilizador, clique no botão `Solicitar funções adicionais` "
+"para abrir o formulário de funções. Selecione as funções de que necessita: "
+"carregador (uploader) para enviar dados ou sobreposições de modelos, revisor para "
+"rever os dados antes de serem publicados, editor para editar notícias e informação "
+"sobre espécies, e administrador para atuar como administrador do site."
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:23
 msgid ""
@@ -101,9 +130,14 @@ msgid ""
 "then email the admins with your requested roles, Auth0 id and the reason "
 "for the request. They should then respond directly to you."
 msgstr ""
+"Introduza um motivo para o pedido e clique em enviar pedido; este enviará "
+"um e-mail aos administradores com as funções solicitadas, o seu ID Auth0 e o "
+"motivo do pedido. Deverão responder diretamente a si."
+msgstr ""
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:25
-msgid "![role request](role-request.png)"
+msgid "![role request](
+    role-request.png)"
 msgstr ""
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:25
@@ -119,12 +153,121 @@ msgid ""
 " the message that you are not an uploader and be directed to the user "
 "settings page."
 msgstr ""
+"Da mesma forma, não precisa de saber de antemão quais as funções necessárias. "
+"O sistema irá apresentar uma mensagem de falta de autorização caso tente realizar "
+"uma operação para a qual não tem a função adequada. Por exemplo, se você "
+"navegar até à página do Data Hub e seleccionar `Upload Model` (Carregar Modelo), "
+"receberá uma mensagem a informar que não tem permissão de envio e será "
+"redirecionado para a página de definições do utilizador."
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:29
-msgid "![not an uploader](not-an-uploader.png)"
+msgid "![not an uploader](
+    not-an-uploader.png)"
 msgstr ""
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:29
 msgid "not an uploader"
 msgstr ""
+"não é um carregador"
+
+#~ msgid ""
+#~ "Para se registar no site, clique "
+#~ "no botão `Login` no canto superior "
+#~ "direito do menu de navegação."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Isto irá redirecioná-lo para o "
+#~ "fornecedor de autenticação do Vector "
+#~ "Atlas, o Auth0. Clique na opção "
+#~ "`Sign up` (Registar-se) abaixo do "
+#~ "botão \"Continue\" (Continuar)."
+#~ msgstr ""
+
+#~ msgid "![sign up](sign-up. png)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Introduza o seu e-mail, crie uma "
+#~ "palavra-passe e clique em `Continue`. "
+#~ "Isto irá registar o no site e "
+#~ "redirecioná-lo-á para a página inicial, "
+#~ "mas, nesse momento, ainda não terá "
+#~ "nenhuma função atribuída."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Receberá um e-mail do Auth0 a "
+#~ "solicitar a verificação do seu endereço"
+#~ " de e-mail ao clicar num botão "
+#~ "contido na mensagem. Após esta "
+#~ "verificação, a equipa do sistema poderá"
+#~ " atribuir-lhe funções."
+#~ msgstr "\" msgstr \""
+
+#~ msgid ""
+#~ "Para solicitar novas funções, aceda à"
+#~ " página `Definições` no menu do "
+#~ "utilizador."
+#~ msgstr ""
+
+#~ msgid "![user settings](user-settings. png)"
+#~ msgstr ""
+
+#~ msgid "definições do utilizador"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Na página de definições do utilizador,"
+#~ " clique no botão `Solicitar funções "
+#~ "adicionais` para abrir o formulário de"
+#~ " funções. Selecione as funções de que"
+#~ " necessita: carregador (uploader) para "
+#~ "enviar dados ou sobreposições de "
+#~ "modelos, revisor para rever os dados "
+#~ "antes de serem publicados, editor para"
+#~ " editar notícias e informação sobre "
+#~ "espécies, e administrador para atuar "
+#~ "como administrador do site."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Introduza um motivo para o pedido "
+#~ "e clique em enviar pedido; este "
+#~ "enviará um e-mail aos administradores "
+#~ "com as funções solicitadas, o seu "
+#~ "ID Auth0 e o motivo do pedido. "
+#~ "Deverão responder diretamente a si."
+#~ msgstr "\" msgstr \""
+
+#~ msgid "![role request](role-request. png)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Equally, you don't need to know "
+#~ "the roles you need ahead of time."
+#~ " The system will display an "
+#~ "unauthorised message is you try to "
+#~ "perform an operation that you don't "
+#~ "have the right role for. For "
+#~ "example, if you navigate to the "
+#~ "Data Hub page and select `Upload "
+#~ "Model` then you will get the "
+#~ "message that you are not an "
+#~ "uploader and be directed to the "
+#~ "user página de definições."
+#~ msgstr ""
+
+
+#~ msgid "não é um carregador"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "To contribute data or submit sources,"
+#~ " register for an account on the "
+#~ "plataforma."
+#~ msgstr ""
+#~ "Para contribuir com dados ou submeter"
+#~ " fontes, registe uma conta na "
+#~ "plataforma."
 

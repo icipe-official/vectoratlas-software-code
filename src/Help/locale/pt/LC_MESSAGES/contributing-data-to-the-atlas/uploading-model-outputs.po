@@ -1,20 +1,14 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2026, ICIPE
-# This file is distributed under the same license as the Vector Atlas Help
-# package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
-#
-#, fuzzy
+# Translation of uploading-model-overlays.md to Portuguese
 msgid ""
 msgstr ""
-"Project-Id-Version: Vector Atlas Help \n"
+"Project-Id-Version: Vector Atlas Help\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-26 12:50+0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2026-09-15 18:11+0300\n"
+"PO-Revision-Date: 2026-09-08 12:00+0000\n"
+"Last-Translator: Vector Atlas Team\n"
 "Language: pt\n"
 "Language-Team: pt <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -22,11 +16,13 @@ msgstr ""
 
 #: ../../contributing-data-to-the-atlas/uploading-model-outputs.md:1
 msgid "Uploading model overlays"
-msgstr ""
+msgstr "Carregar sobreposições de modelos"
 
 #: ../../contributing-data-to-the-atlas/uploading-model-outputs.md:3
 msgid "Uploading model overlays requires the `Uploader` role."
 msgstr ""
+"O carregamento de sobreposições de modelos requer a função de "
+"`Carregador`."
 
 #: ../../contributing-data-to-the-atlas/uploading-model-outputs.md:5
 msgid ""
@@ -34,6 +30,8 @@ msgid ""
 "hub](https://vectoratlas.icipe.org/dataHub) page and click on `Upload "
 "Model`."
 msgstr ""
+"Para carregar sobreposições de modelos, vá à página do centro de dados e "
+"clique em `Upload Model`."
 
 #: ../../contributing-data-to-the-atlas/uploading-model-outputs.md:7
 msgid "![Data Hub page](datahub.png)"
@@ -49,6 +47,10 @@ msgid ""
 " and the model file itself. The display name is the name used on the map "
 "in overlays section of the map tools."
 msgstr ""
+"A página de carregamento do modelo requer um nome de exibição, o valor "
+"máximo para os dados e o próprio ficheiro do modelo. O nome de exibição é"
+" o nome utilizado no mapa na secção de sobreposições das ferramentas do "
+"mapa."
 
 #: ../../contributing-data-to-the-atlas/uploading-model-outputs.md:11
 msgid ""
@@ -61,6 +63,16 @@ msgid ""
 "then it wouldn't be a fair comparison, by telling the system both have a "
 "maximum value of 100 then the two layers can be compared."
 msgstr ""
+"O valor máximo é necessário porque a sobreposição é transformada numa "
+"versão em mosaico para utilização no mapa - isto envolve o "
+"redimensionamento dos dados para corresponder ao mapa de cores em escala "
+"de cinzentos utilizado pelo sistema. Também significa que duas "
+"sobreposições podem ser comparadas de forma justa: suponha que duas "
+"sobreposições representam uma percentagem, mas a primeira tem valores "
+"entre 0 e 10 e a segunda entre 0 e 90. Se o sistema redimensionasse com "
+"base no valor máximo dos dados, não seria uma comparação justa; ao "
+"informar o sistema que ambas têm um valor máximo de 100, as duas camadas "
+"podem ser comparadas."
 
 #: ../../contributing-data-to-the-atlas/uploading-model-outputs.md:13
 msgid ""
@@ -68,6 +80,10 @@ msgid ""
 "transformation into an mbtiles format. In the future there is planned "
 "support for shape files as well as external tile servers (via wms)."
 msgstr ""
+"Atualmente, o ficheiro do modelo deve ser um GeoTIFF para que possamos "
+"suportar a transformação para o formato mbtiles. No futuro, está planeado"
+" o suporte para ficheiros shapefile, bem como servidores externos de "
+"mosaicos (via WMS)."
 
 #: ../../contributing-data-to-the-atlas/uploading-model-outputs.md:15
 msgid "![Model upload page](model-upload.png)"
@@ -83,6 +99,10 @@ msgid ""
 "has been uploaded and that it's started to run the transformation, it "
 "will then notify again if the transformation is successful or fails."
 msgstr ""
+"Assim que clicar em Carregar modelo, o sistema notificará quando o "
+"ficheiro tiver sido carregado e que começou a executar a transformação; "
+"em seguida, notificará novamente se a transformação for bem-sucedida ou "
+"se falhar."
 
 #: ../../contributing-data-to-the-atlas/uploading-model-outputs.md:19
 msgid "![Model transform](model-transform.png)"

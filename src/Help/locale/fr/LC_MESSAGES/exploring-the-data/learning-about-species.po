@@ -4,7 +4,6 @@
 # package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Vector Atlas Help \n"
@@ -22,7 +21,7 @@ msgstr ""
 
 #: ../../exploring-the-data/learning-about-species.md:1
 msgid "Learning about different species"
-msgstr ""
+msgstr "En savoir plus sur les différentes espèces"
 
 #: ../../exploring-the-data/learning-about-species.md:3
 msgid ""
@@ -32,26 +31,32 @@ msgid ""
 " the top navigation menu under `More > Species List`. This includes "
 "information about the species, its history and distribution."
 msgstr ""
+"Le Vector Atlas comprend de nombreuses informations sur les différentes "
+"espèces de moustiques sur la page [Liste des "
+"espèces](https://vectoratlas.icipe.org/species), accessible depuis le "
+"menu de navigation supérieur sous `More > Species List`. Ces informations"
+" comprennent des données sur l'espèce, son historique et sa répartition."
 
 #: ../../exploring-the-data/learning-about-species.md:5
 msgid "![species list](species-list.png)"
-msgstr ""
+msgstr "![liste des espèces](species-list.png)"
 
 #: ../../exploring-the-data/learning-about-species.md:5
 msgid "species list"
-msgstr ""
+msgstr "liste des espèces"
 
 #: ../../exploring-the-data/learning-about-species.md:7
 msgid ""
 "Clicking on one of the items in the list will take you to a page with "
 "more details about that given species."
 msgstr ""
+"Cliquer sur l'un des éléments de la liste vous mènera à une page "
+"comportant plus de détails sur l'espèce en question."
 
 #: ../../exploring-the-data/learning-about-species.md:9
 msgid "![species details](species-details.png)"
-msgstr ""
+msgstr "![détails de l'espèce](species-details.png)"
 
 #: ../../exploring-the-data/learning-about-species.md:9
 msgid "species details"
-msgstr ""
-
+msgstr "détails de l'espèce"

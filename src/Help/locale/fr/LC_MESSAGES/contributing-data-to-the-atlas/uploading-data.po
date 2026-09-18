@@ -4,7 +4,6 @@
 # package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Vector Atlas Help \n"
@@ -22,260 +21,309 @@ msgstr ""
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:1
 msgid "DATA UPLOAD"
-msgstr ""
+msgstr "TÉLÉVERSEMENT DE DONNÉES"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:3
 msgid "Click on the `upload` link in the navigation bar."
-msgstr ""
+msgstr "Cliquez sur le lien `upload` dans la barre de navigation."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:4
 msgid "You will be directed to the upload interface."
-msgstr ""
+msgstr "Vous serez dirigé vers l'interface de téléversement."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:6
 msgid "![Data Upload](UploadPage.png)"
-msgstr ""
+msgstr "![Téléversement de données](UploadPage.png)"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:6
 msgid "Data Upload"
-msgstr ""
+msgstr "Téléversement de données"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:8
 msgid "Downloading Templates"
-msgstr ""
+msgstr "Télécharger les modèles"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:10
 msgid "Templates help users upload data in a system-compatible format."
 msgstr ""
+"Les modèles aident les utilisateurs à téléverser des données dans un "
+"format compatible avec le système."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:11
 msgid ""
 "Click on the `download arrow icons` on the right side of the panel to "
 "download templates."
 msgstr ""
+"Cliquez sur les `download arrow icons` situées à droite du panneau pour "
+"télécharger les modèles."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:12
 msgid "Four major templates are available:"
-msgstr ""
+msgstr "Quatre modèles principaux sont disponibles :"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:13
 msgid "**First template**: Contains the \"Occurrence\" section only."
-msgstr ""
+msgstr "**Premier modèle** : contient uniquement la section « Occurrence »."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:14
 msgid "**Second template**: Contains \"Occurrence\" and \"Bionomics\" sections."
 msgstr ""
+"**Deuxième modèle** : contient les sections « Occurrence » et "
+"« Bionomics »."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:15
 msgid "**Third template**: Contains \"Occurrence\" and \"IR Bioassays\" sections."
 msgstr ""
+"**Troisième modèle** : contient les sections « Occurrence » et "
+"« IR Bioassays »."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:16
 msgid ""
 "**Final template**: Contains all three sections: \"Occurrence,\" "
 "\"Bionomics,\" and \"Insecticide Resistance.\""
 msgstr ""
+"**Dernier modèle** : contient les trois sections : « Occurrence », "
+"« Bionomics » et « Insecticide Resistance »."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:18
-msgid "![Templates section](templatesSection.png)"
-msgstr ""
+msgid "![Templates section](
+    templatesSection.png)"
+msgstr "![Section des modèles](
+    templatesSection.png)"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:18
 msgid "Templates section"
-msgstr ""
+msgstr "Section des modèles"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:20
 msgid "Uploading Data"
-msgstr ""
+msgstr "Téléverser des données"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:22
 msgid "After downloading and filling out the template:"
-msgstr ""
+msgstr "Après avoir téléchargé et rempli le modèle :"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:23
 msgid "Click on the `Upload Data` icon."
-msgstr ""
+msgstr "Cliquez sur l'icône `Upload Data`."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:24
 msgid "Follow the four-step upload process."
-msgstr ""
+msgstr "Suivez le processus de téléversement en quatre étapes."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:25
 msgid "**Step 1**: Select the dataset and enter details:"
-msgstr ""
+msgstr "**Étape 1** : sélectionnez le jeu de données et saisissez les détails :"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:26
 msgid ""
 "Dataset title, description, authors, affiliated institutions, and DOI (if"
 " available)."
 msgstr ""
+"Titre du jeu de données, description, auteurs, institutions affiliées et "
+"DOI (le cas échéant)."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:27
 msgid "**Step 2**: Choose to either:"
-msgstr ""
+msgstr "**Étape 2** : choisissez l'une des options suivantes :"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:28
 msgid "Upload directly to blob storage for review, OR"
-msgstr ""
+msgstr "Téléverser directement vers le stockage blob pour révision, OU"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:29
 msgid ""
 "Continue with column matching and validation before uploading to blob "
 "storage."
 msgstr ""
+"Poursuivre avec la mise en correspondance des colonnes et la validation "
+"avant le téléversement vers le stockage blob."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:31
-msgid "![Upload section](uploadSection.png)"
-msgstr ""
+msgid "![Upload section](
+    ploadSection.png)"
+msgstr "![Section de téléversement](
+    uploadSection.png)"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:31
 msgid "Upload section"
-msgstr ""
+msgstr "Section de téléversement"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:33
 msgid "Visualization of Uploaded Datasets by Reviewer Manager"
 msgstr ""
+"Visualisation des jeux de données téléversés par le gestionnaire des "
+"réviseurs"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:35
 msgid "Navigate to the `Uploaded Datasets` page:"
-msgstr ""
+msgstr "Rendez-vous sur la page `Uploaded Datasets` :"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:36
 msgid "Click `More` in the top navigation and select `Datasets`."
 msgstr ""
+"Cliquez sur `More` dans la navigation supérieure et sélectionnez "
+"`Datasets`."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:37
 msgid "Filter datasets using checkboxes:"
-msgstr ""
+msgstr "Filtrez les jeux de données à l'aide des cases à cocher :"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:38
 msgid "Assigned to you."
-msgstr ""
+msgstr "Assigné à vous."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:39
 msgid "Pending assignment."
-msgstr ""
+msgstr "En attente d'assignation."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:40
 msgid "Pending approval."
-msgstr ""
+msgstr "En attente d'approbation."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:42
-msgid "![Uploaded Datasets](DatasetsList.png)"
-msgstr ""
+msgid "![Uploaded Datasets](
+    DatasetsList.png)"
+msgstr "![Jeux de données téléversés](
+    DatasetsList.png)"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:42
 msgid "Uploaded Datasets"
-msgstr ""
+msgstr "Jeux de données téléversés"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:44
 msgid "Assignment of Uploaded Datasets to Reviewers"
-msgstr ""
+msgstr "Attribution des jeux de données téléversés aux réviseurs"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:46
 msgid ""
 "Reviewer managers can assign datasets by clicking the three dots in the "
 "action column."
 msgstr ""
+"Les gestionnaires des réviseurs peuvent attribuer des jeux de données en "
+"cliquant sur les trois points dans la colonne d'actions."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:47
 msgid "**Before assignment**: Status is `Pending`."
-msgstr ""
+msgstr "**Avant attribution** : le statut est `Pending`."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:48
 msgid ""
 "**After assigning a primary reviewer**: Status changes to `Primary "
 "Review`."
 msgstr ""
+"**Après attribution d'un réviseur principal** : le statut passe à "
+"`Primary Review`."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:50
 msgid ""
-"![Assign Primary Review](AssignPrimaryReview.png)   ![Primary Review "
-"Status](PrimaryreviewStatus.png)"
+"![Assign Primary Review](
+    AssignPrimaryReview.png)   ![Primary Review "
+"Status](
+    PrimaryreviewStatus.png)"
 msgstr ""
+"![Assigner la révision principale](
+    AssignPrimaryReview.png)   ![Statut de"
+" la révision principale](
+    PrimaryreviewStatus.png)"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:50
 #: ../../contributing-data-to-the-atlas/uploading-data.md:60
 msgid "Assign Primary Review"
-msgstr ""
+msgstr "Assigner la révision principale"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:50
 msgid "Primary Review Status"
-msgstr ""
+msgstr "Statut de la révision principale"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:53
 msgid "Primary reviewers must review the dataset before re-uploading."
 msgstr ""
+"Les réviseurs principaux doivent réviser le jeu de données avant tout "
+"nouveau téléversement."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:54
 msgid ""
 "The reviewer manager can assign a tertiary reviewer, changing the status "
 "to `Tertiary Review`."
 msgstr ""
+"Le gestionnaire des réviseurs peut assigner un réviseur tertiaire, ce qui"
+" fait passer le statut à `Tertiary Review`."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:55
 msgid "Reviewers can:"
-msgstr ""
+msgstr "Les réviseurs peuvent :"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:56
 msgid "Request a dataset re-upload from the primary reviewer."
 msgstr ""
+"Demander un nouveau téléversement du jeu de données au réviseur "
+"principal."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:57
 msgid "Send an email to the uploader or tertiary reviewer."
-msgstr ""
+msgstr "Envoyer un e-mail au téléverseur ou au réviseur tertiaire."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:58
 msgid "Reject the dataset if it does not meet the required standards."
 msgstr ""
+"Rejeter le jeu de données s'il ne répond pas aux normes requises."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:60
-msgid "![Assign Primary Review](AssignPrimaryReview.png)"
-msgstr ""
+msgid "![Assign Primary Review](
+    AssignPrimaryReview.png)"
+msgstr "![Assigner la révision principale](
+    AssignPrimaryReview.png)"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:62
 msgid "Approval of Uploaded Datasets"
-msgstr ""
+msgstr "Approbation des jeux de données téléversés"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:64
 msgid ""
 "Once all necessary steps are completed, the dataset can be approved by "
 "the reviewer manager."
 msgstr ""
+"Une fois toutes les étapes nécessaires terminées, le jeu de données peut "
+"être approuvé par le gestionnaire des réviseurs."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:65
 msgid "The reviewer manager can also:"
-msgstr ""
+msgstr "Le gestionnaire des réviseurs peut également :"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:66
 msgid "Validate the dataset before approval."
-msgstr ""
+msgstr "Valider le jeu de données avant approbation."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:67
 msgid "Send an email for further communication."
-msgstr ""
+msgstr "Envoyer un e-mail pour toute communication complémentaire."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:69
 msgid "![Validate Dataset](ValidateDataset.png)"
-msgstr ""
+msgstr "![Valider le jeu de données](ValidateDataset.png)"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:69
 msgid "Validate Dataset"
-msgstr ""
+msgstr "Valider le jeu de données"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:71
 msgid "Ingestion to VA Database and Notifying the Uploader"
 msgstr ""
+"Intégration à la base de données du VA et notification au téléverseur"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:73
 msgid ""
 "Once the dataset is approved, it is automatically ingested into the "
 "Vector Atlas database."
 msgstr ""
+"Une fois le jeu de données approuvé, il est automatiquement intégré dans"
+" la base de données du Vector Atlas."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:74
 msgid ""
 "The dataset is stored in the database and appears on the map, making it "
 "visible to all users."
 msgstr ""
-
+"Le jeu de données est stocké dans la base de données et apparaît sur la "
+"carte, le rendant visible pour tous les utilisateurs."
