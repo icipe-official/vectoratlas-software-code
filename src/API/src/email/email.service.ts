@@ -36,6 +36,21 @@ export class EmailService {
     files?: AttachmentLikeObject[],
     communicationLog?: CommunicationLog,
   ): Promise<boolean> {
+    // Normalize: accept string or array, then filter out empty/invalid entries
+    if (typeof emails === 'string') {
+      emails = [emails];
+    }
+    if (typeof copyEmails === 'string') {
+      copyEmails = [copyEmails];
+    }
+    emails = (emails || []).filter((e) => e && e.trim());
+    copyEmails = (copyEmails || []).filter((e) => e && e.trim());
+
+    if (emails.length === 0) {
+      this.logger.warn('sendEmail called with no valid recipients — skipping');
+      return false;
+    }
+
     const sendViaTransport = async () => {
       try {
         // //send email
@@ -79,12 +94,6 @@ export class EmailService {
       }
     };
 
-    if (typeof emails === 'string') {
-      emails = [emails];
-    }
-    if (typeof copyEmails === 'string') {
-      copyEmails = [copyEmails];
-    }
     const mailOptions: ISendMailOptions = {
       from: process.env.EMAIL_FROM,
       to: emails,

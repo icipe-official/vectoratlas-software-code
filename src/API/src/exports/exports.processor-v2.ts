@@ -137,7 +137,7 @@ export class ExportsProcessorV2 extends WorkerHost {
       await this.exportsService.markCompleted(exportJob.id, blobPath, fileName);
 
       // 6. SEND EMAIL NOTIFICATION
-      if (exportJob.downloaderEmail) {
+      if (exportJob.downloaderEmail && exportJob.downloaderEmail.trim()) {
         // Re-fetch export job to get the DOI (which was created during Excel generation)
         const updatedExportJob = await this.exportsService.findById(
           exportJob.id,

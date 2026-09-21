@@ -35,8 +35,8 @@ export const createBackgroundExport = async (payload: {
   formData.append('idFile', blob, 'ids.gz');
   formData.append('filtersJson', payload.filtersJson);
   formData.append('generateDoi', payload.generateDoi);
-  formData.append('downloaderName', payload.downloaderName);
-  formData.append('downloaderEmail', payload.downloaderEmail);
+  formData.append('downloaderName', payload.downloaderName || '');
+  formData.append('downloaderEmail', payload.downloaderEmail || '');
   formData.append('clientRequestId', payload.clientRequestId || '');
   formData.append('contentHash', payload.contentHash || '');
 
