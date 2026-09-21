@@ -1,0 +1,183 @@
+# Occurrence Search Query Parameters
+
+components:
+  parameters:
+    EntityType:
+      name: entityType
+      in: path
+      description: The entity type to search for. Only "occurrence" is currently supported.
+      required: true
+      schema:
+        type: string
+        enum:
+          - occurrence
+      example: "occurrence"
+
+    OccurrenceId:
+      name: id
+      in: query
+      description: |
+        Look up a single occurrence record by its numeric id.
+        When provided, all other filters and pagination parameters are ignored
+        and the response contains exactly one item (or a 404 if not found).
+      required: false
+      schema:
+        type: integer
+      example: 42
+
+    Country:
+      name: country
+      in: query
+      description: Comma-separated list of country names to filter by
+      required: false
+      schema:
+        type: string
+      example: "Kenya,Uganda"
+
+    Species:
+      name: species
+      in: query
+      description: Comma-separated list of species names to filter by
+      required: false
+      schema:
+        type: string
+      example: "Anopheles gambiae,Anopheles funestus"
+
+    Season:
+      name: season
+      in: query
+      description: |
+        Comma-separated list of season values to filter by.
+        Use `null` (case-insensitive) to match records with no season.
+      required: false
+      schema:
+        type: string
+      example: "wet,dry"
+
+    Insecticide:
+      name: insecticide
+      in: query
+      description: |
+        Comma-separated list of insecticide resistance data values to filter by.
+        Use `null` to match records with no insecticide data.
+      required: false
+      schema:
+        type: string
+      example: "1,null"
+
+    Absence:
+      name: absence
+      in: query
+      description: |
+        Comma-separated list of binary presence values to filter by.
+        Maps to the `binary_presence` filter.
+      required: false
+      schema:
+        type: string
+      example: "0,1"
+
+    Abundance:
+      name: abundance
+      in: query
+      description: |
+        Comma-separated list of abundance data values to filter by.
+        Use `null` to match records with no abundance data.
+      required: false
+      schema:
+        type: string
+      example: "1,null"
+
+    Bionomics:
+      name: bionomics
+      in: query
+      description: |
+        Comma-separated list of boolean values (`true`, `false`, or `null`)
+        to filter by bionomics data presence.
+      required: false
+      schema:
+        type: string
+        enum:
+          - "true"
+          - "false"
+          - "null"
+      example: "true"
+
+    Adult:
+      name: adult
+      in: query
+      description: |
+        Comma-separated list of boolean values (`true`, `false`, or `null`)
+        to filter by adult specimen data presence.
+      required: false
+      schema:
+        type: string
+        enum:
+          - "true"
+          - "false"
+          - "null"
+      example: "true"
+
+    Larval:
+      name: larval
+      in: query
+      description: |
+        Comma-separated list of boolean values (`true`, `false`, or `null`)
+        to filter by larval specimen data presence.
+      required: false
+      schema:
+        type: string
+        enum:
+          - "true"
+          - "false"
+          - "null"
+      example: "false"
+
+    Timeline:
+      name: timeline
+      in: query
+      description: |
+        Year range filter in the format `YYYY-YYYY` (e.g. `2010-2020`).
+        Filters occurrences whose record falls within the given year range (inclusive).
+      required: false
+      schema:
+        type: string
+        pattern: '^\d{4}-\d{4}$'
+      example: "2010-2020"
+
+    Take:
+      name: take
+      in: query
+      description: Number of records to return (page size). Must be between 1 and 5000.
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 5000
+        default: 100
+      example: 100
+
+    Skip:
+      name: skip
+      in: query
+      description: Number of records to skip (offset). Must be 0 or greater.
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+      example: 0
+
+    Fields:
+      name: fields
+      in: query
+      description: |
+        Comma-separated list of fields to include in each item (field projection).
+        The `id` field is always included even if not explicitly requested.
+        Allowed values: `id`, `species`, `location`, `binary_presence`,
+        `country`, `year_start`, `is_adult`, `is_larval`, `season_val`,
+        `insecticide`, `control`, `abundance_data`, `bio_data`.
+        If omitted, all fields are returned.
+      required: false
+      schema:
+        type: string
+      example: "species,country,year_start"

@@ -708,6 +708,8 @@
   },
   "MapPage": {
     "areaModeOn": "Area mode on",
+    "doiResolving": "Resolving DOI...",
+    "doiResolveError": "Could not resolve this DOI. The link may be invalid or the data may no longer be available.",
     "drawerMap": {
       "filtersTitle": "Filters",
       "overlaysTitle": "Species Distribution Overlays",
@@ -720,6 +722,10 @@
       "downloadFilteredData": "Download Data",
       "downloadFullData": "Download Full Data",
       "downloadConfirmationTitle": "Download Confirmation",
+      "maintenanceNotice": {
+        "title": "Under maintenance",
+        "message": "The data download feature is currently undergoing maintenance. Direct downloads may be intermittent or unavailable. Please provide your name and email below — your export will be processed and a download link will be sent to you via email, typically within a few hours."
+      },
       "termsA": "I have read and agree to the Terms and Conditions",
       "termsB": "CC BY-NC 4.0",
       "licenseTerms": {
@@ -747,6 +753,10 @@
       "requestDoi": "Request DOI for this filtered data",
       "fullName": "Full Name",
       "email": "Email Address",
+      "contactInfoPromptDOI": "Your contact information (required for DOI and email delivery):",
+      "contactInfoPromptOptional": "Contact information (optional but recommended — we'll email you a download link if direct download is slow or under maintenance):",
+      "emailConfirmationMessage": "Your data export has been queued. A download link will be sent to your email address, typically within a few hours. You can close this page while it processes.",
+      "directDownloadConfirmationMessage": "Your data export has been queued and will download directly when ready. This may take a few minutes for large datasets.",
       "errors": {
         "name": "Full Name is required",
         "email": "Email Address is required",
@@ -1064,10 +1074,12 @@
     "Source": {
       "createSuccess": "Reference created with id {id}",
       "updateSuccess": "Reference {id} updated successfully",
+      "deleteSuccess": "Reference {id} deleted successfully",
       "errors": {
         "createError": "Unknown error in creating new reference. Please try again.",
         "duplicateSource": "Reference with title {article_title} already exists",
-        "updateError": "Unknown error updating reference. Please try again."
+        "updateError": "Unknown error updating reference. Please try again.",
+        "deleteError": "Unknown error in deleting reference. Please try again."
       }
     },
     "SpeciesInformation": {
@@ -1145,5 +1157,6 @@
         "errorText": "Failed to execute database transmission."
       }
     }
-  }
+  },
+  "EditPointData": {}
 }

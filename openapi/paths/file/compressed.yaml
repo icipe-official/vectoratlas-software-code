@@ -1,0 +1,58 @@
+# Get Compressed Versions Endpoint
+# Lists all compressed versions for a file
+
+paths:
+  /files/{fileIdentifier}/compressed:
+    get:
+      tags:
+        - File
+      summary: List compressed versions of a file
+      description: |
+        Returns a list of all compressed versions available for a specific file.
+        The identifier can be either a UUID or a slug.
+        
+        Example request:
+        GET /api/files/123e4567-e89b-12d3-a456-426614174000/compressed
+      operationId: listCompressedVersions
+      parameters:
+        - $ref: ../../parameters/file/file_identifier.yaml#/components/parameters/FileIdentifier
+      responses:
+        "200":
+          description: List of compressed versions
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - file_id
+                  - compressed_versions
+                properties:
+                  file_id:
+                    type: string
+                    format: uuid
+                    description: ID of the original file
+                  compressed_versions:
+                    type: array
+                    items:
+                      $ref: ../../schemas/file/file_compression.yaml#/components/schemas/FileCompression
+                example:
+                  file_id: "123e4567-e89b-12d3-a456-426614174000"
+                  compressed_versions:
+                    - id: "223e4567-e89b-12d3-a456-426614174001"
+                      file_id: "123e4567-e89b-12d3-a456-426614174000"
+                      mime_type: "application/zip"
+                      size: 512000
+                      created_on: "2023-01-15T10:31:00Z"
+                      slug: "mosquito_occurrence_2023_zip"
+                    - id: "323e4567-e89b-12d3-a456-426614174002"
+                      file_id: "123e4567-e89b-12d3-a456-426614174000"
+                      mime_type: "application/gzip"
+                      size: 456000
+                      created_on: "2023-01-15T10:32:00Z"
+                      slug: "mosquito_occurrence_2023_gzip"
+        "401":
+          $ref: ../../responses/common/error.yaml#/components/responses/Unauthorized
+        "404":
+          $ref: ../../responses/common/error.yaml#/components/responses/NotFound
+        "500":
+          $ref: ../../responses/common/error.yaml#/components/responses/ServerError
