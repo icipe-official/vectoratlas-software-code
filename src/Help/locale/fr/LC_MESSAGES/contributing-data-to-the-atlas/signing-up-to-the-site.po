@@ -35,7 +35,7 @@ msgstr ""
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:7
 msgid "![log in](login.png)"
-msgstr "![se connecter](login.png)"
+msgstr "![se connecter](images/login.png)"
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:7
 msgid "log in"
@@ -51,7 +51,7 @@ msgstr ""
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:11
 msgid "![sign up](sign-up.png)"
-msgstr "![s'inscrire](sign-up.png)"
+msgstr "![s'inscrire](images/sign-up.png)"
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:11
 msgid "sign up"
@@ -86,7 +86,7 @@ msgstr ""
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:19
 msgid "![user settings](user-settings.png)"
-msgstr "![paramètres utilisateur](user-settings.png)"
+msgstr "![paramètres utilisateur](images/user-settings.png)"
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:19
 msgid "user settings"
@@ -121,8 +121,7 @@ msgstr ""
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:25
 msgid "![role request](role-request.png)"
-msgstr "![demande de rôle](role-request.png)"
-
+msgstr "![demande de rôle](images/role-request.png)"
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:25
 msgid "role request"
 msgstr "demande de rôle"
@@ -146,7 +145,7 @@ msgstr ""
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:29
 msgid "![not an uploader](not-an-uploader.png)"
-msgstr "![non téléverseur](not-an-uploader.png)"
+msgstr "![non téléverseur](images/not-an-uploader.png)"
 
 #: ../../contributing-data-to-the-atlas/signing-up-to-the-site.md:29
 msgid "not an uploader"

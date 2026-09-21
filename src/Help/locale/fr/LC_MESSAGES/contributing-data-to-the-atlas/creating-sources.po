@@ -36,7 +36,7 @@ msgstr ""
 
 #: ../../contributing-data-to-the-atlas/creating-sources.md:5
 msgid "![Add source](add-source.png)"
-msgstr "![Ajouter une source](add-source.png)"
+msgstr "![Ajouter une source](images/add-source.png)"
 
 #: ../../contributing-data-to-the-atlas/creating-sources.md:5
 msgid "Add source"

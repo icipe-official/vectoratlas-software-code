@@ -33,7 +33,7 @@ msgstr "Vous serez dirigé vers l'interface de téléversement."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:6
 msgid "![Data Upload](UploadPage.png)"
-msgstr "![Téléversement de données](UploadPage.png)"
+msgstr "![Téléversement de données](images/UploadPage.png)"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:6
 msgid "Data Upload"
@@ -86,10 +86,8 @@ msgstr ""
 "« Bionomics » et « Insecticide Resistance »."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:18
-msgid "![Templates section](
-    templatesSection.png)"
-msgstr "![Section des modèles](
-    templatesSection.png)"
+msgid "![Templates section](templatesSection.png)"
+msgstr "![Section des modèles](images/templatesSection.png)"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:18
 msgid "Templates section"
@@ -140,10 +138,8 @@ msgstr ""
 "avant le téléversement vers le stockage blob."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:31
-msgid "![Upload section](
-    ploadSection.png)"
-msgstr "![Section de téléversement](
-    uploadSection.png)"
+msgid "![Upload section](uploadSection.png)"
+msgstr "![Section de téléversement](images/uploadSection.png)"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:31
 msgid "Upload section"
@@ -182,11 +178,8 @@ msgid "Pending approval."
 msgstr "En attente d'approbation."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:42
-msgid "![Uploaded Datasets](
-    DatasetsList.png)"
-msgstr "![Jeux de données téléversés](
-    DatasetsList.png)"
-
+msgid "![Uploaded Datasets](DatasetsList.png)"
+msgstr "![Jeux de données téléversés](images/DatasetsList.png)"
 #: ../../contributing-data-to-the-atlas/uploading-data.md:42
 msgid "Uploaded Datasets"
 msgstr "Jeux de données téléversés"
@@ -216,16 +209,8 @@ msgstr ""
 "`Primary Review`."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:50
-msgid ""
-"![Assign Primary Review](
-    AssignPrimaryReview.png)   ![Primary Review "
-"Status](
-    PrimaryreviewStatus.png)"
-msgstr ""
-"![Assigner la révision principale](
-    AssignPrimaryReview.png)   ![Statut de"
-" la révision principale](
-    PrimaryreviewStatus.png)"
+msgid "![Assign Primary Review](AssignPrimaryReview.png) ![Primary Review Status](PrimaryreviewStatus.png)"
+msgstr "![Assigner la révision principale](images/AssignPrimaryReview.png) ![Statut de la révision principale](images/PrimaryreviewStatus.png)"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:50
 #: ../../contributing-data-to-the-atlas/uploading-data.md:60
@@ -301,7 +286,7 @@ msgstr "Envoyer un e-mail pour toute communication complémentaire."
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:69
 msgid "![Validate Dataset](ValidateDataset.png)"
-msgstr "![Valider le jeu de données](ValidateDataset.png)"
+msgstr "![Valider le jeu de données](images/ValidateDataset.png)"
 
 #: ../../contributing-data-to-the-atlas/uploading-data.md:69
 msgid "Validate Dataset"

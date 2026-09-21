@@ -35,7 +35,7 @@ msgstr ""
 
 #: ../../contributing-data-to-the-atlas/reviewing-data.md:5
 msgid "![Review page](review.png)"
-msgstr "![Page de révision](review.png)"
+msgstr "![Page de révision](images/review.png)"
 
 #: ../../contributing-data-to-the-atlas/reviewing-data.md:5
 msgid "Review page"
@@ -64,7 +64,7 @@ msgstr ""
 
 #: ../../contributing-data-to-the-atlas/reviewing-data.md:11
 msgid "![Review page In review](reviewed.png)"
-msgstr "![Page de révision En révision](reviewed.png)"
+msgstr "![Page de révision En révision](images/reviewed.png)"
 
 #: ../../contributing-data-to-the-atlas/reviewing-data.md:11
 msgid "Review page In review"
@@ -92,7 +92,7 @@ msgstr ""
 
 #: ../../contributing-data-to-the-atlas/reviewing-data.md:17
 msgid "![Review page Approved](approved.png)"
-msgstr "![Page de révision Approuvée](approved.png)"
+msgstr "![Page de révision Approuvée](images/approved.png)"
 
 #: ../../contributing-data-to-the-atlas/reviewing-data.md:17
 msgid "Review page Approved"
