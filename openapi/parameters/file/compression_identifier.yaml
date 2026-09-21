@@ -1,0 +1,16 @@
+# Compression Identifier Parameter
+# Used for identifying a compressed file by UUID or slug
+
+components:
+  parameters:
+    CompressionIdentifier:
+      name: compressionIdentifier
+      in: path
+      required: true
+      description: |
+        Unique identifier for a compressed file (UUID or slug).
+        The system will first attempt to parse the identifier as a UUID. If that fails,
+        it will treat it as a slug.
+      schema:
+        type: string
+      example: "223e4567-e89b-12d3-a456-426614174001"

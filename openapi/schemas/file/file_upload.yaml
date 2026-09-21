@@ -1,0 +1,21 @@
+# File Upload Schema
+# Schema for file upload requests
+
+components:
+  schemas:
+    FileUpload:
+      type: object
+      required:
+        - file
+      properties:
+        file:
+          type: string
+          format: binary
+          description: The file to upload
+        folder_name:
+          type: string
+          description: Name of the folder to store the file in
+          example: "occurrence_data"
+      example:
+        file: "binary_file_content"
+        folder_name: "occurrence_data"

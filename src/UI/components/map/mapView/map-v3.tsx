@@ -35,6 +35,7 @@ import {
   setOccurrenceLoading,
   startNewSearch,
   setSpeciesFilterValues,
+  setDoiResolved,
 } from '../../../state/map/mapSlice';
 
 import { getFullOccurrenceData } from '../../../state/map/actions/getFullOccurrenceData';
@@ -97,13 +98,11 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   const [showDetected, setShowDetected] = useState(true);
   const [showNotDetected, setShowNotDetected] = useState(true);
 
-  // NEW (doiOccurrenceIds): when the map is loaded via a DOI resolver link
-  // (?doi=<id>), this holds the export job's occurrence_ids so the map/HUD
-  // can be restricted to just that set of points. null = no DOI restriction
-  // active; a (possibly empty) array = restriction active.
-  const [doiOccurrenceIds, setDoiOccurrenceIds] = useState<string[] | null>(
-    null
-  );
+  // When a DOI resolver link is active (?doi=<id>), doiResolved is false
+  // until the occurrence IDs and filters are applied. While false, the
+  // map layers stay invisible and the HUD shows zero counts to prevent
+  // a flash of unfiltered data.
+  const doiResolved = useAppSelector((s) => s.map.doiResolved);
 
   const dispatch = useAppDispatch();
   const t = useTranslations('MapPage');
@@ -396,11 +395,12 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   }, [loadedPresenceAbsenceLayers]);
 
   const previousFilterReference = useRef<VectorAtlasFilters | null>(null);
-  // NEW (doiOccurrenceIds): tracked separately from previousFilterReference.
-  // BUGFIX: the GPU filter guard below used to check `filters` by reference
-  // only, so a doiOccurrenceIds-only update (no change to `filters`) was
-  // silently skipped and the map kept showing the unfiltered point count.
-  const previousDoiOccurrenceIdsRef = useRef<string[] | null>(null);
+
+  // Ref mirror of doiResolved so the GPU filter effect can read the
+  // current value without having doiResolved in its dependency array
+  // (which would cancel the rAF on every doiResolved change).
+  const doiResolvedRef = useRef(doiResolved);
+  doiResolvedRef.current = doiResolved;
 
   const filtersSet = useMemo(() => {
     const hasAnySelectedSpecies = Object.entries(filters)
@@ -434,29 +434,18 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       (season?.value?.length ?? 0) > 0 ||
       (insecticide?.value?.length ?? 0) > 0 ||
       (control?.value?.length ?? 0) > 0 ||
-      (abundance_data?.value?.length ?? 0) > 0
+      (abundance_data?.value?.length ?? 0) > 0 ||
+      ((filters as any)?.occurrenceIds?.value?.length ?? 0) > 0
     );
   }, [filters]);
 
   const filterFrameRef = useRef<number | null>(null);
 
   useEffect(() => {
-    // BUGFIX: check both `filters` and `doiOccurrenceIds` before bailing —
-    // previously only `filters` was checked, so a doiOccurrenceIds-only
-    // change (e.g. the DOI resolver fetch resolving after this effect's
-    // first run) never triggered a re-filter.
     const filtersChanged = filters !== previousFilterReference.current;
-    const doiIdsChanged =
-      doiOccurrenceIds !== previousDoiOccurrenceIdsRef.current;
 
-    if (!filtersChanged && !doiIdsChanged) return;
-    if (
-      previousFilterReference.current === null &&
-      previousDoiOccurrenceIdsRef.current === null &&
-      !filtersSet &&
-      !doiOccurrenceIds
-    )
-      return;
+    if (!filtersChanged) return;
+    if (previousFilterReference.current === null && !filtersSet) return;
 
     const presenceSource = pointLayerRef.current?.getSource();
     const absenceSource = absenceLayerRef.current?.getSource();
@@ -464,9 +453,14 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
     if (!loadedPresenceAbsenceLayers) return;
 
-    // NEW (doiOccurrenceIds): built once per effect run (not per feature)
-    // for O(1) membership checks in the hot loop below.
-    const doiIdSet = doiOccurrenceIds ? new Set(doiOccurrenceIds) : null;
+    // Occurrence IDs from DOI resolution are stored as a regular filter
+    // (filters.occurrenceIds.value). This makes them part of the same
+    // filter cycle — no special-case branches needed.
+    const doiOccurrenceIds = (filters as any)?.occurrenceIds?.value;
+    const doiIdSet =
+      Array.isArray(doiOccurrenceIds) && doiOccurrenceIds.length > 0
+        ? new Set(doiOccurrenceIds)
+        : null;
 
     const runGpuFilter = (source: VectorSource<Point>) => {
       const features = source.getFeatures();
@@ -497,9 +491,9 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         const f = features[i];
         let visible = 1;
 
-        // NEW (doiOccurrenceIds): when a DOI restriction is active, only
-        // points whose id is in the export job's occurrence_ids survive —
-        // checked first since it's the cheapest, most restrictive filter.
+        // DOI occurrence ID filter: when active, only points whose id is
+        // in the export job's occurrence_ids survive — checked first since
+        // it's the cheapest, most restrictive filter.
         if (visible && doiIdSet) {
           const featureId = String(f.getId() ?? f.get('id') ?? '');
           if (!doiIdSet.has(featureId)) {
@@ -631,9 +625,13 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       runGpuFilter(presenceSource);
       runGpuFilter(absenceSource);
       previousFilterReference.current = filters;
-      // NEW (doiOccurrenceIds): keep in sync with previousFilterReference so
-      // the guard above can detect either kind of change independently.
-      previousDoiOccurrenceIdsRef.current = doiOccurrenceIds;
+
+      // If a DOI resolution was pending, mark it as resolved now that
+      // the filter has been applied — this makes the map layers visible
+      // and the HUD update with the correct counts.
+      if (!doiResolvedRef.current) {
+        dispatch(setDoiResolved(true));
+      }
     });
 
     return () => {
@@ -641,13 +639,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         cancelAnimationFrame(filterFrameRef.current);
       }
     };
-  }, [
-    filters,
-    filtersSet,
-    loadedPresenceAbsenceLayers,
-    dbCountryData,
-    doiOccurrenceIds, // NEW (doiOccurrenceIds)
-  ]);
+  }, [filters, filtersSet, loadedPresenceAbsenceLayers, dbCountryData]);
 
   // Enusre absence layer is visible whenever binary_presence is 'false'
   useEffect(() => {
@@ -1117,17 +1109,56 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     if (!doiResolverId || occurrenceLoading) return;
 
     const fetchAndApply = async () => {
+      // Mark as unresolved — keeps layers invisible and HUD at zero
+      dispatch(setDoiResolved(false));
+
       try {
         const res = await fetch(`/vector-api/doi/resolver/${doiResolverId}`);
+
+        if (!res.ok) {
+          throw new Error(`DOI resolver returned ${res.status}`);
+        }
+
         const data = await res.json();
-        const fetchedFilters = data?.meta_data?.filters;
+
+        // STEP 1: Set occurrence IDs as a regular filter parameter.
+        // This makes them part of the same filter cycle — the GPU filter
+        // effect reads filters.occurrenceIds.value like any other filter.
+        const fetchedOccurrenceIds =
+          data?.export_job?.occurrence_ids ??
+          data?.exportJob?.occurrence_ids ??
+          null;
+
+        if (Array.isArray(fetchedOccurrenceIds)) {
+          dispatch(
+            filterHandler({
+              filterName: 'occurrenceIds',
+              filterOptions: fetchedOccurrenceIds.map((id: unknown) =>
+                String(id)
+              ),
+            })
+          );
+        }
+
+        // STEP 2: Apply the filters from the export job's saved filter state.
+        // We use export_job.filtersJson (which preserves the original
+        // { value: [...] } structure) instead of meta_data.filters (which
+        // flattens arrays into comma-joined strings for human-readable DOI
+        // metadata). The filtersJson is what the map's filterHandler expects.
+        const fetchedFilters = data?.export_job?.filtersJson;
 
         if (fetchedFilters) {
           Object.entries(fetchedFilters).forEach(([filterName, filter]) => {
+            // filtersJson stores each filter as { value: [...] } — dispatch
+            // the inner .value so filterHandler sets it correctly.
+            const filterValue =
+              filter && typeof filter === 'object' && 'value' in filter
+                ? filter.value
+                : filter;
             dispatch(
               filterHandler({
                 filterName,
-                filterOptions: filter,
+                filterOptions: filterValue,
               })
             );
           });
@@ -1138,28 +1169,41 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
           dispatch(showLayerVisible(name));
         }
 
-        // NEW (doiOccurrenceIds): pull the export job's occurrence_ids out
-        // of the resolver response so the map/HUD can be scoped to them.
-        // TODO: confirm this path against the actual DoiService response
-        // shape (export_job vs exportJob) once verified against the API —
-        // both are checked here defensively in the meantime.
-        const fetchedOccurrenceIds =
-          data?.export_job?.occurrence_ids ??
-          data?.exportJob?.occurrence_ids ??
-          null;
-
-        if (Array.isArray(fetchedOccurrenceIds)) {
-          setDoiOccurrenceIds(
-            fetchedOccurrenceIds.map((id: unknown) => String(id))
-          );
+        // Fallback: after dispatching all filters, schedule doiResolved = true
+        // on the next animation frame. The GPU filter effect should also set
+        // it to true when its rAF fires, but this guarantees the map unblocks
+        // even if the GPU effect's rAF is cancelled by a dependency change
+        // (e.g. dbCountryData arriving) before it can execute.
+        if (
+          !Array.isArray(fetchedOccurrenceIds) ||
+          fetchedOccurrenceIds.length === 0
+        ) {
+          // No occurrence IDs — GPU filter has nothing to filter by, so
+          // unblock immediately.
+          dispatch(setDoiResolved(true));
+        } else {
+          // Wait two animation frames so the GPU filter effect has a chance
+          // to run and set the correct visibility before we unblock the HUD.
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              if (!doiResolvedRef.current) {
+                dispatch(setDoiResolved(true));
+              }
+            });
+          });
         }
       } catch (e) {
         console.error('DOI resolver error', e);
+        import('react-toastify').then(({ toast }) => {
+          toast.error(t('doiResolveError'), { autoClose: 8000 });
+        });
+        // On error, mark as resolved so the map shows normally
+        dispatch(setDoiResolved(true));
       }
     };
 
     fetchAndApply();
-  }, [doiResolverId, dispatch, occurrenceLoading]);
+  }, [doiResolverId, dispatch, occurrenceLoading, t]);
 
   useEffect(() => {
     const presenceSource = pointLayerRef.current?.getSource();
@@ -1337,7 +1381,12 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
           />
 
           {/* Inject the Top-Tier UX Loader Here */}
-          <MapLoader isLoading={occurrenceLoading} />
+          <MapLoader
+            isLoading={occurrenceLoading || (!!doiResolverId && !doiResolved)}
+            message={
+              !!doiResolverId && !doiResolved ? t('doiResolving') : undefined
+            }
+          />
         </Box>
 
         <MapHUD
@@ -1357,7 +1406,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
           setShowDetected={setShowDetected}
           showNotDetected={showNotDetected}
           setShowNotDetected={setShowNotDetected}
-          doiOccurrenceIds={doiOccurrenceIds} // NEW (doiOccurrenceIds)
+          doiResolved={doiResolved}
         />
 
         {areaModeOn && (

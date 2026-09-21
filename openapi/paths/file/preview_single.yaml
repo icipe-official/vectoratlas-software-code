@@ -1,0 +1,124 @@
+# Single Preview File Endpoint
+# PUT and DELETE for individual preview files
+
+paths:
+  /files/{fileIdentifier}/preview/{previewIdentifier}:
+    put:
+      tags:
+        - File
+      summary: Update preview file metadata or replace file
+      description: |
+        Updates metadata for a preview file or replaces the preview file content.
+        Both fileIdentifier and previewIdentifier can be UUID or slug.
+        
+        If the request includes a file in the multipart form data, the preview file will be replaced.
+        
+        Example request (metadata only):
+        PUT /api/files/123e4567-e89b-12d3-a456-426614174000/preview/323e4567-e89b-12d3-a456-426614174002
+        Content-Type: application/json
+        
+        {
+          "slug": "updated_preview_slug",
+          "preview_type": "thumbnail"
+        }
+        
+        Example request (with file replacement):
+        PUT /api/files/mosquito_occurrence_2023/preview/mosquito_occurrence_2023_thumbnail
+        Content-Type: multipart/form-data
+        
+        --boundary--
+        Content-Disposition: form-data; name="file"; filename="updated_thumbnail.png"
+        Content-Type: image/png
+        
+        <new preview file content>
+        --boundary--
+        Content-Disposition: form-data; name="slug"
+        
+        updated_preview_slug
+        --boundary--
+        Content-Disposition: form-data; name="preview_type"
+        
+        thumbnail
+        --boundary--
+      operationId: updatePreviewFile
+      parameters:
+        - $ref: ../../parameters/file/file_identifier.yaml#/components/parameters/FileIdentifier
+        - $ref: ../../parameters/file/preview_identifier.yaml#/components/parameters/PreviewIdentifier
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                slug:
+                  type: [string, "null"]
+                  description: Short unique name. Can be null
+                  example: "updated_preview_slug"
+                preview_type:
+                  type: string
+                  description: Type of preview (thumbnail, small, medium, large)
+                  example: "thumbnail"
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: New preview file content to replace existing file
+                slug:
+                  type: [string, "null"]
+                  description: Short unique name. Can be null
+                  example: "updated_preview_slug"
+                preview_type:
+                  type: string
+                  description: Type of preview (thumbnail, small, medium, large)
+                  example: "thumbnail"
+      responses:
+        "200":
+          description: Preview file updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/file/file_preview.yaml#/components/schemas/FilePreview
+        "400":
+          $ref: ../../responses/common/error.yaml#/components/responses/BadRequest
+        "401":
+          $ref: ../../responses/common/error.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../../responses/common/error.yaml#/components/responses/Forbidden
+        "404":
+          $ref: ../../responses/common/error.yaml#/components/responses/NotFound
+        "500":
+          $ref: ../../responses/common/error.yaml#/components/responses/ServerError
+      security:
+        - BearerAuth: []
+    
+    delete:
+      tags:
+        - File
+      summary: Delete a preview file
+      description: |
+        Deletes a preview file by its identifiers.
+        Both fileIdentifier and previewIdentifier can be UUID or slug.
+        
+        Example requests:
+        - DELETE /api/files/123e4567-e89b-12d3-a456-426614174000/preview/323e4567-e89b-12d3-a456-426614174002
+        - DELETE /api/files/mosquito_occurrence_2023/preview/mosquito_occurrence_2023_thumbnail
+      operationId: deletePreviewFile
+      parameters:
+        - $ref: ../../parameters/file/file_identifier.yaml#/components/parameters/FileIdentifier
+        - $ref: ../../parameters/file/preview_identifier.yaml#/components/parameters/PreviewIdentifier
+      responses:
+        "204":
+          description: Preview file deleted successfully
+        "401":
+          $ref: ../../responses/common/error.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../../responses/common/error.yaml#/components/responses/Forbidden
+        "404":
+          $ref: ../../responses/common/error.yaml#/components/responses/NotFound
+        "500":
+          $ref: ../../responses/common/error.yaml#/components/responses/ServerError
+      security:
+        - BearerAuth: []

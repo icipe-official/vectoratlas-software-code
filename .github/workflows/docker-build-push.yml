@@ -19,11 +19,11 @@ on:
     branches:
       - test
       - main
-  pull_request:
-    types: [closed]
-    branches:
-      - test
-      - main
+  # pull_request:
+  #   types: [closed]
+  #   branches:
+  #     - test
+  #     - main
   workflow_dispatch:
     inputs:
       branch:

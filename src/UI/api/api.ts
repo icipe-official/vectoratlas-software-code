@@ -21,8 +21,9 @@ export const createBackgroundExport = async (payload: {
   generateDoi?: boolean;
   downloaderName?: string;
   downloaderEmail?: string;
-
   occurrenceIds?: string[];
+  clientRequestId?: string;
+  contentHash?: string;
 }) => {
   // compress ids
   const gzipped = pako.gzip(JSON.stringify(payload.occurrenceIds || []));
@@ -34,12 +35,17 @@ export const createBackgroundExport = async (payload: {
   formData.append('idFile', blob, 'ids.gz');
   formData.append('filtersJson', payload.filtersJson);
   formData.append('generateDoi', payload.generateDoi);
-  formData.append('downloaderName', payload.downloaderName);
-  formData.append('downloaderEmail', payload.downloaderEmail);
+  formData.append('downloaderName', payload.downloaderName || '');
+  formData.append('downloaderEmail', payload.downloaderEmail || '');
+  formData.append('clientRequestId', payload.clientRequestId || '');
+  formData.append('contentHash', payload.contentHash || '');
 
   //const res = await axios.post(`${apiUrl}exports`, payload);
   const res = await axios.post(`${apiUrl}exports`, formData, {
-    timeout: 30000, // 30s — the POST just queues a BullMQ job, should be fast
+    timeout: 60000, // 60s — envoy may take up to ~20s before returning 504,
+    // and the retry after that needs headroom too. The POST itself just
+    // queues a BullMQ job, but the DB insert + ID decompression on a
+    // capped shared DB can be slow.
   });
   return res.data;
 };
@@ -587,7 +593,7 @@ export const downloadDataset = async (
     } else {
       fileName = `${datasetId}-dataset`;
     }
-  } catch {}
+  } catch { }
   return download(res.data, `${fileName}`);
 };
 
@@ -615,7 +621,7 @@ export const downloadModel = async (modelId: string) => {
     } else {
       fileName = `${modelId}-model`;
     }
-  } catch {}
+  } catch { }
   return download(res.data, `${fileName}`);
 };
 

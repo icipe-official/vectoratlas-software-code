@@ -1,0 +1,12 @@
+# Search Query Parameter
+
+components:
+  parameters:
+    SearchQuery:
+      name: q
+      in: query
+      description: Search query to filter files by name or description
+      required: false
+      schema:
+        type: string
+      example: "mosquito occurrence"

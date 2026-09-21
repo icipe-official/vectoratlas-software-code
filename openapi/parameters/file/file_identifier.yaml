@@ -1,0 +1,13 @@
+# File Identifier Parameter
+# Can be either a UUID or a slug
+
+components:
+  parameters:
+    FileIdentifier:
+      name: fileIdentifier
+      in: path
+      description: Unique identifier for the file (UUID or slug)
+      required: true
+      schema:
+        type: string
+      example: "123e4567-e89b-12d3-a456-426614174000"

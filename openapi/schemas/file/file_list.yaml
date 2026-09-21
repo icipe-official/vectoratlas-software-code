@@ -1,0 +1,46 @@
+# File List Schema
+# Represents a paginated list of files - only includes file table entities
+
+components:
+  schemas:
+    FileList:
+      type: object
+      required:
+        - files
+        - pagination
+      properties:
+        files:
+          type: array
+          items:
+            $ref: ./file.yaml#/components/schemas/File
+          description: List of files
+        pagination:
+          $ref: ../common/pagination.yaml#/components/schemas/Pagination
+        total_count:
+          type: integer
+          minimum: 0
+          description: Total number of files matching the criteria
+          example: 100
+      example:
+        files:
+          - id: "123e4567-e89b-12d3-a456-426614174000"
+            folder_name: "occurrence_data"
+            name: "mosquito_occurrence.csv"
+            slug: "mosquito_occurrence_2023"
+            mime_type: "text/csv"
+            size: 1024000
+            created_on: "2023-01-15T10:30:00Z"
+            last_updated_on: "2023-01-15T10:30:00Z"
+          - id: "123e4567-e89b-12d3-a456-426614174001"
+            folder_name: "occurrence_data"
+            name: "tick_occurrence.csv"
+            slug: "tick_occurrence_2023"
+            mime_type: "text/csv"
+            size: 512000
+            created_on: "2023-01-16T10:30:00Z"
+            last_updated_on: "2023-01-16T10:30:00Z"
+        pagination:
+          page: 1
+          page_size: 10
+          total_pages: 10
+        total_count: 100

@@ -18,6 +18,16 @@ export class ExportJob extends BaseEntityExtended {
   @Field(() => String, { nullable: true })
   requestHash?: string;
 
+  @Index()
+  @Column({ nullable: true, type: 'varchar' })
+  @Field(() => String, { nullable: true })
+  clientRequestId?: string;
+
+  @Index()
+  @Column({ nullable: true, type: 'varchar' })
+  @Field(() => String, { nullable: true })
+  contentHash?: string;
+
   @Column({ nullable: true, type: 'jsonb' })
   @Field(() => GraphQLJSON, { nullable: true })
   filtersJson?: Record<string, any>;
