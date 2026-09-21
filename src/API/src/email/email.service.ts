@@ -1,10 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { MailerService } from '@nestjs-modules/mailer';
 import { CommunicationLogService } from '../db/communication-log/communication-log.service';
 import { CommunicationLog } from '../db/communication-log/entities/communication-log.entity';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
 import * as nodemailer from 'nodemailer';
-import { render } from '@react-email/render';
 
 import {
   CommunicationChannelType,
@@ -26,7 +24,7 @@ export class EmailService {
     // private readonly mailerService: MailerService,
     private readonly communicationLogService: CommunicationLogService,
     private readonly logger: Logger,
-  ) {}
+  ) { }
 
   async sendEmail(
     emails: string[],

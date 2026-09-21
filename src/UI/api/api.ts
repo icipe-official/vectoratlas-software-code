@@ -593,7 +593,7 @@ export const downloadDataset = async (
     } else {
       fileName = `${datasetId}-dataset`;
     }
-  } catch { }
+  } catch {}
   return download(res.data, `${fileName}`);
 };
 
@@ -621,7 +621,7 @@ export const downloadModel = async (modelId: string) => {
     } else {
       fileName = `${modelId}-model`;
     }
-  } catch { }
+  } catch {}
   return download(res.data, `${fileName}`);
 };
 
