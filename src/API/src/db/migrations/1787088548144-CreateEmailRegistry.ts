@@ -4,6 +4,7 @@ export class CreateEmailRegistry1787088548144 implements MigrationInterface {
   name = 'CreateEmailRegistry1787088548144';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`);
     // 1. Create the table 
     await queryRunner.query(`
       CREATE TABLE IF NOT EXISTS "email_registry" (
