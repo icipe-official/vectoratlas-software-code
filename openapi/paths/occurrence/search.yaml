@@ -1,0 +1,54 @@
+# Occurrence Search Endpoint
+# GET /search/{entityType} - Search and filter occurrence records
+
+paths:
+  /search/{entityType}:
+    get:
+      tags:
+        - Occurrence
+      summary: Search occurrence records
+      description: |
+        Returns a list of occurrence records matching the given filters.
+        Supports filtering by country, species, season, insecticide resistance,
+        presence/absence, abundance, bionomics, adult/larval specimen data, and
+        a year-range timeline. Results are paginated via `take` and `skip`.
+
+        A single record can be fetched by providing the `id` query parameter,
+        which bypasses all other filters and pagination.
+
+        The `fields` query parameter allows projecting only a subset of fields
+        per item; `id` is always included.
+
+        Example requests:
+        - GET /api/search/occurrence - List first 100 occurrences
+        - GET /api/search/occurrence?country=Kenya&species=Anopheles gambiae - Filter by country and species
+        - GET /api/search/occurrence?id=42 - Fetch a single occurrence by id
+        - GET /api/search/occurrence?timeline=2010-2020&take=50&skip=100 - Paginated within a year range
+        - GET /api/search/occurrence?fields=species,country,year_start - Project specific fields only
+      operationId: searchOccurrences
+      parameters:
+        - $ref: ../../parameters/occurrence/search_parameters.yaml#/components/parameters/EntityType
+        - $ref: ../../parameters/occurrence/search_parameters.yaml#/components/parameters/OccurrenceId
+        - $ref: ../../parameters/occurrence/search_parameters.yaml#/components/parameters/Country
+        - $ref: ../../parameters/occurrence/search_parameters.yaml#/components/parameters/Species
+        - $ref: ../../parameters/occurrence/search_parameters.yaml#/components/parameters/Season
+        - $ref: ../../parameters/occurrence/search_parameters.yaml#/components/parameters/Insecticide
+        - $ref: ../../parameters/occurrence/search_parameters.yaml#/components/parameters/Absence
+        - $ref: ../../parameters/occurrence/search_parameters.yaml#/components/parameters/Abundance
+        - $ref: ../../parameters/occurrence/search_parameters.yaml#/components/parameters/Bionomics
+        - $ref: ../../parameters/occurrence/search_parameters.yaml#/components/parameters/Adult
+        - $ref: ../../parameters/occurrence/search_parameters.yaml#/components/parameters/Larval
+        - $ref: ../../parameters/occurrence/search_parameters.yaml#/components/parameters/Timeline
+        - $ref: ../../parameters/occurrence/search_parameters.yaml#/components/parameters/Take
+        - $ref: ../../parameters/occurrence/search_parameters.yaml#/components/parameters/Skip
+        - $ref: ../../parameters/occurrence/search_parameters.yaml#/components/parameters/Fields
+      # security: []
+      responses:
+        "200":
+          $ref: ../../responses/occurrence/occurrence_search_result.yaml#/components/responses/OccurrenceSearchResult
+        "400":
+          $ref: ../../responses/common/error.yaml#/components/responses/BadRequest
+        "404":
+          $ref: ../../responses/common/error.yaml#/components/responses/NotFound
+        "500":
+          $ref: ../../responses/common/error.yaml#/components/responses/ServerError

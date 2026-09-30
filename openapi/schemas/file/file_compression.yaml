@@ -1,0 +1,54 @@
+# File Compression Schema
+# Represents a compressed version of a file
+
+components:
+  schemas:
+    FileCompression:
+      type: object
+      required:
+        - id
+        - file_id
+        - mime_type
+        - size
+        - created_on
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the compressed file
+          example: "223e4567-e89b-12d3-a456-426614174001"
+        file_id:
+          type: string
+          format: uuid
+          description: ID of the original file this is a compressed version of
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        mime_type:
+          type: string
+          description: MIME type of the compressed file
+          example: "application/zip"
+        size:
+          type: integer
+          minimum: 0
+          description: Size of the compressed file in bytes
+          example: 512000
+        created_on:
+          type: string
+          format: date-time
+          description: When the compressed file was created
+          example: "2023-01-15T10:31:00Z"
+        slug:
+          type: [string, "null"]
+          description: Short unique name for URL-friendly access. Can be null
+          example: "mosquito_occurrence_2023_gzip"
+        download_url:
+          type: string
+          format: uri
+          description: URL to download the compressed file
+          example: "https://api.vectoratlas.org/files/123e4567-e89b-12d3-a456-426614174000/compressed/download"
+      example:
+        id: "223e4567-e89b-12d3-a456-426614174001"
+        file_id: "123e4567-e89b-12d3-a456-426614174000"
+        mime_type: "application/zip"
+        size: 512000
+        created_on: "2023-01-15T10:31:00Z"
+        slug: "mosquito_occurrence_2023_gzip"

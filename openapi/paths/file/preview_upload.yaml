@@ -1,0 +1,70 @@
+# File Preview Upload Endpoint
+# Uploads a preview version of a file
+
+paths:
+  /files/{fileIdentifier}/preview/upload:
+    post:
+      tags:
+        - File
+      summary: Upload preview version of a file
+      description: |
+        Uploads a preview version of an existing file. The file must already exist in the system.
+        The identifier can be either a UUID or a slug.
+        
+        Example request:
+        POST /api/files/123e4567-e89b-12d3-a456-426614174000/preview/upload
+        Content-Type: multipart/form-data
+        
+        --boundary--
+        Content-Disposition: form-data; name="file"; filename="mosquito_occurrence_thumbnail.png"
+        Content-Type: image/png
+        
+        <preview file content>
+        --boundary--
+        Content-Disposition: form-data; name="preview_type"
+        
+        thumbnail
+        --boundary--
+      operationId: uploadFilePreview
+      parameters:
+        - $ref: ../../parameters/file/file_identifier.yaml#/components/parameters/FileIdentifier
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The preview file to upload
+                preview_type:
+                  type: string
+                  description: Type of preview (thumbnail, small, medium, large)
+                  example: "thumbnail"
+      responses:
+        "201":
+          description: Preview file uploaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/file/file_preview.yaml#/components/schemas/FilePreview
+        "400":
+          $ref: ../../responses/common/error.yaml#/components/responses/BadRequest
+        "401":
+          $ref: ../../responses/common/error.yaml#/components/responses/Unauthorized
+        "404":
+          $ref: ../../responses/common/error.yaml#/components/responses/NotFound
+        "413":
+          description: Payload too large
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/common/error.yaml#/components/schemas/Error
+        "500":
+          $ref: ../../responses/common/error.yaml#/components/responses/ServerError
+      security:
+        - BearerAuth: []

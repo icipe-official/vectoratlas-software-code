@@ -191,7 +191,7 @@ const ReuploadDatasetForm = (props: ReuploadDatasetProps) => {
           <Card>
             <CardContent>
               <DisplayItem
-                label={t('reuploadDialog.errors.datasetTitle')}
+                label={t('reuploadDialog.datasetTitle')}
                 value={uploadedDataset?.title}
               />
               <DisplayItem label="Authors" value={uploadedDataset?.author} />
@@ -204,7 +204,7 @@ const ReuploadDatasetForm = (props: ReuploadDatasetProps) => {
                 )}
                 {allowReupload && (
                   <DisplayItem
-                    label={t('reuploadDialog.errors.newDataset')}
+                    label={t('reuploadDialog.newDataset')}
                     isComponent
                     value={
                       <Box sx={{ display: 'flex', flexDirection: 'row' }}>
@@ -250,15 +250,13 @@ const ReuploadDatasetForm = (props: ReuploadDatasetProps) => {
 
               {allowReupload && (
                 <DisplayItem
-                  label={t('reuploadDialog.errors.comments')}
+                  label={t('reuploadDialog.comments')}
                   isComponent
                   value={
                     <ReactQuill
                       value={richComments}
                       onChange={(val) => setRichComments(val)}
-                      placeholder={t(
-                        'reuploadDialog.errors.commentsPlaceholder'
-                      )}
+                      placeholder={t('reuploadDialog.commentsPlaceholder')}
                       // style={{ minHeight: '300px' }}
                       theme="snow"
                       modules={{

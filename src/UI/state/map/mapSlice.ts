@@ -102,6 +102,10 @@ export interface MapState {
   preloadTimeSeries: boolean;
   preloadingLayers: string[];
   filteredOccurrenceData: any[];
+  // When a DOI resolver link is active, this is false until the occurrence
+  // IDs and filters are applied. Used to keep map layers invisible and the
+  // HUD at zero counts during resolution to prevent a flash of unfiltered data.
+  doiResolved: boolean;
 }
 
 export const initialState: () => MapState = () => ({
@@ -140,6 +144,7 @@ export const initialState: () => MapState = () => ({
       },
     },
     areaCoordinates: { value: [] },
+    occurrenceIds: { value: [] as string[] },
   },
   //Uses static list
   /*filterValues: {
@@ -174,6 +179,7 @@ export const initialState: () => MapState = () => ({
   preloadTimeSeries: true,
   preloadingLayers: [],
   filteredOccurrenceData: [],
+  doiResolved: true,
 });
 
 export const mapSlice = createSlice({
@@ -259,6 +265,9 @@ export const mapSlice = createSlice({
       }
 
       state.filters[filterName].value = filterOptions;
+    },
+    setDoiResolved(state, action: PayloadAction<boolean>) {
+      state.doiResolved = action.payload;
     },
     updateMapLayerColour(state, action) {
       const matchingLayer = state.map_styles.layers.find(
@@ -475,6 +484,7 @@ export const {
   setSliderDataState,
   setFilteredData,
   setSpeciesFilterValues,
+  setDoiResolved,
 } = mapSlice.actions;
 
 export default mapSlice.reducer;

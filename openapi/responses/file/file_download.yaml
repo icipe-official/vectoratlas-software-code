@@ -1,0 +1,42 @@
+# File Download Response
+
+components:
+  responses:
+    FileDownload:
+      description: File download response
+      content:
+        application/octet-stream:
+          schema:
+            type: string
+            format: binary
+          example: "binary_file_content"
+      headers:
+        Content-Type:
+          description: MIME type of the file
+          schema:
+            type: string
+          example: "text/csv"
+        Content-Length:
+          description: Size of the file in bytes
+          schema:
+            type: integer
+          example: 1024000
+        Cache-Control:
+          description: |
+            Set rules on how the browser should cache the file.
+            
+            By default we set the rule that forces the browser to check if the file changed.
+          schema:
+            type: string
+            default: "no-cache, must-revalidate"
+        Last-Modified:
+          description: Last time file was modified. Set to file stat Last Modified.
+          schema:
+            type: string
+            format: date-time
+          example: "Wed, 08 Jul 2026 14:33:53 GMT"
+        Content-Disposition:
+          description: Attachment filename
+          schema:
+            type: string
+          example: "attachment; filename=mosquito_occurrence.csv"

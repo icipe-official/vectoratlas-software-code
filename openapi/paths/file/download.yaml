@@ -1,0 +1,146 @@
+# File Download Endpoint
+# Downloads a file by identifier with support for preview and compression
+
+paths:
+  /files/{fileIdentifier}/download:
+    get:
+      tags:
+        - File
+      summary: Download file by identifier
+      description: |
+        Downloads the binary content of a file by its unique identifier (UUID or slug).
+        
+        Supports the following query parameters:
+        - `preview=true` - Download the preview version of the file (if available)
+        - `compression=gzip|brotli|br` - Request a specific compression algorithm
+        - `attachment=true` - Force download with Content-Disposition: attachment. If false or omitted, defaults to inline or omits the header
+        
+        Example requests:
+        - GET /api/files/123e4567-e89b-12d3-a456-426614174000/download
+        - GET /api/files/mosquito_occurrence_2023/download
+        - GET /api/files/123e4567-e89b-12d3-a456-426614174000/download?preview=true
+        - GET /api/files/123e4567-e89b-12d3-a456-426614174000/download?compression=gzip
+        - GET /api/files/123e4567-e89b-12d3-a456-426614174000/download?attachment=true
+      operationId: downloadFile
+      parameters:
+        - $ref: ../../parameters/file/file_identifier.yaml#/components/parameters/FileIdentifier
+        - name: preview
+          in: query
+          description: Download the preview version of the file
+          required: false
+          schema:
+            type: boolean
+            default: false
+          example: true
+        - name: compression
+          in: query
+          description: Request a specific compression algorithm
+          required: false
+          schema:
+            type: string
+            enum: [gzip, brotli, br]
+          example: gzip
+        - name: attachment
+          in: query
+          description: Force download with Content-Disposition attachment header. If true, sets the header with filename. If false or omitted, defaults to inline or omits the header (browser decides)
+          required: false
+          schema:
+            type: boolean
+            default: false
+          example: true
+        - name: Accept-Encoding
+          in: header
+          description: Client's accepted compression algorithms. The server will attempt to serve a compressed version if available and supported
+          required: false
+          schema:
+            type: string
+          example: "gzip, deflate, br"
+        - name: If-None-Match
+          in: header
+          description: ETag value for validation. If the file has not changed, returns 304 Not Modified
+          required: false
+          schema:
+            type: string
+          example: 'W/"1024000-1673785800000"'
+        - name: If-Modified-Since
+          in: header
+          description: Timestamp for validation. If the file has not been modified since this date, returns 304 Not Modified
+          required: false
+          schema:
+            type: string
+            format: date-time
+          example: "Wed, 15 Jan 2023 10:30:00 GMT"
+      responses:
+        "200":
+          description: File downloaded successfully
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+          headers:
+            Content-Disposition:
+              description: Attachment with filename (if attachment=true) or inline/omitted
+              schema:
+                type: string
+              example: "attachment; filename=mosquito_occurrence.csv"
+            Content-Type:
+              description: MIME type of the file
+              schema:
+                type: string
+              example: "text/csv"
+            Content-Length:
+              description: Size of the file in bytes
+              schema:
+                type: integer
+              example: 1024000
+            Content-Encoding:
+              description: Compression encoding used
+              schema:
+                type: string
+              example: "gzip"
+            Cache-Control:
+              description: Cache control directives
+              schema:
+                type: string
+              example: "no-cache, must-revalidate"
+            Last-Modified:
+              description: File modification timestamp
+              schema:
+                type: string
+                format: date-time
+              example: "2023-01-15T10:30:00Z"
+            ETag:
+              description: Entity tag for cache validation
+              schema:
+                type: string
+              example: 'W/"1024000-1673785800000"'
+        "304":
+          description: Not modified - file has not changed since the specified If-None-Match or If-Modified-Since header
+          headers:
+            Cache-Control:
+              description: Cache control directives
+              schema:
+                type: string
+              example: "no-cache, must-revalidate"
+            Last-Modified:
+              description: File modification timestamp
+              schema:
+                type: string
+                format: date-time
+              example: "2023-01-15T10:30:00Z"
+            ETag:
+              description: Entity tag for cache validation
+              schema:
+                type: string
+              example: 'W/"1024000-1673785800000"'
+        "401":
+          $ref: ../../responses/common/error.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../../responses/common/error.yaml#/components/responses/Forbidden
+        "404":
+          $ref: ../../responses/common/error.yaml#/components/responses/NotFound
+        "500":
+          $ref: ../../responses/common/error.yaml#/components/responses/ServerError
+      security:
+        - BearerAuth: []

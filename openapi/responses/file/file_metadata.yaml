@@ -1,0 +1,20 @@
+# File Metadata Response
+
+components:
+  responses:
+    FileMetadata:
+      description: File metadata response
+      content:
+        application/json:
+          schema:
+            $ref: ../../schemas/file/file_metadata.yaml#/components/schemas/FileMetadata
+          example:
+            id: "123e4567-e89b-12d3-a456-426614174000"
+            folder_name: "occurrence_data"
+            name: "mosquito_occurrence.csv"
+            slug: "mosquito_occurrence_2023"
+            mime_type: "text/csv"
+            size: 1024000
+            created_on: "2023-01-15T10:30:00Z"
+            last_updated_on: "2023-01-15T10:30:00Z"
+            download_url: "https://api.vectoratlas.org/files/123e4567-e89b-12d3-a456-426614174000/download"

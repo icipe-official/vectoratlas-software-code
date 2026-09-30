@@ -1,0 +1,62 @@
+# Compressed File Upload Endpoint
+# Uploads a compressed version of a file
+
+paths:
+  /files/{fileIdentifier}/compressed/upload:
+    post:
+      tags:
+        - File
+      summary: Upload compressed version of a file
+      description: |
+        Uploads a compressed version of an existing file. The file must already exist in the system.
+        The identifier can be either a UUID or a slug.
+        
+        Example request:
+        POST /api/files/123e4567-e89b-12d3-a456-426614174000/compressed/upload
+        Content-Type: multipart/form-data
+        
+        --boundary--
+        Content-Disposition: form-data; name="file"; filename="mosquito_occurrence.csv.gz"
+        Content-Type: application/gzip
+        
+        <compressed file content>
+        --boundary--
+      operationId: uploadCompressedFile
+      parameters:
+        - $ref: ../../parameters/file/file_identifier.yaml#/components/parameters/FileIdentifier
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The compressed file to upload
+      responses:
+        "201":
+          description: Compressed file uploaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/file/file_compression.yaml#/components/schemas/FileCompression
+        "400":
+          $ref: ../../responses/common/error.yaml#/components/responses/BadRequest
+        "401":
+          $ref: ../../responses/common/error.yaml#/components/responses/Unauthorized
+        "404":
+          $ref: ../../responses/common/error.yaml#/components/responses/NotFound
+        "413":
+          description: Payload too large
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/common/error.yaml#/components/schemas/Error
+        "500":
+          $ref: ../../responses/common/error.yaml#/components/responses/ServerError
+      security:
+        - BearerAuth: []

@@ -6,7 +6,7 @@ import {
   BlockBlobClient,
   StorageSharedKeyCredential,
 } from '@azure/storage-blob';
-import { HttpCode, Inject, Injectable } from '@nestjs/common';
+import { HttpCode, Inject, Injectable, Logger } from '@nestjs/common';
 import { HttpStatusCode } from 'axios';
 import config from 'src/config/config';
 import { formatDate, makeFileNameTimestamped } from 'src/utils';
@@ -29,6 +29,7 @@ export interface AzureBlobUploadResponse {
 // @TODO create interface to view blobs https://medium.com/@divanshSachdeva/securely-stream-files-to-azure-blob-storage-with-node-js-and-aes-256-ctr-encryption-e896426dc80c
 @Injectable()
 export class AzureBlobService {
+  private readonly logger = new Logger(AzureBlobService.name);
   containerName: string;
   azureConnection = config.get('blobStorageConnectionString');
 
@@ -69,7 +70,7 @@ export class AzureBlobService {
       const createContainerResponse = await containerClient.createIfNotExists(); //.create();
       return createContainerResponse._response.status == HttpStatusCode.Created;
     } catch (error) {
-      console.log('Error: ', error);
+      this.logger.error('Error: ' + error);
     }
     return false;
   }
@@ -79,7 +80,7 @@ export class AzureBlobService {
     let i = 1;
     const containers = blobServiceClient.listContainers();
     for await (const container of containers) {
-      console.log(`Container ${i++}: ${container.name}`);
+      this.logger.log(`Container ${i++}: ${container.name}`);
       if (
         ['raw', 'primary-reviewed', 'tertiary-reviewed'].includes(
           container.name,
@@ -110,7 +111,7 @@ export class AzureBlobService {
   //     };
   //     return result;
   //   } catch (error) {
-  //     console.error('Error uploading file:', error);
+  //     this.logger.error('Error uploading file:', error);
   //     throw new Error('Failed to upload file');
   //   }
   // }
@@ -136,7 +137,7 @@ export class AzureBlobService {
         return this._doUpload(file, fileUrl);
       }
     } catch (error) {
-      console.error('Error uploading file:', error);
+      this.logger.error('Error uploading file:', error);
       throw new Error('Failed to upload file');
     }
   }
@@ -164,7 +165,7 @@ export class AzureBlobService {
           binary: true,
         });
       }
-      console.log('About to generateAsync');
+      this.logger.debug('About to generateAsync');
 
       //generate zip content
       const zipContent = await zip.generateAsync({
@@ -172,11 +173,11 @@ export class AzureBlobService {
         compression: 'DEFLATE',
         compressionOptions: { level: 9 },
       });
-      console.log('zipped Content');
+      this.logger.debug('zipped Content');
 
       return this._doUpload(zipContent, fileUrl);
     } catch (error) {
-      console.error('Error uploading file:', error);
+      this.logger.error('Error uploading file:', error);
       throw new Error('Failed to upload file');
     }
   }
@@ -187,7 +188,7 @@ export class AzureBlobService {
     fileUrl: string,
   ): Promise<AzureBlobUploadResponse> {
     try {
-      console.log('About to list containers');
+      this.logger.debug('About to list containers');
       await this.listContainers();
       this.containerName = this.getContainerName();
       await this.createContainer(this.containerName);
@@ -199,10 +200,10 @@ export class AzureBlobService {
         // Optional: specify block size and concurrency for large files
         blockSize: 4 * 1024 * 1024, // 4MB
         concurrency: 20,
-        onProgress: (ev) => console.log(ev), // Optional progress tracking
+        onProgress: (ev) => this.logger.debug(ev.toString()), // Optional progress tracking
       });
 
-      console.log('Uploaded to containers');
+      this.logger.debug('Uploaded to containers');
 
       const result: AzureBlobUploadResponse = {
         response: res,
@@ -210,10 +211,10 @@ export class AzureBlobService {
         container: this.containerName,
         filePath: fileUrl,
       };
-      console.log('Uploaded to containers res:', result.filePath);
+      this.logger.debug(`Uploaded to containers res: ${result.filePath}`);
       return result;
     } catch (error) {
-      console.error('Error uploading file:', error);
+      this.logger.error('Error uploading file:', error);
       throw new Error('Failed to upload file');
     }
   }
@@ -277,7 +278,7 @@ export class AzureBlobService {
       containerName ?? this.getContainerName(),
     );
     if (!(await containerClient.exists())) {
-      console.log(`Container ${containerClient} does not exist`);
+      this.logger.log(`Container ${containerClient} does not exist`);
       return true;
     }
 

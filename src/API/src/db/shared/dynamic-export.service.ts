@@ -594,25 +594,56 @@ export class DynamicExportService<Occurrence> {
       key: col.template_field,
       width: 30,
     }));
-    const approvedIds = occurrenceIds;
 
-    const total = Math.max(approvedIds.length, 10);
+    // If occurrenceIds is empty, query all occurrences matching filters
+    // Otherwise, query only the specified occurrenceIds
+    const useOccurrenceIds = occurrenceIds && occurrenceIds.length > 0;
+    let total = 10;
 
     // const total = await this.repository.count();
     let page = 0;
     while (true) {
       const skip = page * pageSize;
-      const ids = approvedIds.slice(skip, skip + pageSize);
-      if (!ids.length) {
-        break;
+
+      let entities: any[] = [];
+
+      if (useOccurrenceIds) {
+        // Original logic: paginate through occurrenceIds
+        const ids = occurrenceIds.slice(skip, skip + pageSize);
+        if (!ids.length) {
+          break;
+        }
+        total = Math.max(occurrenceIds.length, 10);
+
+        entities = await loader.find({
+          where: { id: In(ids) },
+          order: {
+            // Order to make it predictable
+            id: 'ASC',
+          },
+        });
+      } else {
+        // New logic: query all occurrences matching filters
+        const queryOptions: any = {
+          skip: skip,
+          take: pageSize,
+          order: {
+            id: 'ASC',
+          },
+        };
+
+        // Apply filters if provided
+        if (filters && Object.keys(filters).length > 0) {
+          queryOptions.where = filters;
+        }
+
+        entities = await loader.find(queryOptions);
+
+        if (page === 0) {
+          // Estimate total for progress reporting (only on first page)
+          total = entities.length < pageSize ? entities.length : pageSize * 2;
+        }
       }
-      const entities = await loader.find({
-        where: { id: In(ids) },
-        order: {
-          // Order to make it predictable
-          id: 'ASC',
-        },
-      });
 
       if (!entities.length) {
         break;
