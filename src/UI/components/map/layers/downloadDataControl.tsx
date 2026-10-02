@@ -154,16 +154,42 @@ export const DownloadDataControl = () => {
   const handleFullDataDownload = async () => {
     if (validationMessage) return;
 
-    // Await the dispatch so the dialog stays open while downloading
-    await dispatch(
-      downloadTemplate({
-        dataType: 'full_data',
-        dataSource: 'Vector Atlas',
-        extension: 'zip',
-      })
+    // Show loading toast
+    const loadingToastId = toast.info(
+      t('downloadData.fullDataDownloadStarting'),
+      {
+        autoClose: false,
+      }
     );
 
-    setOpenDialog(false);
+    try {
+      // Await the dispatch so the dialog stays open while downloading
+      await dispatch(
+        downloadTemplate({
+          dataType: 'full_data',
+          dataSource: 'Vector Atlas',
+          extension: 'zip',
+        })
+      );
+
+      // Update toast to show success
+      toast.update(loadingToastId, {
+        render: t('downloadData.fullDataDownloadSuccess'),
+        type: 'success',
+        autoClose: 8000,
+      });
+    } catch (error) {
+      // Update toast to show error
+      toast.update(loadingToastId, {
+        render: t('downloadData.fullDataDownloadError', {
+          error: error instanceof Error ? error.message : String(error),
+        }),
+        type: 'error',
+        autoClose: 8000,
+      });
+    } finally {
+      setOpenDialog(false);
+    }
   };
 
   return (
@@ -188,7 +214,7 @@ export const DownloadDataControl = () => {
       >
         <DialogTitle>{t('downloadData.downloadConfirmationTitle')}</DialogTitle>
         <DialogContent>
-          {/* <MaintenanceNotice /> */}
+          <MaintenanceNotice />
           {/* Checkbox 1: accept CC BY-NC 4.0 terms */}
           <CheckboxRow
             checked={acceptLicense}

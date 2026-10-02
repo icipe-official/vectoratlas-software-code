@@ -726,7 +726,7 @@
       "downloadConfirmationTitle": "Télécharger la confirmation",
       "maintenanceNotice": {
         "title": "En maintenance",
-        "message": "Le téléchargement de données fait actuellement l'objet d'une maintenance. Les téléchargements directs peuvent être intermittents ou indisponibles. Veuillez indiquer votre nom et votre e-mail ci-dessous — votre export sera traité et un lien de téléchargement vous sera envoyé par e-mail, généralement dans les quelques heures."
+        "message": "Le téléchargement filtré est actuellement en maintenance et sera de retour bientôt."
       },
       "termsA": "J'ai lu et accepté le",
       "termsB": "Termes et conditions",
@@ -759,6 +759,9 @@
       "contactInfoPromptOptional": "Coordonnées (facultatives mais recommandées — nous vous enverrons un lien de téléchargement par e-mail si le téléchargement direct est lent ou en maintenance) :",
       "emailConfirmationMessage": "Votre exportation de données a été mise en file d'attente. Un lien de téléchargement sera envoyé à votre adresse e-mail, généralement dans les quelques heures. Vous pouvez fermer cette page pendant le traitement.",
       "directDownloadConfirmationMessage": "Votre exportation de données a été mise en file d'attente et sera téléchargée directement lorsqu'elle sera prête. Cela peut prendre quelques minutes pour les grands ensembles de données.",
+      "fullDataDownloadStarting": "Démarrage du téléchargement des données complètes...",
+      "fullDataDownloadSuccess": "Le téléchargement des données complètes a commencé. Le fichier sera téléchargé automatiquement.",
+      "fullDataDownloadError": "Échec du démarrage du téléchargement des données complètes: {error}",
       "errors": {
         "name": "Le nom complet est requis",
         "email": "L'adresse e-mail est requise",

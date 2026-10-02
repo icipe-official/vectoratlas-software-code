@@ -724,7 +724,7 @@
       "downloadConfirmationTitle": "Download Confirmation",
       "maintenanceNotice": {
         "title": "Under maintenance",
-        "message": "The data download feature is currently undergoing maintenance. Direct downloads may be intermittent or unavailable. Please provide your name and email below — your export will be processed and a download link will be sent to you via email, typically within a few hours."
+        "message": "Filtered download is currently in maintenance and will be back soon."
       },
       "termsA": "I have read and agree to the Terms and Conditions",
       "termsB": "CC BY-NC 4.0",
@@ -757,6 +757,9 @@
       "contactInfoPromptOptional": "Contact information (optional but recommended — we'll email you a download link if direct download is slow or under maintenance):",
       "emailConfirmationMessage": "Your data export has been queued. A download link will be sent to your email address, typically within a few hours. You can close this page while it processes.",
       "directDownloadConfirmationMessage": "Your data export has been queued and will download directly when ready. This may take a few minutes for large datasets.",
+      "fullDataDownloadStarting": "Starting full data download...",
+      "fullDataDownloadSuccess": "Full data download has started. The file will download automatically.",
+      "fullDataDownloadError": "Failed to start full data download: {error}",
       "errors": {
         "name": "Full Name is required",
         "email": "Email Address is required",
