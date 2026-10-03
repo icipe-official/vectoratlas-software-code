@@ -17,10 +17,16 @@ import { CommunicationLog } from '../communication-log/entities/communication-lo
 import { RecordedSpecies } from './entities/recorded_species.entity';
 import { RecordedSpeciesService } from './recordedSpecies.service';
 import { RecordedSpeciesResolver } from './recordedSpecies.resolver';
+import { BullModule } from '@nestjs/bullmq';
+import { EmailModule } from 'src/email/email.module';
 
 @Module({
   imports: [
     HttpModule,
+    BullModule.registerQueue({
+      name: 'email-sending',
+    }),
+    EmailModule,
     TypeOrmModule.forFeature([Reference, Dataset, RecordedSpecies]),
     TypeOrmModule.forFeature([UserRole, CommunicationLog]),
   ],

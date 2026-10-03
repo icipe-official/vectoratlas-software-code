@@ -16,6 +16,7 @@ import { useAppSelector, useAppDispatch } from '../../../state/hooks';
 import { GENERIC_GREEN } from './pointutilswebgl';
 import { setFilteredData } from '../../../state/map/mapSlice';
 import { useCountryDb } from '../../shared/useCountryDb';
+import { useSpeciesDb } from '../../shared/useSpeciesDb';
 
 interface MapHUDProps {
   panelOpen: boolean;
@@ -34,6 +35,11 @@ interface MapHUDProps {
   setShowDetected: React.Dispatch<React.SetStateAction<boolean>>;
   showNotDetected: boolean;
   setShowNotDetected: React.Dispatch<React.SetStateAction<boolean>>;
+  // NEW (doiOccurrenceIds): when set (non-null), the DOI export job's
+  // occurrence ids — this panel computes its own counts from Redux
+  // occurrence_data independently of the map's GPU filtering, so it needs
+  // this passed down separately to stay in sync with what's on the map.
+  doiOccurrenceIds: string[] | null;
 }
 
 const getTimezoneOffset = (value: Date) => value.getTimezoneOffset() * 60000;
@@ -78,21 +84,17 @@ const MapHUD: React.FC<MapHUDProps> = ({
   setShowDetected,
   showNotDetected,
   setShowNotDetected,
+  doiOccurrenceIds,
 }) => {
   const theme = useTheme();
   const isLaptopOrBelow = useMediaQuery(theme.breakpoints.down('lg'));
   // detect mobile breakpoint
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const speciesDisplayMap: Record<string, string> = {
-    'coluzzii_gambiae_m form': ' coluzzii',
-    'gambiae_s form': ' gambiae',
-    'gambiae_s form_m form': ' gambiae/ coluzzii',
-  };
-
   const dispatch = useAppDispatch();
   const token = useAppSelector((state) => state.auth.token);
   const dbCountryData = useCountryDb(true, token as string | null);
+  const dbSpeciesData = useSpeciesDb(true);
 
   const getPresenceStatus = (
     value: unknown
@@ -120,10 +122,10 @@ const MapHUD: React.FC<MapHUDProps> = ({
   };
 
   const getSpeciesDisplayName = (rawSpecies: string): string => {
-    const match = Object.keys(speciesDisplayMap).find(
-      (key) => normalize(key) === rawSpecies || key === rawSpecies
+    const dbMatch = dbSpeciesData.find(
+      (dbSp) => normalize(dbSp.species) === normalize(rawSpecies)
     );
-    return match ? speciesDisplayMap[match] : `${rawSpecies}`;
+    return dbMatch?.display_name || rawSpecies;
   };
 
   const pingRef = useRef<HTMLDivElement | null>(null);
@@ -138,6 +140,13 @@ const MapHUD: React.FC<MapHUDProps> = ({
   const occurrenceData = useAppSelector((state) => state.map.occurrence_data);
   const filteredData = useAppSelector(
     (state) => state.map.filteredOccurrenceData
+  );
+
+  // NEW (doiOccurrenceIds): memoized so filteredOccurrenceData below only
+  // rebuilds the Set when the DOI id list actually changes.
+  const doiIdSet = React.useMemo(
+    () => (doiOccurrenceIds ? new Set(doiOccurrenceIds) : null),
+    [doiOccurrenceIds]
   );
 
   const filteredOccurrenceData = React.useMemo(() => {
@@ -183,11 +192,19 @@ const MapHUD: React.FC<MapHUDProps> = ({
       (season?.value?.length ?? 0) > 0 ||
       (insecticide?.value?.length ?? 0) > 0 ||
       (control?.value?.length ?? 0) > 0 ||
-      (abundance_data?.value?.length ?? 0) > 0;
+      (abundance_data?.value?.length ?? 0) > 0 ||
+      !!doiIdSet; // NEW (doiOccurrenceIds)
 
     if (!hasActiveFilters) return occurrenceData;
 
     return occurrenceData.filter((o: any) => {
+      // NEW (doiOccurrenceIds): checked first as the cheapest, most
+      // restrictive filter — mirrors the GPU filter's DOI check in map-v3.
+      if (doiIdSet) {
+        const oId = String((o as any).id ?? '');
+        if (!doiIdSet.has(oId)) return false;
+      }
+
       if (allSelectedSpecies.length > 0) {
         const oSpecies = String(o.species || '')
           .toLowerCase()
@@ -287,7 +304,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
 
       return true; // If it passes all checks, keep it!
     });
-  }, [occurrenceData, filters]);
+  }, [occurrenceData, filters, doiIdSet]);
 
   const OTHER_LABEL = 'others';
 
@@ -459,7 +476,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
     });
   });
 
-  const hasActiveFilters = activeFilters.length > 0;
+  const hasActiveFilters = activeFilters.length > 0 || !!doiIdSet; // NEW (doiOccurrenceIds)
 
   const zeroResultsFromFilters =
     hasActiveFilters && totalLoadedPoints === 0 && !occurrenceLoading;
@@ -479,7 +496,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
     const displayName =
       data.name === 'Other Anopheles'
         ? data.name
-        : `An.  ${getSpeciesDisplayName(data.name)}`;
+        : getSpeciesDisplayName(data.name);
 
     return (
       <Box
@@ -656,7 +673,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
                 <Typography fontSize={11} fontWeight={700} fontStyle="italic">
                   {touchedSpecies === 'Other Anopheles'
                     ? touchedSpecies
-                    : `An. ${getSpeciesDisplayName(touchedSpecies)}`}
+                    : getSpeciesDisplayName(touchedSpecies)}
                 </Typography>
 
                 <Typography fontSize={11} color="#7EEFA8" fontWeight={800}>
@@ -979,7 +996,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
                         >
                           {normalizedSp === OTHER_LABEL
                             ? 'Other Anopheles'
-                            : 'An.  ' + getSpeciesDisplayName(sp)}
+                            : getSpeciesDisplayName(sp)}
                         </Typography>
                       </Box>
 

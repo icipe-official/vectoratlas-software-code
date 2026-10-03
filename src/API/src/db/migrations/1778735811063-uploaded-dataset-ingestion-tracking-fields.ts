@@ -1,7 +1,8 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class UploadedDatasetIngestionTrackingFields1778735811063
-  implements MigrationInterface {
+  implements MigrationInterface
+{
   name = 'UploadedDatasetIngestionTrackingFields1778735811063';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

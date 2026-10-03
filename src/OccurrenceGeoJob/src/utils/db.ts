@@ -1,7 +1,16 @@
 import { Pool } from 'pg';
 import logger from './logger.js';
 
-const pool = new Pool();
+const enableSsl =
+  process.env.PGSSL?.toLowerCase() === 'true' || false;
+
+const pool = new Pool(
+  enableSsl
+    ? {
+        ssl: { rejectUnauthorized: false },
+      }
+    : undefined,
+);
 
 pool.on('error', (err) => {
   logger.error('unexpected pool error %O', err);

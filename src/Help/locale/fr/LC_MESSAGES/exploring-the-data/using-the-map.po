@@ -1,0 +1,231 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, ICIPE
+# This file is distributed under the same license as the Vector Atlas Help
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Vector Atlas Help \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-26 12:50+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: fr\n"
+"Language-Team: fr <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../exploring-the-data/using-the-map.md:1
+msgid "Using the map"
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:3
+msgid ""
+"The main feature of the Vector Atlas is the map view that can be used to "
+"explore the data that the Atlas holds; this data can be filtered, "
+"examined and downloaded."
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:5
+msgid "Getting to the map"
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:6
+msgid ""
+"To get to the map click on the map on the homepage, or use the map link "
+"in the top navigation bar - both will redirect to the "
+"[/map](https://vectoratlas.icipe.org/map) route."
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:8
+msgid "![getting-to-the-data](getting-to-the-map.png \"Getting to the data\")"
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:8
+msgid "getting-to-the-data"
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:10
+msgid ""
+"The map tools are in the menu on the left and include tools for "
+"filtering, displaying overlays, altering the display of base layers and "
+"downloading data."
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:13
+msgid "Filtering data"
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:15
+msgid ""
+"Multiple data filters can be applied using the filters available in the "
+"first section of the tools on the left. Data can be filtered by:"
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:16
+msgid "country,"
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:17
+msgid "species,"
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:18
+msgid "season,"
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:19
+msgid "control,"
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:20
+msgid "whether adult data is present,"
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:21
+msgid "whether larval data is present,"
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:22
+msgid "the time range of the data (down to month and year)"
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:23
+msgid "selected area (more details below)"
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:25
+msgid ""
+"The different filters act as an AND condition, e.g. selecting Uganda and "
+"An. arabiensis gets only the data in Uganda with An. arabiensis species. "
+"However, within an individual filter it acts as an OR condition, e.g. "
+"selecting Uganda and Sudan in the countries filter will get all data for "
+"both countries."
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:27
+msgid "![filters](filters.png)"
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:27
+msgid "filters"
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:29
+msgid "Area select mode"
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:31
+msgid ""
+"Data can also be filtered by area; to activate the area select mode, "
+"click on the mode button below the \"Select by area\" filter."
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:33
+msgid "![area mode](area-select-mode.png)"
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:33
+msgid "area mode"
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:35
+msgid ""
+"This changes the mode on the map so each click is a point on the boundary"
+" of the selection polygon, clicking on the original point again will "
+"complete the polygon. Once a polygon is completed then the data will be "
+"filtered to that area. A new polygon can be created after the first is "
+"completed, the first polygon is removed once the second is completed - "
+"i.e there is only ever one polygon at once."
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:37
+msgid "![area filter](area-filter.png)"
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:37
+msgid "area filter"
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:39
+msgid ""
+"Clicking the area mode button again turns the mode off but doesn't remove"
+" the selected polygon. This means you can click on points inside the "
+"polygon to get more information. Clicking on the `Remove selection` "
+"button will clear the polygon and remove any area filter on the data."
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:41
+msgid "Getting more information about points"
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:43
+msgid ""
+"Clicking on points on the map opens the information panel on the right "
+"showing extra details about each of the points under the click (which "
+"could be many points close together)."
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:45
+msgid "![point details](point-details.png)"
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:45
+msgid "point details"
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:47
+msgid ""
+"The details panel can be closed with the close button in the top left of "
+"the panel."
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:49
+msgid "Overlaying surfaces"
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:51
+msgid ""
+"Overlays provide various modelling outputs that can be visualised "
+"together and combined with the data to find new insights. Each overlay "
+"can be turned on and off independently."
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:53
+msgid "![overlays](overlays.png)"
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:53
+msgid "overlays"
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:55
+msgid ""
+"Currently the order of the overlays can't be changed but this is a "
+"planned feature for the future."
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:59
+msgid "Altering the base map"
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:61
+msgid ""
+"The base map can be altered by turning features and layers on or off. "
+"This provides the capability to customise the visualisation that can then"
+" be downloaded for reports and publications."
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:63
+msgid "![changing the base map](changing-base-map.png)"
+msgstr ""
+
+#: ../../exploring-the-data/using-the-map.md:63
+msgid "changing the base map"
+msgstr ""
+

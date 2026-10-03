@@ -2,7 +2,7 @@ import { ContainerClient } from '@azure/storage-blob';
 import { Injectable, Logger } from '@nestjs/common';
 import { AzureBlobService } from '../azure-blob/azure-blob.service';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { ExportsService } from 'src/exports/exports.service';
+import { ExportsServiceV2 } from 'src/exports/exports.service-v2';
 
 const AZURE_EXPORTS_DIRECTORY =
   process.env.AZURE_EXPORTS_DIRECTORY || 'exports';
@@ -13,7 +13,7 @@ export class BlobCleanupService {
 
   constructor(
     private azureBlobService: AzureBlobService,
-    private exportService: ExportsService,
+    private exportService: ExportsServiceV2,
   ) {}
 
   /**

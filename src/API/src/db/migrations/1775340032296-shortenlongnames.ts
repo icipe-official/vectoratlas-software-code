@@ -1,10 +1,10 @@
-import { MigrationInterface, QueryRunner } from "typeorm";
+import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class Shortenlongnames1775340032296 implements MigrationInterface {
-    name = 'Shortenlongnames1775340032296'
+  name = 'Shortenlongnames1775340032296';
 
-    public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`
           DO $$
           BEGIN
             IF EXISTS (
@@ -20,19 +20,19 @@ export class Shortenlongnames1775340032296 implements MigrationInterface {
           END $$;
         `);
 
-        await queryRunner.query(`
+    await queryRunner.query(`
           ALTER TABLE "insecticideResistanceBioassays"
           ADD COLUMN IF NOT EXISTS "bioassay_repr_complex_site_disagg_no_adj" character varying
         `);
-    }
+  }
 
-    public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`
           ALTER TABLE "insecticideResistanceBioassays"
           DROP COLUMN IF EXISTS "bioassay_repr_complex_site_disagg_no_adj"
         `);
 
-        await queryRunner.query(`
+    await queryRunner.query(`
           DO $$
           BEGIN
             IF EXISTS (
@@ -47,5 +47,5 @@ export class Shortenlongnames1775340032296 implements MigrationInterface {
             END IF;
           END $$;
         `);
-    }
+  }
 }

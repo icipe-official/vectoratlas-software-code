@@ -18,7 +18,7 @@ export class AddCountryEntityAndSpeciesDisplayName1783428715373
     await queryRunner.query(
       `ALTER TABLE "site" ADD COLUMN IF NOT EXISTS "country_id" character varying(256)`,
     );
-    
+
     await queryRunner.query(`
       DO $$
       BEGIN
@@ -38,7 +38,9 @@ export class AddCountryEntityAndSpeciesDisplayName1783428715373
     await queryRunner.query(
       `ALTER TABLE "site" DROP CONSTRAINT IF EXISTS "FK_6d80331403939350918a8ddc3d3"`,
     );
-    await queryRunner.query(`ALTER TABLE "site" DROP COLUMN IF EXISTS "country_id"`);
+    await queryRunner.query(
+      `ALTER TABLE "site" DROP COLUMN IF EXISTS "country_id"`,
+    );
     await queryRunner.query(
       `ALTER TABLE "recorded_species" DROP COLUMN IF EXISTS "category"`,
     );

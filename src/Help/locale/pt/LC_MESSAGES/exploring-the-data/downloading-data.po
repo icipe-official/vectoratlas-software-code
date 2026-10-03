@@ -1,0 +1,65 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, ICIPE
+# This file is distributed under the same license as the Vector Atlas Help
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Vector Atlas Help \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-26 12:50+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: pt\n"
+"Language-Team: pt <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../exploring-the-data/downloading-data.md:1
+msgid "Downloading data"
+msgstr ""
+
+#: ../../exploring-the-data/downloading-data.md:3
+msgid ""
+"Data can be downloaded from the system from the map page. The final "
+"section in the map tools on the left has buttons for downloading various "
+"data, whether that is an image of the current selection of data or the "
+"raw data itself."
+msgstr ""
+
+#: ../../exploring-the-data/downloading-data.md:5
+msgid ""
+"The `Download map image` button will download an image file with the "
+"current state of the map showing only the data that results from the "
+"filters as well as an area polygon if one has been selected."
+msgstr ""
+
+#: ../../exploring-the-data/downloading-data.md:7
+msgid ""
+"The `Download filtered data` button will download a csv with the raw data"
+" relating to the filtered points and can be used for further analysis."
+msgstr ""
+
+#: ../../exploring-the-data/downloading-data.md:9
+msgid "An example of the input and output of the map image is shown below."
+msgstr ""
+
+#: ../../exploring-the-data/downloading-data.md:11
+msgid ""
+"![download map input](download-input.png) ![download output](download-"
+"output.png)"
+msgstr ""
+
+#: ../../exploring-the-data/downloading-data.md:11
+msgid "download map input"
+msgstr ""
+
+#: ../../exploring-the-data/downloading-data.md:11
+msgid "download output"
+msgstr ""
+
