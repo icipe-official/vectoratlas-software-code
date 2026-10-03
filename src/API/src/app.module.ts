@@ -11,6 +11,7 @@ import { AuthModule } from './auth/auth.module';
 import { BionomicsModule } from './db/bionomics/bionomics.module';
 import { InsecticideResistanceModule } from './db/insecticideResistance/insecticideResistance.module';
 import { OccurrenceModule } from './db/occurrence/occurrence.module';
+import { SiteModule } from './db/shared/site.module';
 import { IngestModule } from './ingest/ingest.module';
 import { ExportModule } from './export/export.module';
 import { SharedModule } from './db/shared/shared.module';
@@ -77,6 +78,10 @@ import { EmailRegistryModule } from './db/email-registry/email-registry.module';
     AuthModule,
     BionomicsModule,
     InsecticideResistanceModule,
+    // SiteModule must be registered before OccurrenceModule: OccurrenceSearchController's
+    // wildcard @Get(':entityType') route would otherwise swallow /search/site requests
+    // before SiteSearchController's literal @Get('site') route gets a chance to match.
+    SiteModule,
     EmailRegistryModule,
     OccurrenceModule,
     IngestModule,
