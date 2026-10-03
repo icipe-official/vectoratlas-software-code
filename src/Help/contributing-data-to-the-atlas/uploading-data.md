@@ -3,7 +3,7 @@
 - Click on the `upload` link in the navigation bar.
 - You will be directed to the upload interface.
 
-![Data Upload](UploadPage.png)
+![Data Upload](images/UploadPage.png)
 
 ## Downloading Templates
 
@@ -15,7 +15,7 @@
   - **Third template**: Contains "Occurrence" and "IR Bioassays" sections.
   - **Final template**: Contains all three sections: "Occurrence," "Bionomics," and "Insecticide Resistance."
 
-![Templates section](templatesSection.png)
+![Templates section](images/datahub.png)
 
 ## Uploading Data
 
@@ -28,7 +28,7 @@
   - Upload directly to blob storage for review, OR
   - Continue with column matching and validation before uploading to blob storage.
 
-![Upload section](uploadSection.png)
+![Upload section](images/uploadSection.png)
 
 ## Visualization of Uploaded Datasets by Reviewer Manager
 
@@ -39,7 +39,7 @@
   - Pending assignment.
   - Pending approval.
 
-![Uploaded Datasets](DatasetsList.png)
+![Uploaded Datasets](images/DatasetsList.png)
 
 ## Assignment of Uploaded Datasets to Reviewers
 
@@ -47,8 +47,8 @@
 - **Before assignment**: Status is `Pending`.
 - **After assigning a primary reviewer**: Status changes to `Primary Review`.
 
-![Assign Primary Review](AssignPrimaryReview.png)  
-![Primary Review Status](PrimaryreviewStatus.png)
+![Assign Primary Review](images/AssignPrimaryReview.png)  
+![Primary Review Status](images/PrimaryreviewStatus.png)
 
 - Primary reviewers must review the dataset before re-uploading.
 - The reviewer manager can assign a tertiary reviewer, changing the status to `Tertiary Review`.
@@ -57,7 +57,7 @@
   - Send an email to the uploader or tertiary reviewer.
   - Reject the dataset if it does not meet the required standards.
 
-![Assign Primary Review](AssignPrimaryReview.png)
+![Assign Primary Review](images/AssignPrimaryReview.png)
 
 ## Approval of Uploaded Datasets
 
@@ -66,7 +66,7 @@
   - Validate the dataset before approval.
   - Send an email for further communication.
 
-![Validate Dataset](ValidateDataset.png)
+![Validate Dataset](images/ValidateDataset.png)
 
 ## Ingestion to VA Database and Notifying the Uploader
 
