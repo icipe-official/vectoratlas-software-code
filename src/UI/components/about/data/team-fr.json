@@ -28,13 +28,7 @@
       "imageURL": "/team/VH1.jpg",
       "description": "Vicky est l'administratrice du projet Vector Atlas. Avec une formation en chimie atmosphérique puis en recherche sur le changement climatique, Vicky a travaillé pour le ministère britannique de l'Environnement, de l'Alimentation et des Affaires rurales sur des questions liées à la politique environnementale nationale et internationale avant de rejoindre l'Université d'Oxford en 2008 en tant qu'agente de projet de recherche."
     },
-    {
-      "id": 5,
-      "name": "Mark Wamalwa",
-      "location": "Kenya",
-      "imageURL": "/team/markw_VectorAtlas_pic.png",
-      "description": "Le Dr Mark Wamalwa est modélisateur/bioinformaticien au sein de l'unité de gestion des données, de modélisation et de géo-information (DMMG), icipe. Ses intérêts de recherche se concentrent sur l'amélioration des moyens de subsistance, la sécurité alimentaire et la durabilité environnementale avec un accent spécifique sur l'élucidation de la dynamique de transmission des virus d'importance pour la santé publique."
-    },
+   
     {
       "id": 6,
       "name": "Kennedy Senagi",
@@ -91,20 +85,8 @@
       "imageURL": "/team/kawira.jpeg",
       "description": "Kawira Mathenge est l'agente de soutien au projet pour le Vector Atlas, contribuant à l'exécution transparente des opérations du projet. Avec une solide formation en biologie moléculaire et en génomique, Kawira se spécialise dans le soutien aux équipes multidisciplinaires et la gestion d'initiatives de recherche. Basée à l'icipe à Nairobi, Kenya, Kawira supervise les tâches logistiques et administratives pour le Vector Atlas, notamment la coordination des arrangements de voyage, l'engagement des parties prenantes et la gestion des ressources. Son expertise technique couvre le diagnostic moléculaire, la bioinformatique et l'analyse de données génomiques. Kawira joue un rôle vital dans la facilitation des objectifs du projet en assurant une collaboration efficace et la mise en œuvre des activités."
     },
-    {
-      "id": 14,
-      "name": "Mandela Muithi",
-      "location": "Kenya",
-      "imageURL": "/team/mandela.jpg",
-      "description": "Architecte de systèmes et cloud spécialisé dans la conception d'infrastructures évolutives et sécurisées et l'automatisation."
-    },
-    {
-      "id": 15,
-      "name": "Salvador Atagong",
-      "location": "Cameroon",
-      "imageURL": "/team/Salvador.png",
-      "description": "Salvador est doctorant à l'ICIPE avec une formation en mathématiques et en informatique. Son principal intérêt est l'analyse de données, le raisonnement des connaissances, le modèle de données commun, le web sémantique et l'IA. Sa contribution au projet Vector Atlas sera d'apporter le raisonnement des connaissances dans le processus de collecte de données et d'assurer qu'un vocabulaire commun est établi pour la plateforme afin qu'elle soit le guichet unique pour les données sur les vecteurs du paludisme dans le monde entier."
-    },
+    
+   
     {
       "id": 16,
       "name": "Lorna Chepkemoi",
@@ -119,20 +101,7 @@
       "imageURL": "/team/Moses.jpeg",
       "description": "Moses Mwaura est assistant de recherche à l'unité de modélisation des données et géospatiale (DMMG), campus Duduville de l'ICIPE, avec une formation en science de l'information géospatiale et un fort intérêt pour la modélisation et l'analyse des données. Son travail se concentre sur l'abstraction et la collecte de données sur les vecteurs du paludisme, en particulier en ce qui concerne l'occurrence, la bionomie et la résistance aux insecticides."
     },
-    {
-      "id": 19,
-      "name": "Peter Gitu",
-      "location": "Kenya",
-      "imageURL": "/team/Peter.png",
-      "description": "Peter est développeur de logiciels travaillant sur la création, le développement, le déploiement et la maintenance de la plateforme Vector Atlas. Il détient un baccalauréat en informatique avec un intérêt pour le développement web."
-    },
-    {
-      "id": 20,
-      "name": "Lovestrant Kemboi",
-      "location": "Kenya",
-      "imageURL": "/team/kemboi.png",
-      "description": "Kemboi est développeur de logiciels travaillant sur la création, le développement, le déploiement et la maintenance de la plateforme Vector Atlas. Il détient un baccalauréat en informatique avec un intérêt pour le développement web."
-    },
+    
     {
       "id": 21,
       "name": "Lucy Okoth",
@@ -161,13 +130,7 @@
       "imageURL": "team/Declan.jpg",
       "description": "Declan est développeur de logiciels contribuant au développement d'une plateforme web conçue pour gérer et abstraire efficacement les données sur les vecteurs moustiques, ainsi que d'autres ensembles de données selon les besoins des objectifs du projet."
     },
-    {
-      "id": 25,
-      "name": "Emily Muriuki",
-      "location": "Kenya",
-      "imageURL": "team/Emily.jpg",
-      "description": "Emily Nkirote Muriuki est assistante de recherche à l'unité de modélisation des données et géospatiale (DMMG), campus Duduville de l'ICIPE, avec une formation en développement de logiciels et un fort intérêt pour la modélisation des données. Son travail dans le vector atlas se concentre sur l'abstraction et la collecte de données sur les vecteurs du paludisme. Elle est passionnée par l'exploitation des insights basés sur les données, des solutions logicielles et des technologies géospatiales pour soutenir la surveillance vectorielle."
-    },
+   
     {
       "id": 27,
       "name": "Sylviane Miharisoa",
@@ -189,13 +152,7 @@
       "imageURL": "/team/masiga.jpg",
       "description": "Daniel Masiga est chercheur principal et chef de la priorité de recherche thématique sur la santé mondiale au Centre international de physiologie et d'écologie des insectes (icipe). Il est biologiste des maladies infectieuses dont la recherche se concentre sur la biologie des pathogènes et de leurs vecteurs arthropodes, utilisant la génomique et la bioinformatique pour étudier la transmission des maladies et soutenir le développement de stratégies de contrôle. Le Dr Masiga apporte un fort engagement envers le leadership scientifique et le mentorat et se consacre au renforcement de la capacité de l'Afrique à diriger des réponses scientifiques innovantes aux menaces de maladies transmises par vecteur."
     },
-    {
-      "id": 30,
-      "name": "Raphael Mongare",
-      "location": "Kenya",
-      "imageURL": "team/Raphael.png",
-      "description": "Raphael Mongare est agent de recherche géospatiale à l'icipe, contribuant au projet Vector Atlas. Son expertise réside dans l'analyse géospatiale et l'intégration de données d'observation de la Terre pour soutenir la cartographie des habitats/sites de reproduction des vecteurs moustiques. Raphael collabore également avec l'équipe technique pour améliorer la gestion et la visualisation des données spatiales lors du développement du hub de données du vector atlas, soutenant les stratégies de lutte vectorielle fondées sur des preuves."
-    },
+    
     {
       "id": 31,
       "name": "Victoria Odhiambo",

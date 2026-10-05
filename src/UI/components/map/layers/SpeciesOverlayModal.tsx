@@ -20,6 +20,8 @@ import {
   useMediaQuery,
   Slide,
   Fade,
+  Tooltip,
+  Button,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandLess from '@mui/icons-material/ExpandLess';
@@ -33,6 +35,7 @@ import {
 } from '../../../state/map/mapSlice';
 import { getWMTSOverlays } from '../../../state/map/actions/getWmtsoverlays';
 import { WMTSWorkspacesEnum } from '../../../state/state.types';
+import DownloadIcon from '@mui/icons-material/Download';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -92,6 +95,7 @@ const useSpeciesOverlays = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [loadingLayer, setLoadingLayer] = useState<string | null>(null);
+  const [repoLink] = useState('https://doi.org/10.26188/34044441');
 
   const WMTS_WORKSPACE = WMTSWorkspacesEnum.SPECIES;
 
@@ -150,6 +154,7 @@ const useSpeciesOverlays = () => {
     wmtsStatus,
     wmtsLayers,
     loadingLayer,
+    repoLink,
     toggleMinimized,
     handleClose,
     handleToggleLayer,
@@ -484,6 +489,7 @@ const PanelContent: React.FC<{
   wmtsStatus: string;
   wmtsLayers: WMTSLayer[];
   loadingLayer: string | null;
+  repoLink: string;
   onToggleLayer: (name: string) => void;
 }> = ({
   isMinimized,
@@ -491,6 +497,7 @@ const PanelContent: React.FC<{
   wmtsStatus,
   wmtsLayers,
   loadingLayer,
+  repoLink,
   onToggleLayer,
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -607,6 +614,43 @@ const PanelContent: React.FC<{
           </Box>
           <ScrollHint visible={showScrollHint} />
         </Box>
+        <Box sx={{ px: 1.5, pb: 1, pt: 0.5, zIndex: 4 }}>
+          <Tooltip
+            title="Link to the repository containing the IR overlays"
+            placement="top"
+            arrow
+          >
+            <Button
+              href={repoLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              fullWidth
+              variant="outlined"
+              size="small"
+              startIcon={<DownloadIcon sx={{ color: ACCENT }} />}
+              sx={{
+                justifyContent: 'flex-start',
+                color: TEXT_PRIMARY,
+                borderColor: BORDER_SUBTLE,
+                backgroundColor: 'rgba(255,255,255,0.02)',
+                textTransform: 'none',
+                borderRadius: '8px',
+                py: 0.8,
+                px: 1.5,
+                '&:hover': {
+                  borderColor: ACCENT_BORDER,
+                  backgroundColor: ACCENT_DIM,
+                  transform: 'translateX(3px)',
+                },
+                transition: TRANSITION,
+              }}
+            >
+              <Typography variant="body2" sx={{ fontWeight: 500, ml: 0.5 }}>
+                Download Overlays Repository
+              </Typography>
+            </Button>
+          </Tooltip>
+        </Box>
         <Box sx={{ px: 1.5, pt: 0.5 }}>
           <Divider sx={{ borderColor: 'rgba(255,255,255,0.06)' }} />
         </Box>
@@ -631,6 +675,7 @@ export const SpeciesOverlaysPanel: React.FC = () => {
     wmtsStatus,
     wmtsLayers,
     loadingLayer,
+    repoLink,
     toggleMinimized,
     handleClose,
     handleToggleLayer,
@@ -704,6 +749,7 @@ export const SpeciesOverlaysPanel: React.FC = () => {
             wmtsStatus={wmtsStatus}
             wmtsLayers={wmtsLayers}
             loadingLayer={loadingLayer}
+            repoLink={repoLink}
             onToggleLayer={handleToggleLayer}
           />
         </Paper>
@@ -750,6 +796,7 @@ export const SpeciesOverlaysPanel: React.FC = () => {
         wmtsStatus={wmtsStatus}
         wmtsLayers={wmtsLayers}
         loadingLayer={loadingLayer}
+        repoLink={repoLink}
         onToggleLayer={handleToggleLayer}
       />
     </Paper>

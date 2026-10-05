@@ -28,13 +28,7 @@
       "imageURL": "/team/VH1.jpg",
       "description": "Vicky is the project administrator for the Vector Atlas. With a background in atmospheric chemistry and then climate change research, Vicky worked for the UK Department of Environment, Food and Rural Affairs on national and international environmental policy-related issues before moving to the University of Oxford in 2008 as a research project officer."
     },
-    {
-      "id": 5,
-      "name": "Mark Wamalwa",
-      "location": "Kenya",
-      "imageURL": "/team/markw_VectorAtlas_pic.png",
-      "description": "Dr. Mark Wamalwa is a modeller/bioinformatician under the Data Management, Modelling, and Geo-Information (DMMG) Unit, icipe. His research interests focus on improved livelihoods, food security and environmental sustainability with a specific emphasis on elucidating transmission dynamics of viruses of public health importance."
-    },
+    
     {
       "id": 6,
       "name": "Kennedy Senagi",
@@ -91,20 +85,8 @@
       "imageURL": "/team/kawira.jpeg",
       "description": "Kawira Mathenge is the Project Support Officer for the Vector Atlas, contributing to the seamless execution of project operations. With a robust background in molecular biology and genomics, Kawira specializes in supporting multidisciplinary teams and managing research initiatives. Based at icipe in Nairobi, Kenya, Kawira oversees logistical and administrative tasks for the Vector Atlas, including coordinating travel arrangements, stakeholder engagement, and resource management. Her technical expertise spans molecular diagnostics, bioinformatics, and genomic data analysis. Kawira plays a vital role in facilitating the project’s objectives by ensuring efficient collaboration and activity implementation."
     },
-    {
-      "id": 14,
-      "name": "Mandela Muithi",
-      "location": "Kenya",
-      "imageURL": "/team/mandela.jpg",
-      "description": "Systems and Cloud Architect specializing in scalable, secure infrastructure design and automation."
-    },
-    {
-      "id": 15,
-      "name": "Salvador Atagong",
-      "location": "Cameroon",
-      "imageURL": "/team/Salvador.png",
-      "description": "Salvador is a Ph.D. scholar at ICIPE with a background in mathematics and computer science. His main interest is Data analytics, knowledge reasoning, Common Data Model, Semantic web, and AI. His contribution to the vector Atlas project will be to bring in knowledge reasoning in the data collection process, and assure a common vocabulary is set up for the platform in order for it to be the one-stop shop for malaria vector data worldwide."
-    },
+    
+    
     {
       "id": 16,
       "name": "Lorna Chepkemoi",
@@ -119,20 +101,8 @@
       "imageURL": "/team/Moses.jpeg",
       "description": "Moses Mwaura is a Research Assistant at the Data Modelling and Geospatial Unit (DMMG), ICIPE Duduville campus, with a background in Geospatial Information Science and a strong interest in data modelling and analysis. His work focuses on the abstraction and collation of malaria vector data, particularly in relation to occurrence, bionomics and insecticide resistance."
     },
-    {
-      "id": 19,
-      "name": "Peter Gitu",
-      "location": "Kenya",
-      "imageURL": "/team/Peter.png",
-      "description": "Peter is a software developer working on the creation, development, deployment and maintenance of the Vector Atlas platform. He holds a Bachelor's degree in Computer Science with an interest in web development."
-    },
-    {
-      "id": 20,
-      "name": "Lovestrant Kemboi",
-      "location": "Kenya",
-      "imageURL": "/team/kemboi.png",
-      "description": "Kemboi is a software developer working on the creation, development, deployment and maintenance of the Vector Atlas platform. He holds a Bachelor's degree in Computer Science with an interest in web development."
-    },
+    
+    
     {
       "id": 21,
       "name": "Lucy Okoth",
@@ -161,13 +131,7 @@
       "imageURL": "team/Declan.jpg",
       "description": "Declan is Software developer contributing to the development of a web-based platform designed to efficiently manage and abstract mosquito vector data, along with other datasets as required by project objectives."
     },
-    {
-      "id": 25,
-      "name": "Emily Muriuki",
-      "location": "Kenya",
-      "imageURL": "team/Emily.jpg",
-      "description": "Emily Nkirote Muriuki is a Research Assistant at the Data Modelling and Geospatial Unit (DMMG), ICIPE Duduville campus, with a background in software development and a strong interest in data modelling. Her work in the vector atlas focuses on the abstraction and collation of malaria vector data. She is passionate about leveraging data-driven insights, software solutions, and geospatial technologies to support vector surveillance."
-    },
+    
     {
       "id": 27,
       "name": "Sylviane Miharisoa",
@@ -189,13 +153,7 @@
       "imageURL": "/team/masiga.jpg",
       "description": "Daniel Masiga is a Principal Research Scientist and head of the Global Health Thematic Research Priority at the International Centre of Insect Physiology and Ecology (icipe). He is an infectious diseases biologist whose research focuses on the biology of pathogens and their arthropod vectors, using genomics and bioinformatics to investigate disease transmission and support the development of control strategies. Dr. Masiga brings a strong commitment to scientific leadership and mentorship and is dedicated to building Africa’s capacity to lead innovative, science-based responses to vector-borne disease threats"
     },
-    {
-      "id": 30,
-      "name": "Raphael Mongare",
-      "location": "Kenya",
-      "imageURL": "team/Raphael.png",
-      "description": "Raphael Mongare is a Geospatial Research Officer at icipe, contributing to the Vector Atlas project. His expertise lies in geospatial analysis and the integration of Earth observation data to support the mapping of mosquito vector breeding habitats/sites. Raphael also collaborates with the technical team to enhance spatial data management and visualization during the development of the vector atlas data hub, supporting evidence-based vector control strategies"
-    },
+   
     {
       "id": 31,
       "name": "Victoria Odhiambo",
