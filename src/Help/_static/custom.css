@@ -1,70 +1,320 @@
-/* Vector Atlas color overrides for sphinx_rtd_theme
-   Adjust hex values below to match your exact brand palette. */
-
 :root {
   --va-bg: #0B1120;
   --va-panel-bg: #231F20;
   --va-active: #808285;
   --va-accent: #038543;
+  --va-accent-dark: #026636;
   --va-gold: #EBBD40;
   --va-text: #FFFFFF;
+  --va-light-bg: #F8FAFC;
+  --va-border: #CBD5E1;
 }
 
-/* Sidebar background */
-.wy-nav-side {
-  background: var(--va-bg);
+/* ==========================================================================
+   0. Global typography & link color (fixes purple → green)
+   ========================================================================== */
+body,
+.wy-nav-content {
+  font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.65;
+  color: #1E293B;
 }
 
-/* Sidebar top logo/title bar */
-.wy-side-nav-search {
-  background: var(--va-bg);
-}
-
-/* Search box */
-.wy-side-nav-search input[type="text"] {
-  border-color: var(--va-panel-bg);
-}
-
-/* Nav menu items */
-.wy-menu-vertical a {
-  color: var(--va-text);
-}
-
-.wy-menu-vertical a:hover {
-  background: var(--va-active);
+a,
+a:visited,
+.rst-content a,
+.rst-content a:visited {
   color: var(--va-accent);
+  text-decoration: none;
 }
 
-/* Currently active page/section */
-.wy-menu-vertical li.current > a,
-.wy-menu-vertical li.toctree-l1.current > a {
-  background: var(--va-active);
+a:hover,
+.rst-content a:hover {
+  color: var(--va-accent-dark);
+  text-decoration: underline;
+}
+
+.rst-content h1,
+.rst-content h2,
+.rst-content h3,
+.rst-content h4 {
+  color: #0F172A;
+  font-weight: 700;
+  border-bottom: 1px solid var(--va-border);
+  padding-bottom: 0.35rem;
+}
+
+.rst-content h1 { font-size: 2rem; }
+.rst-content h2 { font-size: 1.5rem; margin-top: 2.25rem; }
+.rst-content h3 { font-size: 1.2rem; border-bottom: none; }
+
+/* ==========================================================================
+   1. Main content area
+   ========================================================================== */
+.wy-nav-content-wrap {
+  background: var(--va-light-bg) !important;
+  margin-left: 300px !important;
+}
+
+.wy-nav-content {
+  max-width: 1100px !important;
+  margin: 0 auto !important;
+  padding: 2.5rem 3rem !important;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  min-height: calc(100vh - 50px);
+}
+
+.wy-nav-content-wrap .wy-nav-top,
+.wy-breadcrumbs {
+  border-bottom: 1px solid var(--va-border);
+}
+
+/* Keep the aside li aligned right regardless of whether it was
+   inserted by the template block or the JS fallback */
+.wy-breadcrumbs > li.wy-breadcrumbs-aside {
+  float: right;
+}
+
+.wy-breadcrumbs li a,
+.wy-breadcrumbs li a:visited {
   color: var(--va-accent);
-  border: none;
+  font-weight: 600;
+}
+.wy-breadcrumbs li a:hover {
+  color: var(--va-accent-dark);
 }
 
-/* Section headers in the sidebar (EXPLORING-THE-DATA style labels) */
-.wy-menu-vertical p.caption {
-  color: var(--va-gold);
-  text-transform: uppercase;
+.rst-content table.docutils {
+  border: 1px solid var(--va-border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.rst-content table.docutils thead {
+  background: #F1F5F9;
+}
+.rst-content table.docutils th {
+  color: #0F172A;
   font-weight: 700;
 }
 
-/* Main content links */
-.rst-content a {
-  color: var(--va-accent);
+.rst-content pre.literal-block,
+.rst-content div[class^='highlight'] {
+  border-radius: 6px;
+  border: 1px solid var(--va-border);
+}
+.rst-content code.literal {
+  color: var(--va-accent-dark);
+  background: #F1F5F9;
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
 }
 
-.rst-content a:hover {
+.rst-content .admonition.note,
+.rst-content .admonition.tip,
+.rst-content .admonition.hint {
+  border-left: 4px solid var(--va-accent);
+  background: rgba(3, 133, 67, 0.06);
+}
+.rst-content .admonition-title {
+  background: var(--va-accent);
+}
+
+.btn,
+.rst-content .btn {
+  background: var(--va-accent) !important;
+  border-color: var(--va-accent-dark) !important;
+  color: #fff !important;
+}
+.btn:hover,
+.rst-content .btn:hover {
+  background: var(--va-accent-dark) !important;
+}
+
+/* ==========================================================================
+   2. Sidebar & Logo Styling
+   ========================================================================== */
+.wy-nav-side {
+  width: 300px !important;
+  background: var(--va-bg) !important;
+}
+
+.wy-side-nav-search {
+  background: var(--va-bg) !important;
+  padding: 1.5rem 1.25rem 1rem !important;
+  text-align: center;
+}
+
+.wy-side-nav-search img.logo,
+.wy-side-nav-search img {
+  display: block !important;
+  max-height: 60px !important;
+  width: auto !important;
+  margin: 0 auto 12px auto !important;
+  background: transparent !important;
+  border-radius: 4px;
+}
+
+.wy-side-nav-search > a {
+  font-size: 0 !important;
+}
+
+.wy-side-nav-search input[type="text"] {
+  border-radius: 20px !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.2) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+  padding: 8px 16px !important;
+  font-size: 0.9rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.wy-side-nav-search input[type="text"]:focus {
+  border-color: var(--va-accent) !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 0 0 3px rgba(3, 133, 67, 0.4) !important;
+  outline: none !important;
+}
+
+.wy-menu-vertical a {
+  color: rgba(255, 255, 255, 0.85) !important;
+  font-size: 0.92rem;
+  padding: 0.6rem 1.25rem !important;
+  transition: all 0.2s ease !important;
+}
+
+.wy-menu-vertical a:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: var(--va-gold) !important;
+  padding-left: 1.5rem !important;
+}
+
+.wy-menu-vertical li.current > a,
+.wy-menu-vertical li.toctree-l1.current > a {
+  background: rgba(3, 133, 67, 0.15) !important;
+  color: #ffffff !important;
+  border-left: 4px solid var(--va-accent) !important;
+  font-weight: 600;
+}
+
+.wy-menu-vertical p.caption {
+  color: var(--va-gold) !important;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  margin-top: 1.25rem;
+}
+
+/* ==========================================================================
+   3. Top Actions — language switcher (EN | FR | PT) & GitHub icon
+   ========================================================================== */
+.va-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0.4rem 0;
+}
+
+.va-lang-switch {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.va-lang-switch a {
+  color: #94A3B8;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.va-lang-switch a:hover {
   color: var(--va-gold);
 }
 
-/* Version/flyout badge in bottom right (RTD injects this automatically) */
-.rst-versions {
-  background: var(--va-panel-bg);
+.va-lang-switch a.active {
+  color: var(--va-accent);
 }
 
-.rst-versions .rst-current-version {
-  background: var(--va-active);
-  color: var(--va-accent);
+.va-lang-sep {
+  color: var(--va-border);
+  font-size: 0.75rem;
+}
+
+.va-github-link {
+  font-size: 1.25rem;
+  color: #334155 !important;
+  transition: transform 0.2s ease, color 0.2s ease !important;
+  display: inline-flex;
+  align-items: center;
+}
+
+.va-github-link:hover {
+  color: var(--va-accent) !important;
+  transform: scale(1.15);
+}
+
+/* ==========================================================================
+   4. Floating scroll indicator
+   ========================================================================== */
+.va-scroll-btn {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: none;
+  background: var(--va-accent);
+  color: #fff;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease, background 0.2s ease;
+  z-index: 1000;
+}
+
+.va-scroll-btn.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.va-scroll-btn:hover {
+  background: var(--va-gold);
+  color: #1E293B;
+}
+
+@media screen and (max-width: 768px) {
+  .va-scroll-btn {
+    bottom: 18px;
+    right: 18px;
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+}
+
+/* ==========================================================================
+   5. Responsive tweaks
+   ========================================================================== */
+@media screen and (max-width: 768px) {
+  .wy-nav-content-wrap {
+    margin-left: 0 !important;
+  }
+  .wy-nav-content {
+    padding: 1.5rem !important;
+  }
+  .va-top-actions {
+    gap: 10px;
+  }
 }

@@ -4,7 +4,6 @@
 # package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Vector Atlas Help \n"
@@ -22,23 +21,23 @@ msgstr ""
 
 #: ../../index.md:12
 msgid "Quick Start"
-msgstr ""
+msgstr "Démarrage rapide"
 
 #: ../../index.md:19
 msgid "Exploring the Data"
-msgstr ""
+msgstr "Explorer les données"
 
 #: ../../index.md:29
 msgid "Finding Out About the Project"
-msgstr ""
+msgstr "En savoir plus sur le projet"
 
 #: ../../index.md:37
 msgid "Contributing Data to the Atlas"
-msgstr ""
+msgstr "Contribuer des données à l'Atlas"
 
 #: ../../index.md:5
 msgid "Vector Atlas Help"
-msgstr ""
+msgstr "Aide de Vector Atlas"
 
 #: ../../index.md:7
 msgid ""
@@ -64,10 +63,35 @@ msgid ""
 "maps that promote and evolve our understanding of the variables that "
 "drive malaria transmission."
 msgstr ""
+"Les cartes sont un outil puissant. Elles peuvent illustrer la répartition"
+" des espèces de moustiques vecteurs connues pour transmettre certaines "
+"des maladies les plus débilitantes au monde et mettre en évidence les "
+"zones où ces espèces ne sont plus sensibles aux insecticides utilisés "
+"comme principal moyen de contrôle. Toutes les cartes fondées sur des "
+"données probantes reposent sur des données de terrain collectées d'une "
+"multitude de façons différentes par de nombreux collecteurs de données, à"
+" des fins variées. Isolées, ces données permettent de répondre aux "
+"questions pour lesquelles elles ont été collectées, mais combinées, leur "
+"valeur se multiplie. Le Vector Atlas construit une plateforme de données "
+"qui relie les données « essentielles » sur la présence des vecteurs "
+"africains, leur bionomie et la résistance aux insecticides, afin de "
+"fournir un « guichet unique » de données comparables et croisées. En "
+"utilisant nos protocoles de compilation normalisés et complets (Hay et "
+"al. 2010) pour extraire les données de la littérature publiée et grise "
+"(tout en conservant la propriété des données), nous mettons à jour nos "
+"ensembles de données de base (Sinka et al. (2010), Massey et al. (2016), "
+"Moyes et al. (2020)) qui s'étendront au-delà des espèces vectrices "
+"dominantes pour couvrir les espèces vectrices secondaires importantes "
+"responsables de la transmission résiduelle. Nous ajoutons des données "
+"pertinentes localement sur le comportement des communautés humaines, la "
+"flore locale (sources de nectar) et la faune (bétail). Combinées, ces "
+"données alimenteront de nouveaux modèles spatiaux et cartes qui "
+"favoriseront et feront évoluer notre compréhension des variables qui "
+"déterminent la transmission du paludisme."
 
 #: ../../index.md:9
 msgid "How to use this guide"
-msgstr ""
+msgstr "Comment utiliser ce guide"
 
 #: ../../index.md:11
 msgid ""
@@ -75,4 +99,7 @@ msgid ""
 "workflows of the system but if you're looking for a guide to start using "
 "the system then start with the [Quick start guide](quick-start.md)."
 msgstr ""
-
+"Les liens à gauche vous guident à travers les différents parcours "
+"utilisateurs du système, mais si vous cherchez un guide pour commencer à "
+"utiliser le système, commencez par le [guide de démarrage "
+"rapide](quick-start.md)."
