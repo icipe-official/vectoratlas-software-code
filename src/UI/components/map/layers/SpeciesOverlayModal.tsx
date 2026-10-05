@@ -234,9 +234,8 @@ const SpeciesLegend: React.FC = () => {
               height: hovered === i ? 14 : 10,
               borderRadius: '2px',
               background: stop.color,
-              border: `1px solid ${
-                hovered === i ? '#fff' : 'rgba(255,255,255,0.5)'
-              }`,
+              border: `1px solid ${hovered === i ? '#fff' : 'rgba(255,255,255,0.5)'
+                }`,
               cursor: 'pointer',
               transition: TRANSITION,
               zIndex: 2,
@@ -258,8 +257,8 @@ const SpeciesLegend: React.FC = () => {
                 i === 0
                   ? 'left'
                   : i === LEGEND_STOPS.length - 1
-                  ? 'right'
-                  : 'center',
+                    ? 'right'
+                    : 'center',
               color: hovered === i ? '#fff' : TEXT_MUTED,
               fontWeight: hovered === i ? 700 : 500,
               lineHeight: 1.1,
@@ -345,11 +344,11 @@ const LayerItem: React.FC<LayerItemProps> = React.memo(
   ({ layer, isLoading, onToggle }) => {
     const label = layer.title
       ? layer.title
-          .split('Species_Distribution_Maps__')[1]
-          ?.replace(/_/g, ' ') ?? layer.title
+        .split('Species_Distribution_Maps__')[1]
+        ?.replace(/_/g, ' ') ?? layer.title
       : layer.name
-          .split('Species_Distribution_Maps__')[1]
-          ?.replace(/_/g, ' ') ?? layer.name;
+        .split('Species_Distribution_Maps__')[1]
+        ?.replace(/_/g, ' ') ?? layer.name;
     return (
       <ListItemButton
         onClick={() => onToggle(layer.name)}
@@ -500,100 +499,100 @@ const PanelContent: React.FC<{
   repoLink,
   onToggleLayer,
 }) => {
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [showScrollHint, setShowScrollHint] = useState(false);
+    const scrollRef = useRef<HTMLDivElement>(null);
+    const [showScrollHint, setShowScrollHint] = useState(false);
 
-  const checkScroll = useCallback(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    const isOverflowing = el.scrollHeight > el.clientHeight + 4;
-    const isNotAtBottom = el.scrollTop + el.clientHeight < el.scrollHeight - 8;
-    setShowScrollHint(isOverflowing && isNotAtBottom);
-  }, []);
+    const checkScroll = useCallback(() => {
+      const el = scrollRef.current;
+      if (!el) return;
+      const isOverflowing = el.scrollHeight > el.clientHeight + 4;
+      const isNotAtBottom = el.scrollTop + el.clientHeight < el.scrollHeight - 8;
+      setShowScrollHint(isOverflowing && isNotAtBottom);
+    }, []);
 
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    checkScroll();
-    el.addEventListener('scroll', checkScroll, { passive: true });
-    const ro = new ResizeObserver(checkScroll);
-    ro.observe(el);
-    return () => {
-      el.removeEventListener('scroll', checkScroll);
-      ro.disconnect();
-    };
-  }, [checkScroll, isMinimized]);
+    useEffect(() => {
+      const el = scrollRef.current;
+      if (!el) return;
+      checkScroll();
+      el.addEventListener('scroll', checkScroll, { passive: true });
+      const ro = new ResizeObserver(checkScroll);
+      ro.observe(el);
+      return () => {
+        el.removeEventListener('scroll', checkScroll);
+        ro.disconnect();
+      };
+    }, [checkScroll, isMinimized]);
 
-  return (
-    <Collapse
-      in={!isMinimized}
-      timeout={300}
-      sx={{
-        flexGrow: 1,
-        overflow: 'hidden',
-        display: 'flex',
-        flexDirection: 'column',
-        minHeight: 0,
-        '&.MuiCollapse-entered .MuiCollapse-wrapper': {
-          flexGrow: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          minHeight: 0,
-        },
-        '&.MuiCollapse-entered .MuiCollapse-wrapperInner': {
-          flexGrow: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          minHeight: 0,
-        },
-      }}
-    >
-      <Box
+    return (
+      <Collapse
+        in={!isMinimized}
+        timeout={300}
         sx={{
-          flex: 1,
+          flexGrow: 1,
           overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column',
           minHeight: 0,
+          '&.MuiCollapse-entered .MuiCollapse-wrapper': {
+            flexGrow: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: 0,
+          },
+          '&.MuiCollapse-entered .MuiCollapse-wrapperInner': {
+            flexGrow: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: 0,
+          },
         }}
       >
         <Box
           sx={{
+            flex: 1,
             overflow: 'hidden',
-            flex: 9,
-            position: 'relative',
             display: 'flex',
             flexDirection: 'column',
             minHeight: 0,
           }}
         >
           <Box
-            ref={scrollRef}
             sx={{
-              px: 1,
-              py: 1,
-              overflowY: 'auto',
-              maxHeight: isMobile
-                ? `calc(${MOBILE_SHEET_MAX_HEIGHT} - 160px)`
-                : '42vh',
-              '&::-webkit-scrollbar': { width: 8 },
-              '&::-webkit-scrollbar-thumb': {
-                background: ACCENT,
-                borderRadius: 10,
-              },
-              pb: isMobile ? 'max(8px, env(safe-area-inset-bottom))' : 0.5,
+              overflow: 'hidden',
+              flex: 9,
+              position: 'relative',
+              display: 'flex',
+              flexDirection: 'column',
+              minHeight: 0,
             }}
           >
-            {wmtsStatus === 'loading' && (
-              <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
-                <CircularProgress
-                  size={18}
-                  thickness={4}
-                  sx={{ color: ACCENT }}
-                />
-              </Box>
-            )}
-            {/* {Object.entries(grouped).map(([groupName, layers]) => (
+            <Box
+              ref={scrollRef}
+              sx={{
+                px: 1,
+                py: 1,
+                overflowY: 'auto',
+                maxHeight: isMobile
+                  ? `calc(${MOBILE_SHEET_MAX_HEIGHT} - 160px)`
+                  : '42vh',
+                '&::-webkit-scrollbar': { width: 8 },
+                '&::-webkit-scrollbar-thumb': {
+                  background: ACCENT,
+                  borderRadius: 10,
+                },
+                pb: isMobile ? 'max(8px, env(safe-area-inset-bottom))' : 0.5,
+              }}
+            >
+              {wmtsStatus === 'loading' && (
+                <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+                  <CircularProgress
+                    size={18}
+                    thickness={4}
+                    sx={{ color: ACCENT }}
+                  />
+                </Box>
+              )}
+              {/* {Object.entries(grouped).map(([groupName, layers]) => (
             <LayerGroup
               key={groupName}
               groupName={groupName}
@@ -603,63 +602,63 @@ const PanelContent: React.FC<{
               onToggleLayer={onToggleLayer}
             />
           ))} */}
-            {wmtsLayers.map((layer) => (
-              <LayerItem
-                key={layer.name}
-                layer={layer}
-                isLoading={loadingLayer === layer.name}
-                onToggle={onToggleLayer}
-              />
-            ))}
+              {wmtsLayers.map((layer) => (
+                <LayerItem
+                  key={layer.name}
+                  layer={layer}
+                  isLoading={loadingLayer === layer.name}
+                  onToggle={onToggleLayer}
+                />
+              ))}
+            </Box>
+            <ScrollHint visible={showScrollHint} />
           </Box>
-          <ScrollHint visible={showScrollHint} />
-        </Box>
-        <Box sx={{ px: 1.5, pb: 1, pt: 0.5, zIndex: 4 }}>
-          <Tooltip
-            title="Link to the repository containing the IR overlays"
-            placement="top"
-            arrow
-          >
-            <Button
-              href={repoLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              fullWidth
-              variant="outlined"
-              size="small"
-              startIcon={<DownloadIcon sx={{ color: ACCENT }} />}
-              sx={{
-                justifyContent: 'flex-start',
-                color: TEXT_PRIMARY,
-                borderColor: BORDER_SUBTLE,
-                backgroundColor: 'rgba(255,255,255,0.02)',
-                textTransform: 'none',
-                borderRadius: '8px',
-                py: 0.8,
-                px: 1.5,
-                '&:hover': {
-                  borderColor: ACCENT_BORDER,
-                  backgroundColor: ACCENT_DIM,
-                  transform: 'translateX(3px)',
-                },
-                transition: TRANSITION,
-              }}
+          <Box sx={{ px: 1.5, pb: 1, pt: 0.5, zIndex: 4 }}>
+            <Tooltip
+              title="Link to the repository containing the Species distribution overlays"
+              placement="top"
+              arrow
             >
-              <Typography variant="body2" sx={{ fontWeight: 500, ml: 0.5 }}>
-                Download Overlays Repository
-              </Typography>
-            </Button>
-          </Tooltip>
+              <Button
+                href={repoLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                fullWidth
+                variant="outlined"
+                size="small"
+                startIcon={<DownloadIcon sx={{ color: ACCENT }} />}
+                sx={{
+                  justifyContent: 'flex-start',
+                  color: TEXT_PRIMARY,
+                  borderColor: BORDER_SUBTLE,
+                  backgroundColor: 'rgba(255,255,255,0.02)',
+                  textTransform: 'none',
+                  borderRadius: '8px',
+                  py: 0.8,
+                  px: 1.5,
+                  '&:hover': {
+                    borderColor: ACCENT_BORDER,
+                    backgroundColor: ACCENT_DIM,
+                    transform: 'translateX(3px)',
+                  },
+                  transition: TRANSITION,
+                }}
+              >
+                <Typography variant="body2" sx={{ fontWeight: 500, ml: 0.5 }}>
+                  Download Overlays Repository
+                </Typography>
+              </Button>
+            </Tooltip>
+          </Box>
+          <Box sx={{ px: 1.5, pt: 0.5 }}>
+            <Divider sx={{ borderColor: 'rgba(255,255,255,0.06)' }} />
+          </Box>
+          {/* <ResistanceLegend /> */}
+          <SpeciesLegend />
         </Box>
-        <Box sx={{ px: 1.5, pt: 0.5 }}>
-          <Divider sx={{ borderColor: 'rgba(255,255,255,0.06)' }} />
-        </Box>
-        {/* <ResistanceLegend /> */}
-        <SpeciesLegend />
-      </Box>
-    </Collapse>
-  );
-};
+      </Collapse>
+    );
+  };
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 
