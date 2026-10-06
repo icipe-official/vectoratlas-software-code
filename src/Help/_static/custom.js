@@ -16,6 +16,14 @@ document.addEventListener('DOMContentLoaded', function () {
 // installed sphinx_rtd_theme version's internal template structure,
 // and regardless of whether a template-only change triggered a
 // full Sphinx rebuild.
+//
+// Two URL layouts are supported:
+//   Local (python -m http.server):   /<page>, /fr/<page>, /pt/<page>
+//   Read the Docs:                   /<lang>/<version>/<page>
+//                                    e.g. /fr/latest/quick-start.html
+// On Read the Docs, the French and Portuguese translation projects can
+// also be opened on their own domains (<project>-fr.readthedocs.io), which
+// only serve their own language, so links always point at the main domain.
 document.addEventListener("DOMContentLoaded", function () {
   var breadcrumbs = document.querySelector(".wy-breadcrumbs");
 
@@ -25,20 +33,55 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
-  var path = window.location.pathname;
-  var lang = "en";
-  var pagePath = path;
-  if (path.indexOf("/fr/") === 0) {
-    lang = "fr";
-    pagePath = path.slice(3) || "/";
-  } else if (path.indexOf("/pt/") === 0) {
-    lang = "pt";
-    pagePath = path.slice(3) || "/";
-  }
+  var loc = window.location;
+  var path = loc.pathname;
+  var host = loc.hostname;
 
-  var enHref = pagePath;
-  var frHref = "/fr" + pagePath;
-  var ptHref = "/pt" + pagePath;
+  var onReadTheDocs =
+    /\.readthedocs\.(io|org)$/.test(host) ||
+    typeof window.READTHEDOCS_DATA !== "undefined";
+
+  var lang = "en";
+  var enHref, frHref, ptHref;
+
+  if (onReadTheDocs) {
+    // Main domain, even when viewing a translation project's own domain.
+    var origin = loc.origin;
+    var sub = host.match(/^(.+)-(?:fr|pt)\.(readthedocs\.(?:io|org))$/);
+    if (sub) {
+      origin = loc.protocol + "//" + sub[1] + "." + sub[2];
+    }
+
+    var rtd = path.match(/^\/(en|fr|pt)\/([^\/]+)\/(.*)$/);
+    var version = "latest";
+    var rest = "";
+    if (rtd) {
+      lang = rtd[1];
+      version = rtd[2];
+      rest = rtd[3];
+    }
+
+    var rtdHref = function (code) {
+      return origin + "/" + code + "/" + version + "/" + rest;
+    };
+    enHref = rtdHref("en");
+    frHref = rtdHref("fr");
+    ptHref = rtdHref("pt");
+  } else {
+    // Local layout: English at the root, other languages under /fr and /pt.
+    var pagePath = path;
+    if (path.indexOf("/fr/") === 0) {
+      lang = "fr";
+      pagePath = path.slice(3) || "/";
+    } else if (path.indexOf("/pt/") === 0) {
+      lang = "pt";
+      pagePath = path.slice(3) || "/";
+    }
+
+    enHref = pagePath;
+    frHref = "/fr" + pagePath;
+    ptHref = "/pt" + pagePath;
+  }
 
   var li = document.createElement("li");
   li.className = "wy-breadcrumbs-aside";
