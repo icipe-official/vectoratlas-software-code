@@ -37,10 +37,10 @@ export default function NavBar() {
   const moreOptions = [
     { text: t('species'), url: '/species' },
     { text: t('source'), url: '/sources' },
-    { text: t('addSource'), url: '/new_source', role: 'uploader' },
-    { text: t('datasets'), url: '/uploaded-dataset/list' },
-    { text: t('catalogue'), url: '/speciesCatalogue' },
-    { text: t('countryCatalogue'), url: '/countryCatalogue' },
+    // { text: t('addSource'), url: '/new_source', role: 'uploader' },
+    // { text: t('datasets'), url: '/uploaded-dataset/list' },
+    // { text: t('catalogue'), url: '/speciesCatalogue' },
+    // { text: t('countryCatalogue'), url: '/countryCatalogue' },
   ];
   if (
     user &&
@@ -64,6 +64,11 @@ export default function NavBar() {
       url: '/admin',
     });
     moreOptions.push({ text: t('translations'), url: '/translations-edit' });
+
+    moreOptions.push({ text: t('addSource'), url: '/new_source' });
+    moreOptions.push({ text: t('datasets'), url: '/uploaded-dataset/list' });
+    moreOptions.push({ text: t('catalogue'), url: '/speciesCatalogue' });
+    moreOptions.push({ text: t('countryCatalogue'), url: '/countryCatalogue' });
   }
 
   const navItemStyle = {
