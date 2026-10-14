@@ -4,6 +4,7 @@ import { InsecticideResistanceService } from './insecticideResistance.service';
 import { InsecticideResistanceResolver } from './insecticideResistance.resolver';
 import { InsecticideResistanceBioassays } from './entities/insecticideResistanceBioassays.entity';
 import { Rdl296GenotypeFrequencies } from './entities/rdl296GenotypeFrequencies.entity';
+import { IrSearchController } from './ir-search.controller';
 
 @Module({
   imports: [
@@ -14,5 +15,6 @@ import { Rdl296GenotypeFrequencies } from './entities/rdl296GenotypeFrequencies.
   ],
   providers: [InsecticideResistanceService, InsecticideResistanceResolver],
   exports: [TypeOrmModule, InsecticideResistanceService],
+  controllers: [IrSearchController],
 })
 export class InsecticideResistanceModule {}
