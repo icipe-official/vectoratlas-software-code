@@ -1,11 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, In, Repository } from 'typeorm';
 import * as ExcelJS from 'exceljs';
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { DynamicRelationLoader } from '../shared/dynamic-relation-loader';
 import { Occurrence } from '../occurrence/entities/occurrence.entity';
 import { RawTemplateFieldMap } from '../occurrence/template-mapping';
 import { ApprovalStatus, DOISourceType } from 'src/commonTypes';
@@ -17,6 +16,69 @@ import { ExportJob } from 'src/exports/export-job.entity';
 const AZURE_EXPORTS_DIRECTORY =
   process.env.AZURE_EXPORTS_DIRECTORY || 'exports';
 
+/**
+ * Non-circular relation tree for the data export.
+ *
+ * This is a curated subset of the Occurrence entity's relations that excludes
+ * back-references (e.g., Bionomics -> Occurrence, Reference -> Bionomics) to
+ * avoid circular JOINs. Each table is joined exactly once, producing a single
+ * SQL query per batch via `relationLoadStrategy: 'join'`.
+ *
+ * Total: 40 tables, 615 columns — well within PostgreSQL's 1664-column limit.
+ *
+ * See docs/export-relation-tree.md for the full tree diagram and rationale.
+ */
+const EXPORT_RELATIONS = {
+  reference: true,
+  site: true,
+  recordedSpecies: true,
+  sample: true,
+  dataset: true,
+  bionomics: {
+    biology: true,
+    infection: true,
+    bitingRate: true,
+    anthropoZoophagic: true,
+    endoExophagic: true,
+    bitingActivity: true,
+    endoExophily: true,
+    environment: true,
+    LarvalSite: true,
+  },
+  insecticideResistanceBioassays: {
+    genotypicRepresentativeness: true,
+    vgscMethodAndSample: true,
+    vgscGeneytpeFrequencies: true,
+    kdrGenotypeFrequencies: true,
+    vgsc995AlleleFrequencies: true,
+    vgsc402GenotypeFrequencies: true,
+    vgsc402AlleleFrequencies: true,
+    vgsc1570GenotypeFrequencies: true,
+    vgsc1570AlleleFrequencies: true,
+    rdlMethodAndSample: true,
+    rdl296GenotypeFrequencies: true,
+    rdl296AlleleFrequencies: true,
+    ace1MethodAndSample: true,
+    ace1GenotypeFrequencies: true,
+    ace1AlleleFrequencies: true,
+    gsteMethodAndSample: true,
+    gste2_119AlleleFrequencies: true,
+    gste2_119GenotypeFrequencies: true,
+    gste2_114AlleleFrequencies: true,
+    gste2_114GenotypeFrequencies: true,
+    cyp4j5AlleleFrequencies: true,
+    cyp4j5GenotypeFrequencies: true,
+    cyp6p4AlleleFrequencies: true,
+    cyp6p4GenotypeFrequencies: true,
+    cyp6aapAlleleFrequencies: true,
+    cyp6aapGenotypeFrequencies: true,
+    cytochromesP450_cypMethodAndSample: true,
+    vgsc995GenotypeFrequenciesFormally1014: true,
+    rdl296cRdl296gRdl296sGenotypeFrequencies: true,
+    ace1GenotypeFrequenciesFormally119: true,
+  },
+};
+
 type RelationIndexNode = {
   tableName: string;
   relationName: string;
@@ -26,6 +88,7 @@ type RelationIndexNode = {
 
 @Injectable()
 export class DynamicExportServiceV2<T = Occurrence> {
+  private readonly logger = new Logger(DynamicExportServiceV2.name);
   constructor(
     @InjectRepository(Occurrence)
     private readonly repository: Repository<Occurrence>,
@@ -180,7 +243,7 @@ export class DynamicExportServiceV2<T = Occurrence> {
       fs.mkdirSync(exportDir, { recursive: true });
     }
 
-    console.log('Using pageSize of', pageSize);
+    this.logger.log(`Using pageSize of ${pageSize}`);
 
     const finalPath =
       targetFilePath ||
@@ -213,12 +276,33 @@ export class DynamicExportServiceV2<T = Occurrence> {
     }));
     worksheet.getRow(1).commit();
 
-    const loader = new DynamicRelationLoader(this.repository);
     const approvedIds = occurrenceIds || [];
 
-    // If no occurrenceIds provided, fetch all occurrences using filters
+    // If no occurrenceIds provided, fetch all occurrences using filters.
+    // When no IDs are provided, we also filter by dataset.status = 'Approved'
+    // to ensure only data from approved datasets is exported.
     const useAllOccurrences = !approvedIds || approvedIds.length === 0;
-    const total = useAllOccurrences ? 1 : Math.max(approvedIds.length, 1);
+
+    // When fetching all occurrences (no explicit IDs), add a filter
+    // for approved datasets only. This ensures exports don't include
+    // data from pending or rejected datasets.
+    const exportFilters = useAllOccurrences
+      ? { ...(filters || {}), dataset: { status: 'Approved' } }
+      : filters || {};
+
+    // Get the true total row count for accurate progress reporting.
+    // When downloading by occurrence IDs, the total is the ID count.
+    // When downloading by filters, we need a COUNT query so progress
+    // doesn't jump to 85% after the first batch.
+    let total: number;
+    if (useAllOccurrences) {
+      total = await this.repository.count({
+        where: exportFilters,
+      });
+      if (total === 0) total = 1; // avoid division by zero if no rows
+    } else {
+      total = Math.max(approvedIds.length, 1);
+    }
 
     let page = 0;
     let entities: any[] = [];
@@ -227,21 +311,25 @@ export class DynamicExportServiceV2<T = Occurrence> {
       const skip = page * pageSize;
 
       if (useAllOccurrences) {
-        // Fetch all occurrences with filters and pagination
-        entities = await loader.find({
-          where: filters || {},
+        // Fetch all occurrences with filters and pagination in a single JOIN query
+        entities = await this.repository.find({
+          where: exportFilters,
+          relations: EXPORT_RELATIONS as any,
+          relationLoadStrategy: 'join',
           order: { id: 'ASC' },
           skip,
           take: pageSize,
         });
         if (!entities.length) break;
       } else {
-        // Use the existing ID-based approach
+        // Use the existing ID-based approach with a single JOIN query
         const ids = approvedIds.slice(skip, skip + pageSize);
         if (!ids.length) break;
 
-        entities = await loader.find({
-          where: { id: In(ids) },
+        entities = await this.repository.find({
+          where: { id: In(ids) as any },
+          relations: EXPORT_RELATIONS as any,
+          relationLoadStrategy: 'join',
           order: { id: 'ASC' },
         });
         if (!entities.length) break;
@@ -292,9 +380,11 @@ export class DynamicExportServiceV2<T = Occurrence> {
     const sheet2 = workbook.addWorksheet('Filters & DOI');
     sheet2.addRow(['Filters', '']).commit();
 
-    console.log('makeFiltersAndDOISheet filters:', JSON.stringify(filters));
+    this.logger.debug(
+      `makeFiltersAndDOISheet filters: ${JSON.stringify(filters)}`,
+    );
     if (filters) {
-      console.log(`Processing ${Object.keys(filters).length} filters`);
+      this.logger.debug(`Processing ${Object.keys(filters).length} filters`);
       Object.keys(filters).forEach((element) => {
         const val = filters[element];
         // Convert complex values to readable strings
@@ -321,7 +411,7 @@ export class DynamicExportServiceV2<T = Occurrence> {
           // Convert Unix timestamp to human-readable date
           displayValue = new Date(val).toISOString().split('T')[0];
         }
-        console.log(`Adding filter row: ${element}=${displayValue}`);
+        this.logger.debug(`Adding filter row: ${element}=${displayValue}`);
         sheet2.addRow([element, displayValue]).commit();
       });
 

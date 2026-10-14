@@ -1,0 +1,32 @@
+# Files List Endpoint
+# Lists and searches files with pagination
+
+paths:
+  /files:
+    get:
+      tags:
+        - File
+      summary: List or search files
+      description: |
+        Returns a paginated list of files. Supports filtering by folder name and searching by name or description.
+        
+        Example requests:
+        - GET /api/files - List all files
+        - GET /api/files?folder_name=occurrence_data - List files in a specific folder
+        - GET /api/files?q=mosquito - Search files by name or description
+        - GET /api/files?page=2&page_size=20 - Paginated list
+      operationId: listFiles
+      parameters:
+        - $ref: ../../parameters/file/folder_name.yaml#/components/parameters/FolderName
+        - $ref: ../../parameters/file/search_query.yaml#/components/parameters/SearchQuery
+        - $ref: ../../parameters/common/pagination.yaml#/components/parameters/Page
+        - $ref: ../../parameters/common/pagination.yaml#/components/parameters/PageSize
+      responses:
+        "200":
+          $ref: ../../responses/file/file_list.yaml#/components/responses/FileList
+        "400":
+          $ref: ../../responses/common/error.yaml#/components/responses/BadRequest
+        "401":
+          $ref: ../../responses/common/error.yaml#/components/responses/Unauthorized
+        "500":
+          $ref: ../../responses/common/error.yaml#/components/responses/ServerError

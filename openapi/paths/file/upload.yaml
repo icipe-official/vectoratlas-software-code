@@ -1,0 +1,64 @@
+# File Upload Endpoint
+# Uploads a new file using multipart/formdata
+
+paths:
+  /files/upload:
+    post:
+      tags:
+        - File
+      summary: Upload a new file
+      description: |
+        Uploads a new file to the system using multipart/formdata format.
+        
+        The endpoint accepts:
+        - file: The binary file content (required)
+        - folder_name: Name of the folder to store the file in (optional)
+        
+        Example request:
+        POST /api/files/upload
+        Content-Type: multipart/form-data
+        
+        --boundary--
+        Content-Disposition: form-data; name="file"; filename="mosquito_occurrence.csv"
+        Content-Type: text/csv
+        
+        <file content>
+        --boundary--
+        Content-Disposition: form-data; name="folder_name"
+        
+        occurrence_data
+        --boundary--
+      operationId: uploadFile
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: ../../schemas/file/file_upload.yaml#/components/schemas/FileUpload
+      responses:
+        "201":
+          description: File uploaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/file/file_metadata.yaml#/components/schemas/FileMetadata
+        "400":
+          $ref: ../../responses/common/error.yaml#/components/responses/BadRequest
+        "401":
+          $ref: ../../responses/common/error.yaml#/components/responses/Unauthorized
+        "413":
+          description: Payload too large
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/common/error.yaml#/components/schemas/Error
+              example:
+                code: "PAYLOAD_TOO_LARGE"
+                message: "File size exceeds the maximum allowed limit"
+                details:
+                  max_size: 104857600
+                timestamp: "2023-01-15T10:30:00Z"
+        "500":
+          $ref: ../../responses/common/error.yaml#/components/responses/ServerError
+      security:
+        - BearerAuth: []

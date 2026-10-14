@@ -13,6 +13,9 @@ import { Occurrence } from 'src/db/occurrence/entities/occurrence.entity';
 import { ExportsServiceV2 } from './exports.service-v2';
 import { ExportsProcessorV2 } from './exports.processor-v2';
 import { DynamicExportServiceV2 } from 'src/db/shared/dynamic-export.service-v2';
+import { ExportsProcessorV3 } from './exports.processor-v3';
+import { DynamicExportServiceV3 } from 'src/db/shared/dynamic-export.service-v3';
+
 @Module({
   imports: [
     TypeOrmModule.forFeature([ExportJob, DOI, Occurrence]),
@@ -27,10 +30,13 @@ import { DynamicExportServiceV2 } from 'src/db/shared/dynamic-export.service-v2'
   providers: [
     ExportsRepository,
     AzureBlobService,
-    // V2 Services (only v2 versions are active)
     ExportsServiceV2,
+    // Only one processor can be active at a time (both bind to the 'exports' queue).
+    // To test v3: comment out V2 processor/service and uncomment V3.
     ExportsProcessorV2,
     DynamicExportServiceV2,
+    // ExportsProcessorV3,
+    // DynamicExportServiceV3,
   ],
   exports: [ExportsServiceV2],
 })

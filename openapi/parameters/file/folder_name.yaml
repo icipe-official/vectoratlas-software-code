@@ -1,0 +1,12 @@
+# Folder Name Parameter
+
+components:
+  parameters:
+    FolderName:
+      name: folder_name
+      in: query
+      description: Name of the folder to filter files by
+      required: false
+      schema:
+        type: string
+      example: "occurrence_data"

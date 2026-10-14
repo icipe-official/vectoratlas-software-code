@@ -1,0 +1,16 @@
+# Preview Identifier Parameter
+# Used for identifying a preview file by UUID or slug
+
+components:
+  parameters:
+    PreviewIdentifier:
+      name: previewIdentifier
+      in: path
+      required: true
+      description: |
+        Unique identifier for a preview file (UUID or slug).
+        The system will first attempt to parse the identifier as a UUID. If that fails,
+        it will treat it as a slug.
+      schema:
+        type: string
+      example: "323e4567-e89b-12d3-a456-426614174002"

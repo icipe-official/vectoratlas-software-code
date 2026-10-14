@@ -69,7 +69,18 @@ async function bootstrap() {
     }),
   });
   app.use(json({ limit: '30mb' }));
-  app.enableCors();
+  app.enableCors({
+    origin: process.env.ALLOWED_ORIGINS
+      ? process.env.ALLOWED_ORIGINS.split(';')
+      : [
+          'http://localhost:9000', // Local openapicmd Swagger UI
+          'http://localhost:3000', // Local Web development
+          'http://localhost:3002', // Local Web UI
+        ],
+    credentials: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: 'Content-Type, Accept, Authorization',
+  });
   await app.listen(3001);
 }
 bootstrap();

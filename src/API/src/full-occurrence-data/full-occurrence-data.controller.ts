@@ -9,7 +9,7 @@ import {
   Req,
   HttpStatus,
 } from '@nestjs/common';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import * as path from 'path';
 import { createReadStream, Stats } from 'fs';
 import { access, stat } from 'fs/promises';
@@ -34,16 +34,13 @@ export class FullOccurrenceDataController {
     const fullFileName = `${fileName}.${extension}`;
     const baseFilePath = path.join(folderPath, fullFileName);
 
-    // Get accepted encodings from the request headers
-    const acceptEncoding = res.req.headers['accept-encoding'] || '';
+    const acceptEncoding = req.headers['accept-encoding'] || '';
 
-    // Supported compression extensions and their content-encoding values
     const compressionMap: Record<string, string> = {
       '.br': 'br',
       '.gz': 'gzip',
     };
 
-    // Try to find a compressed version that matches the accepted encoding
     let filePath = baseFilePath;
     let contentEncoding: string | null = null;
 
@@ -56,17 +53,11 @@ export class FullOccurrenceDataController {
           contentEncoding = encoding;
           break;
         } catch {
-          // File doesn't exist, try next encoding
+          // Compressed variant unavailable
         }
       }
     }
 
-    // If no compressed version found or accepted, use the original file
-    if (!contentEncoding) {
-      filePath = baseFilePath;
-    }
-
-    // Get file stats and check existence
     let fileStats: Stats;
     try {
       fileStats = await stat(filePath);
@@ -75,15 +66,16 @@ export class FullOccurrenceDataController {
       throw new NotFoundException(`File not found: ${fullFileName}`);
     }
 
+    const fileSize = fileStats.size;
     const lastModifiedString = fileStats.mtime.toUTCString();
-    const eTag = `W/"${fileStats.size}-${fileStats.mtime.getTime()}"`;
+    // 🟢 Strong ETag (Required for byte-range 206 responses)
+    const eTag = `"${fileStats.size}-${fileStats.mtime.getTime()}"`;
 
-    // Set standard Cache-Control headers
-    res.setHeader('Cache-Control', 'no-cache, must-revalidate');
+    // 1. Browser Caching Validation (304 Not Modified)
+    res.setHeader('Cache-Control', 'public, max-age=86400, must-revalidate');
     res.setHeader('Last-Modified', lastModifiedString);
     res.setHeader('ETag', eTag);
 
-    // Check client validation headers
     const ifNoneMatch = req.headers['if-none-match'];
     const ifModifiedSince = req.headers['if-modified-since'];
 
@@ -91,14 +83,11 @@ export class FullOccurrenceDataController {
     const isDateMatch =
       ifModifiedSince && new Date(ifModifiedSince) >= fileStats.mtime;
 
-    // 6. Short-circuit if not modified
     if (isEtagMatch || isDateMatch) {
       return res.status(HttpStatus.NOT_MODIFIED).send();
     }
 
-    const fileStream = createReadStream(filePath);
-
-    // Determine content type based on file extension
+    // 2. Determine Content-Type
     let contentType = 'application/octet-stream';
     switch (extension.toLowerCase()) {
       case 'json':
@@ -109,15 +98,43 @@ export class FullOccurrenceDataController {
         break;
     }
 
-    // Set response headers
     res.setHeader('Content-Type', contentType);
-    res.setHeader('Content-Length', fileStats.size);
+    res.setHeader('Accept-Ranges', 'bytes');
+    res.setHeader('X-Accel-Buffering', 'no');
 
     if (contentEncoding) {
       res.setHeader('Content-Encoding', contentEncoding);
     }
 
-    // Pipe the stream to the response and end it
-    fileStream.pipe(res);
+    // 3. HTTP Range Requests (206 Partial Content)
+    // Note: Range requests apply to uncompressed bytes only
+    const range = req.headers.range;
+    if (range && range.startsWith('bytes=') && !contentEncoding) {
+      const parts = range.replace(/bytes=/, '').split('-');
+      const start = parseInt(parts[0], 10);
+      const parsedEnd = parseInt(parts[1], 10);
+      const end =
+        !isNaN(parsedEnd) && parsedEnd < fileSize ? parsedEnd : fileSize - 1;
+
+      if (start >= fileSize || start > end) {
+        res.setHeader('Content-Range', `bytes */${fileSize}`);
+        res.status(HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE).send();
+        return;
+      }
+
+      const chunkSize = end - start + 1;
+
+      res.status(HttpStatus.PARTIAL_CONTENT);
+      res.setHeader('Content-Range', `bytes ${start}-${end}/${fileSize}`);
+      res.setHeader('Content-Length', chunkSize);
+
+      const fileStream = createReadStream(filePath, { start, end });
+      fileStream.pipe(res);
+    } else {
+      // 4. Full Download (200 OK)
+      res.setHeader('Content-Length', fileSize);
+      const fileStream = createReadStream(filePath);
+      fileStream.pipe(res);
+    }
   }
 }

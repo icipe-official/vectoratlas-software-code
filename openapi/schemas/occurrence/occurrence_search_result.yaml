@@ -1,0 +1,62 @@
+# Occurrence Search Result Schema
+# Wraps the list of occurrence items with total count and pagination indicator
+
+components:
+  schemas:
+    OccurrenceSearchResult:
+      type: object
+      required:
+        - items
+        - total
+        - hasMore
+      properties:
+        items:
+          type: array
+          items:
+            $ref: ./occurrence.yaml#/components/schemas/Occurrence
+          description: List of occurrence records matching the search criteria
+        total:
+          type: integer
+          minimum: 0
+          description: Total number of occurrence records matching the filters
+          example: 1250
+        hasMore:
+          type: boolean
+          description: Whether more results are available beyond the current page
+          example: true
+      example:
+        items:
+          - id: 42
+            species: "Anopheles gambiae"
+            location: "Nairobi"
+            binary_presence: "1"
+            country: "Kenya"
+            year_start: 2015
+            is_adult: true
+            is_larval: false
+            season_val: "wet"
+            insecticide: "1"
+            control: "0"
+            abundance_data: "1"
+            bio_data: "1"
+            display_name: "Anopheles gambiae s.l."
+            category: "vector"
+            color: "#FF0000"
+          - id: 43
+            species: "Anopheles funestus"
+            location: "Kisumu"
+            binary_presence: "0"
+            country: "Kenya"
+            year_start: 2016
+            is_adult: true
+            is_larval: true
+            season_val: "dry"
+            insecticide: null
+            control: "1"
+            abundance_data: null
+            bio_data: null
+            display_name: "Anopheles funestus"
+            category: "vector"
+            color: "#00FF00"
+        total: 1250
+        hasMore: true

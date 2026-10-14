@@ -1,0 +1,10 @@
+# Occurrence Search Response
+
+components:
+  responses:
+    OccurrenceSearchResult:
+      description: A list of occurrence records matching the search criteria
+      content:
+        application/json:
+          schema:
+            $ref: ../../schemas/occurrence/occurrence_search_result.yaml#/components/schemas/OccurrenceSearchResult

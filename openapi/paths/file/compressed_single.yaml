@@ -1,0 +1,111 @@
+# Single Compressed File Endpoint
+# PUT and DELETE for individual compressed files
+
+paths:
+  /files/{fileIdentifier}/compressed/{compressionIdentifier}:
+    put:
+      tags:
+        - File
+      summary: Update compressed file metadata or replace file
+      description: |
+        Updates metadata for a compressed file or replaces the compressed file content.
+        Both fileIdentifier and compressionIdentifier can be UUID or slug.
+        
+        If the request includes a file in the multipart form data, the compressed file will be replaced.
+        
+        Example request (metadata only):
+        PUT /api/files/123e4567-e89b-12d3-a456-426614174000/compressed/223e4567-e89b-12d3-a456-426614174001
+        Content-Type: application/json
+        
+        {
+          "slug": "updated_compressed_slug"
+        }
+        
+        Example request (with file replacement):
+        PUT /api/files/mosquito_occurrence_2023/compressed/mosquito_occurrence_2023_gzip
+        Content-Type: multipart/form-data
+        
+        --boundary--
+        Content-Disposition: form-data; name="file"; filename="updated_compressed.csv.gz"
+        Content-Type: application/gzip
+        
+        <new compressed file content>
+        --boundary--
+        Content-Disposition: form-data; name="slug"
+        
+        updated_compressed_slug
+        --boundary--
+      operationId: updateCompressedFile
+      parameters:
+        - $ref: ../../parameters/file/file_identifier.yaml#/components/parameters/FileIdentifier
+        - $ref: ../../parameters/file/compression_identifier.yaml#/components/parameters/CompressionIdentifier
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                slug:
+                  type: [string, "null"]
+                  description: Short unique name. Can be null
+                  example: "updated_compressed_slug"
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: New compressed file content to replace existing file
+                slug:
+                  type: [string, "null"]
+                  description: Short unique name. Can be null
+                  example: "updated_compressed_slug"
+      responses:
+        "200":
+          description: Compressed file updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas/file/file_compression.yaml#/components/schemas/FileCompression
+        "400":
+          $ref: ../../responses/common/error.yaml#/components/responses/BadRequest
+        "401":
+          $ref: ../../responses/common/error.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../../responses/common/error.yaml#/components/responses/Forbidden
+        "404":
+          $ref: ../../responses/common/error.yaml#/components/responses/NotFound
+        "500":
+          $ref: ../../responses/common/error.yaml#/components/responses/ServerError
+      security:
+        - BearerAuth: []
+    
+    delete:
+      tags:
+        - File
+      summary: Delete a compressed file
+      description: |
+        Deletes a compressed file by its identifiers.
+        Both fileIdentifier and compressionIdentifier can be UUID or slug.
+        
+        Example requests:
+        - DELETE /api/files/123e4567-e89b-12d3-a456-426614174000/compressed/223e4567-e89b-12d3-a456-426614174001
+        - DELETE /api/files/mosquito_occurrence_2023/compressed/mosquito_occurrence_2023_gzip
+      operationId: deleteCompressedFile
+      parameters:
+        - $ref: ../../parameters/file/file_identifier.yaml#/components/parameters/FileIdentifier
+        - $ref: ../../parameters/file/compression_identifier.yaml#/components/parameters/CompressionIdentifier
+      responses:
+        "204":
+          description: Compressed file deleted successfully
+        "401":
+          $ref: ../../responses/common/error.yaml#/components/responses/Unauthorized
+        "403":
+          $ref: ../../responses/common/error.yaml#/components/responses/Forbidden
+        "404":
+          $ref: ../../responses/common/error.yaml#/components/responses/NotFound
+        "500":
+          $ref: ../../responses/common/error.yaml#/components/responses/ServerError
+      security:
+        - BearerAuth: []

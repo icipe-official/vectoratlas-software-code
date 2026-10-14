@@ -1,0 +1,76 @@
+# Common Error Responses
+
+components:
+  responses:
+    Error:
+      description: Generic error response
+      content:
+        application/json:
+          schema:
+            $ref: ../../schemas/common/error.yaml#/components/schemas/Error
+
+    BadRequest:
+      description: Bad request - client error
+      content:
+        application/json:
+          schema:
+            $ref: ../../schemas/common/error.yaml#/components/schemas/Error
+          example:
+            code: "BAD_REQUEST"
+            message: "Invalid request parameters"
+            details:
+              parameter: "bbox"
+              reason: "Must provide exactly 4 or 6 coordinates"
+            timestamp: "2023-01-15T10:30:00Z"
+            requestId: "abc123-xyz456"
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: ../../schemas/common/error.yaml#/components/schemas/Error
+          example:
+            code: "NOT_FOUND"
+            message: "The requested resource was not found"
+            details:
+              resource: "Collection"
+              id: "unknown-collection"
+            timestamp: "2023-01-15T10:30:00Z"
+            requestId: "abc123-xyz456"
+
+    ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: ../../schemas/common/error.yaml#/components/schemas/Error
+          example:
+            code: "SERVER_ERROR"
+            message: "An unexpected error occurred"
+            timestamp: "2023-01-15T10:30:00Z"
+            requestId: "abc123-xyz456"
+
+    Unauthorized:
+      description: Unauthorized - authentication required
+      content:
+        application/json:
+          schema:
+            $ref: ../../schemas/common/error.yaml#/components/schemas/Error
+          example:
+            code: "UNAUTHORIZED"
+            message: "Authentication required"
+            timestamp: "2023-01-15T10:30:00Z"
+            requestId: "abc123-xyz456"
+
+    Forbidden:
+      description: Forbidden - insufficient permissions
+      content:
+        application/json:
+          schema:
+            $ref: ../../schemas/common/error.yaml#/components/schemas/Error
+          example:
+            code: "FORBIDDEN"
+            message: "Insufficient permissions for this resource"
+            timestamp: "2023-01-15T10:30:00Z"
+            requestId: "abc123-xyz456"

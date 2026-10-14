@@ -20,57 +20,64 @@ info:
     url: https://vectoratlas.icipe.org
   license:
     name: MIT
-    url: https://opensource.org/licenses/MIT
+    url: https://github.com/icipe-official/vectoratlas-software-code/blob/test/LICENSE
 
 servers:
   - url: https://vectoratlas.icipe.org/vector-api
     description: Production server
-  - url: https://test.vectoratlas.org/vector-api
+  - url: https://test.vectoratlas.icipe.org/vector-api
     description: Staging server
-  - url: http://localhost:3002
+  - url: http://localhost:3001
     description: Development server
 
 tags:
-  - name: File
+  - name: Occurrence
     description: |
-      File management endpoints for uploading, downloading, and managing files.
+      Occurrence search endpoints for querying and filtering vector occurrence records.
 
-      File service endpoints for:
-      - Upload new files with multipart/formdata
-      - Download files by ID or slug
-      - Get file metadata
-      - List and search files
-      - Manage compressed versions and previews
+      Occurrence service endpoints for:
+      - Search and filter occurrence records by country, species, season, and more
+      - Single-record lookup by id
+      - Field projection to limit returned fields
+      - Year-range timeline filtering
 
 x-tagGroups:
-  - name: File Service
+  - name: Occurrence Service
+    tags:
+      - Occurrence
+  - name: File Service (disabled)
     tags:
       - File
 
 # Paths are organized in separate files under paths/
-# File service endpoints are prefixed with /files
+# Occurrence service endpoints are prefixed with /search
+# File service endpoints are prefixed with /files (currently disabled)
 paths:
-  # File Service Endpoints
-  /files:
-    $ref: ./paths/file/files.yaml#/paths/~1files
-  /files/upload:
-    $ref: ./paths/file/upload.yaml#/paths/~1files~1upload
-  /files/{fileIdentifier}:
-    $ref: ./paths/file/file.yaml#/paths/~1files~1{fileIdentifier}
-  /files/{fileIdentifier}/download:
-    $ref: ./paths/file/download.yaml#/paths/~1files~1{fileIdentifier}~1download
-  /files/{fileIdentifier}/compressed:
-    $ref: ./paths/file/compressed.yaml#/paths/~1files~1{fileIdentifier}~1compressed
-  /files/{fileIdentifier}/compressed/upload:
-    $ref: ./paths/file/compressed_upload.yaml#/paths/~1files~1{fileIdentifier}~1compressed~1upload
-  /files/{fileIdentifier}/compressed/{compressionIdentifier}:
-    $ref: ./paths/file/compressed_single.yaml#/paths/~1files~1{fileIdentifier}~1compressed~1{compressionIdentifier}
-  /files/{fileIdentifier}/preview:
-    $ref: ./paths/file/preview.yaml#/paths/~1files~1{fileIdentifier}~1preview
-  /files/{fileIdentifier}/preview/upload:
-    $ref: ./paths/file/preview_upload.yaml#/paths/~1files~1{fileIdentifier}~1preview~1upload
-  /files/{fileIdentifier}/preview/{previewIdentifier}:
-    $ref: ./paths/file/preview_single.yaml#/paths/~1files~1{fileIdentifier}~1preview~1{previewIdentifier}
+  # Occurrence Service Endpoints
+  /search/{entityType}:
+    $ref: ./paths/occurrence/search.yaml#/paths/~1search~1{entityType}
+
+  # File Service Endpoints (disabled - proposed endpoints not currently in use)
+  # /files:
+  #   $ref: ./paths/file/files.yaml#/paths/~1files
+  # /files/upload:
+  #   $ref: ./paths/file/upload.yaml#/paths/~1files~1upload
+  # /files/{fileIdentifier}:
+  #   $ref: ./paths/file/file.yaml#/paths/~1files~1{fileIdentifier}
+  # /files/{fileIdentifier}/download:
+  #   $ref: ./paths/file/download.yaml#/paths/~1files~1{fileIdentifier}~1download
+  # /files/{fileIdentifier}/compressed:
+  #   $ref: ./paths/file/compressed.yaml#/paths/~1files~1{fileIdentifier}~1compressed
+  # /files/{fileIdentifier}/compressed/upload:
+  #   $ref: ./paths/file/compressed_upload.yaml#/paths/~1files~1{fileIdentifier}~1compressed~1upload
+  # /files/{fileIdentifier}/compressed/{compressionIdentifier}:
+  #   $ref: ./paths/file/compressed_single.yaml#/paths/~1files~1{fileIdentifier}~1compressed~1{compressionIdentifier}
+  # /files/{fileIdentifier}/preview:
+  #   $ref: ./paths/file/preview.yaml#/paths/~1files~1{fileIdentifier}~1preview
+  # /files/{fileIdentifier}/preview/upload:
+  #   $ref: ./paths/file/preview_upload.yaml#/paths/~1files~1{fileIdentifier}~1preview~1upload
+  # /files/{fileIdentifier}/preview/{previewIdentifier}:
+  #   $ref: ./paths/file/preview_single.yaml#/paths/~1files~1{fileIdentifier}~1preview~1{previewIdentifier}
 
 # Components are organized in separate files
 components:
@@ -81,7 +88,13 @@ components:
     Error:
       $ref: ./schemas/common/error.yaml#/components/schemas/Error
 
-    # File Service Schemas
+    # Occurrence Service Schemas
+    Occurrence:
+      $ref: ./schemas/occurrence/occurrence.yaml#/components/schemas/Occurrence
+    OccurrenceSearchResult:
+      $ref: ./schemas/occurrence/occurrence_search_result.yaml#/components/schemas/OccurrenceSearchResult
+
+    # File Service Schemas (disabled)
     File:
       $ref: ./schemas/file/file.yaml#/components/schemas/File
     FileList:
@@ -101,8 +114,40 @@ components:
       $ref: ./parameters/common/pagination.yaml#/components/parameters/Page
     PageSize:
       $ref: ./parameters/common/pagination.yaml#/components/parameters/PageSize
-    
-    # File Service Parameters
+
+    # Occurrence Service Parameters
+    EntityType:
+      $ref: ./parameters/occurrence/search_parameters.yaml#/components/parameters/EntityType
+    OccurrenceId:
+      $ref: ./parameters/occurrence/search_parameters.yaml#/components/parameters/OccurrenceId
+    Country:
+      $ref: ./parameters/occurrence/search_parameters.yaml#/components/parameters/Country
+    Species:
+      $ref: ./parameters/occurrence/search_parameters.yaml#/components/parameters/Species
+    Season:
+      $ref: ./parameters/occurrence/search_parameters.yaml#/components/parameters/Season
+    Insecticide:
+      $ref: ./parameters/occurrence/search_parameters.yaml#/components/parameters/Insecticide
+    Absence:
+      $ref: ./parameters/occurrence/search_parameters.yaml#/components/parameters/Absence
+    Abundance:
+      $ref: ./parameters/occurrence/search_parameters.yaml#/components/parameters/Abundance
+    Bionomics:
+      $ref: ./parameters/occurrence/search_parameters.yaml#/components/parameters/Bionomics
+    Adult:
+      $ref: ./parameters/occurrence/search_parameters.yaml#/components/parameters/Adult
+    Larval:
+      $ref: ./parameters/occurrence/search_parameters.yaml#/components/parameters/Larval
+    Timeline:
+      $ref: ./parameters/occurrence/search_parameters.yaml#/components/parameters/Timeline
+    Take:
+      $ref: ./parameters/occurrence/search_parameters.yaml#/components/parameters/Take
+    Skip:
+      $ref: ./parameters/occurrence/search_parameters.yaml#/components/parameters/Skip
+    Fields:
+      $ref: ./parameters/occurrence/search_parameters.yaml#/components/parameters/Fields
+
+    # File Service Parameters (disabled)
     FileIdentifier:
       $ref: ./parameters/file/file_identifier.yaml#/components/parameters/FileIdentifier
     CompressionIdentifier:
@@ -118,8 +163,12 @@ components:
     # Common Responses
     Error:
       $ref: ./responses/common/error.yaml#/components/responses/Error
-    
-    # File Service Responses
+
+    # Occurrence Service Responses
+    OccurrenceSearchResult:
+      $ref: ./responses/occurrence/occurrence_search_result.yaml#/components/responses/OccurrenceSearchResult
+
+    # File Service Responses (disabled)
     File:
       $ref: ./responses/file/file.yaml#/components/responses/File
     FileList:
@@ -129,12 +178,13 @@ components:
     FileMetadata:
       $ref: ./responses/file/file_metadata.yaml#/components/responses/FileMetadata
 
-  securitySchemes:
-    BearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-      description: JWT token for authenticated access
+  # securitySchemes:
+  #   BearerAuth:
+  #     type: http
+  #     scheme: bearer
+  #     bearerFormat: JWT
+  #     description: JWT token for authenticated access
 
-security:
-  - BearerAuth: []
+# No global security — the occurrence search endpoint is public.
+# Authenticated endpoints (e.g. file service when re-enabled) should
+# declare security at the operation level.

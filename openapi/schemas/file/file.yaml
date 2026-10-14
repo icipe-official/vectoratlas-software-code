@@ -1,0 +1,59 @@
+# File Schema
+# Represents a file entity in the Vector Atlas system
+
+components:
+  schemas:
+    File:
+      type: object
+      required:
+        - id
+        - mime_type
+        - size
+        - created_on
+        - last_updated_on
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the file
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        folder_name:
+          type: string
+          description: Name of the folder containing the file
+          example: "occurrence_data"
+        name:
+          type: [string, "null"]
+          description: Original filename. Can be null for temporary files
+          example: "mosquito_occurrence.csv"
+        slug:
+          type: [string, "null"]
+          description: Short unique name for URL-friendly access. Can be null for temporary files
+          example: "mosquito_occurrence_2023"
+        mime_type:
+          type: string
+          description: MIME type of the file
+          example: "text/csv"
+        size:
+          type: integer
+          minimum: 0
+          description: Size of the file in bytes
+          example: 1024000
+        created_on:
+          type: string
+          format: date-time
+          description: When the file was created
+          example: "2023-01-15T10:30:00Z"
+        last_updated_on:
+          type: string
+          format: date-time
+          description: When the file was last updated
+          example: "2023-01-15T10:30:00Z"
+      example:
+        id: "123e4567-e89b-12d3-a456-426614174000"
+        folder_name: "occurrence_data"
+        name: "mosquito_occurrence.csv"
+        slug: "mosquito_occurrence_2023"
+        mime_type: "text/csv"
+        size: 1024000
+        created_on: "2023-01-15T10:30:00Z"
+        last_updated_on: "2023-01-15T10:30:00Z"
