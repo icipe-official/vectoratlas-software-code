@@ -3,3 +3,5 @@ venv/
 uploads/*
 data/temp/*.csv
 data/temp/*.excel
+
+.venv/
