@@ -8,5 +8,5 @@ The `Download filtered data` button will download a csv with the raw data relati
 
 An example of the input and output of the map image is shown below.
 
-![download map input](download-input.png)
-![download output](download-output.png)
+![download map input](images/download-input.png)
+![download output](images/download-output.png)

@@ -1,4 +1,5 @@
-# Configuration file for the Sphinx documentation builder.
+import os
+
 project = 'Vector Atlas Help'
 copyright = '2026, ICIPE'
 author = 'ICIPE Vector Atlas Team'
@@ -14,6 +15,8 @@ source_suffix = {
     '.md': 'markdown',
 }
 
+
+language = 'en'
 templates_path = ['_templates']
 
 exclude_patterns = [
@@ -30,12 +33,8 @@ exclude_patterns = [
 ]
 
 html_theme = 'sphinx_rtd_theme'
-html_static_path = ['_static']
-html_css_files = ['custom.css']
-html_show_sourcelink = False
-html_js_files = ['custom.js']
-locale_dirs = ['locale/']
-gettext_compact = False
+html_logo = '_static/vector-atlas-logo.svg'
+html_favicon = '_static/Animals-Mosquito-icon.png'
 
 html_theme_options = {
     'logo_only': False,
@@ -44,5 +43,24 @@ html_theme_options = {
     'navigation_depth': 4,
 }
 
-html_logo = '_static/vector-atlas-logo.svg'
-html_favicon = '_static/Animals-Mosquito-icon.png'
+html_static_path = ['_static']
+
+
+html_css_files = [
+    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css',
+    'custom.css',
+]
+
+html_js_files = ['custom.js']
+html_show_sourcelink = False
+
+
+html_context = {}
+
+locale_dirs = ['locale/']
+gettext_compact = False
+
+# English images live in images/, translations in images/fr/ and images/pt/.
+# images/about.png  ->  images/fr/about.png (when building with language=fr)
+# If the translated file doesn't exist, Sphinx falls back to the English one.
+figure_language_filename = '{path}{language}/{basename}{ext}'

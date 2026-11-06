@@ -7,15 +7,15 @@ export class RemoveBaseEntityExtended1787127691007
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     // Drop base entity columns from email_registry
-    await queryRunner.query(`ALTER TABLE "email_registry" DROP COLUMN "owner"`);
+    await queryRunner.query(`ALTER TABLE "email_registry" DROP COLUMN IF EXISTS "owner"`);
     await queryRunner.query(
-      `ALTER TABLE "email_registry" DROP COLUMN "creation"`,
+      `ALTER TABLE "email_registry" DROP COLUMN IF EXISTS "creation"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "email_registry" DROP COLUMN "updater"`,
+      `ALTER TABLE "email_registry" DROP COLUMN IF EXISTS "updater"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "email_registry" DROP COLUMN "modified"`,
+      `ALTER TABLE "email_registry" DROP COLUMN IF EXISTS "modified"`,
     );
   }
 

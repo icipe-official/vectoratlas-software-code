@@ -4,7 +4,7 @@ Uploading model overlays requires the `Uploader` role.
 
 To upload model overlays, go to the [data hub](https://vectoratlas.icipe.org/dataHub) page and click on `Upload Model`.
 
-![Data Hub page](datahub.png)
+![Data Hub page](images/datahub.png)
 
 The model upload page requires a display name, maximum value for the data and the model file itself. The display name is the name used on the map in overlays section of the map tools. 
 
@@ -12,8 +12,8 @@ The maximum value is needed because the overlay is transformed into a tiled vers
 
 The model file must currently be a geotiff so that we can support transformation into an mbtiles format. In the future there is planned support for shape files as well as external tile servers (via wms).
 
-![Model upload page](model-upload.png)
+![Model upload page](images/model-upload.png)
 
 Once you click `Upload model` then the system will notify when the file has been uploaded and that it's started to run the transformation, it will then notify again if the transformation is successful or fails.
 
-![Model transform](model-transform.png)
+![Model transform](images/model-transform.png)
