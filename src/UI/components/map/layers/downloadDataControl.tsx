@@ -18,6 +18,7 @@ import { useTranslations } from 'next-intl';
 import { triggerBackgroundExport } from '../../../state/map/actions/triggerbackgroundexport';
 import { MaintenanceNotice } from '../../shared/MaintenanceNotice';
 import { toast } from 'react-toastify';
+import { downloadTemplate } from '../../../state/upload/actions/downloadTemplate';
 
 // Single shared text size/line-height for every label, header, and bullet in the dialog.
 const DIALOG_TEXT_SX = { fontSize: '0.9rem', lineHeight: 1.5 };
@@ -57,6 +58,8 @@ const CheckboxRow = ({
     </Typography>
   </Box>
 );
+
+const ENABLE_TEMPORARY_FULL_DATA_DOWNLOAD = true;
 
 export const DownloadDataControl = () => {
   const t = useTranslations('MapPage');
@@ -189,6 +192,48 @@ export const DownloadDataControl = () => {
     setOpenDialog(false);
   };
 
+  // TEMPORARY FIX
+  const handleFullDataDownload = async () => {
+    if (validationMessage) return;
+
+    // Show loading toast
+    const loadingToastId = toast.info(
+      t('downloadData.fullDataDownloadStarting'),
+      {
+        autoClose: false,
+      }
+    );
+
+    try {
+      // Await the dispatch so the dialog stays open while downloading
+      await dispatch(
+        downloadTemplate({
+          dataType: 'full_data',
+          dataSource: 'Vector Atlas',
+          extension: 'zip',
+        })
+      );
+
+      // Update toast to show success
+      toast.update(loadingToastId, {
+        render: t('downloadData.fullDataDownloadSuccess'),
+        type: 'success',
+        autoClose: 8000,
+      });
+    } catch (error) {
+      // Update toast to show error
+      toast.update(loadingToastId, {
+        render: t('downloadData.fullDataDownloadError', {
+          error: error instanceof Error ? error.message : String(error),
+        }),
+        type: 'error',
+        autoClose: 8000,
+      });
+    } finally {
+      setOpenDialog(false);
+    }
+  };
+
   return (
     <div>
       <Button
@@ -198,7 +243,9 @@ export const DownloadDataControl = () => {
         className="umami--click--download-filtered"
         sx={{ margin: 0, marginTop: 2, width: '100%' }}
       >
-        {t('downloadData.downloadFilteredData')}
+        {ENABLE_TEMPORARY_FULL_DATA_DOWNLOAD
+          ? t('downloadData.downloadFullData')
+          : t('downloadData.downloadFilteredData')}
       </Button>
 
       <Dialog
@@ -350,63 +397,71 @@ export const DownloadDataControl = () => {
             {t('downloadData.dataRetentionCommitment')}
           </CheckboxRow>
 
-          <Typography
-            sx={{ ...DIALOG_TEXT_SX, fontWeight: 600, margin: '8px 0 8px' }}
-          >
-            {t('downloadData.pleaseConfirm')}
-          </Typography>
+          {!ENABLE_TEMPORARY_FULL_DATA_DOWNLOAD && (
+            <>
+              <Typography
+                sx={{ ...DIALOG_TEXT_SX, fontWeight: 600, margin: '8px 0 8px' }}
+              >
+                {t('downloadData.pleaseConfirm')}
+              </Typography>
 
-          {/* Checkbox 4 (optional): subscribe to mailing list for updates */}
-          <CheckboxRow
-            checked={subscribeToMailingList}
-            onChange={(e) => setSubscribeToMailingList(e.target.checked)}
-          >
-            {t('downloadData.notifyMe') ||
-              'Subscribe to our mailing list for updates'}
-          </CheckboxRow>
+              {/* Checkbox 4 (optional): notify me when new data is added */}
+              {/* <CheckboxRow */}
+              {/*   checked={notifyMe} */}
+              {/*   onChange={(e) => setNotifyMe(e.target.checked)} */}
+              {/* > */}
+              {/*   {t('downloadData.notifyMe')} */}
+              {/* </CheckboxRow> */}
 
-          {/* Optional: Request DOI for this filtered data */}
-          <CheckboxRow
-            checked={includeDOI}
-            onChange={(e) => {
-              setIncludeDOI(e.target.checked);
-              if (!e.target.checked) {
-                setGenerateDOI(false);
-              } else {
-                setGenerateDOI(true);
-              }
-            }}
-          >
-            {t('downloadData.requestDoi')}
-          </CheckboxRow>
+              {/* Optional: Request DOI for this filtered data */}
+              <CheckboxRow
+                checked={includeDOI}
+                onChange={(e) => {
+                  setIncludeDOI(e.target.checked);
+                  if (!e.target.checked) {
+                    setGenerateDOI(false);
+                  } else {
+                    setGenerateDOI(true);
+                  }
+                }}
+              >
+                {t('downloadData.requestDoi')}
+              </CheckboxRow>
+            </>
+          )}
 
           {/* Contact information section.
               When DOI is requested, name and email are required.
               When DOI is not requested, they are optional but recommended —
               if provided, the download link is also sent via email as a
               backup in case direct download is slow or unavailable. */}
-          <Typography
-            sx={{ ...DIALOG_TEXT_SX, fontWeight: 600, margin: '8px 0 8px' }}
-          >
-            {includeDOI
-              ? t('downloadData.contactInfoPromptDOI')
-              : t('downloadData.contactInfoPromptOptional')}
-          </Typography>
-          <TextField
-            label={t('downloadData.fullName') + (includeDOI ? ' *' : '')}
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            fullWidth
-            margin="dense"
-          />
-          <TextField
-            label={t('downloadData.email') + (includeDOI ? ' *' : '')}
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            fullWidth
-            margin="dense"
-          />
+
+          {!ENABLE_TEMPORARY_FULL_DATA_DOWNLOAD && (
+            <>
+              <Typography
+                sx={{ ...DIALOG_TEXT_SX, fontWeight: 600, margin: '8px 0 8px' }}
+              >
+                {includeDOI
+                  ? t('downloadData.contactInfoPromptDOI')
+                  : t('downloadData.contactInfoPromptOptional')}
+              </Typography>
+              <TextField
+                label={t('downloadData.fullName') + (includeDOI ? ' *' : '')}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                fullWidth
+                margin="dense"
+              />
+              <TextField
+                label={t('downloadData.email') + (includeDOI ? ' *' : '')}
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                fullWidth
+                margin="dense"
+              />
+            </>
+          )}
           {validationMessage && (
             <Typography
               sx={{ ...DIALOG_TEXT_SX, color: 'red', marginTop: '8px' }}
@@ -420,7 +475,13 @@ export const DownloadDataControl = () => {
             {t('downloadData.buttons.cancel')}
           </Button>
           <Button
-            onClick={handleDownload}
+            onClick={() => {
+              if (ENABLE_TEMPORARY_FULL_DATA_DOWNLOAD) {
+                handleFullDataDownload();
+              } else {
+                handleDownload();
+              }
+            }}
             variant="contained"
             disabled={!!validationMessage}
           >
