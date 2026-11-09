@@ -61,6 +61,7 @@
     "graphql-type-json": "^0.3.2",
     "handlebars": "^4.7.8",
     "imapflow": "^1.0.165",
+    "ioredis": "^6.0.0",
     "jszip": "^3.10.1",
     "jwks-rsa": "^2.1.4",
     "mailgun.js": "^10.2.4",
