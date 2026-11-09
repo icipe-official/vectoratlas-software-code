@@ -15,8 +15,11 @@ jobs:
         id: changes
         with:
           filters: |
+            # the API image embeds the OccurrenceGeoJob, so changes to either
+            # folder must trigger the API build
             api:
               - 'src/API/**'
+              - 'src/OccurrenceGeoJob/**'
               - '.github/**'
 
   build-api:

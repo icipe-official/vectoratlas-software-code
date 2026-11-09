@@ -40,7 +40,9 @@ const OccurrenceCard: React.FC<OccurrenceCardProps> = ({
     // Custom Species Dropdown
     if (key === 'recordedSpecies' || key === 'recorded_species') {
       const currentId =
-        typeof value === 'object' && value !== null ? (value as any).id : value;
+        typeof value === 'object' && value !== null
+          ? (value as any).species ?? (value as any).id
+          : value;
       const currentSpecies =
         speciesList.find((s) => s.id === currentId) || null;
 
@@ -49,7 +51,7 @@ const OccurrenceCard: React.FC<OccurrenceCardProps> = ({
           key={key}
           options={speciesList}
           getOptionLabel={(option) =>
-            option.display_name || option.species || 'Unknown'
+            option.display_name || option.name || 'Unknown'
           }
           value={currentSpecies}
           onChange={(_, newValue) => {

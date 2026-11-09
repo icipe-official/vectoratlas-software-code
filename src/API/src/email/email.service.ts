@@ -24,7 +24,7 @@ export class EmailService {
     // private readonly mailerService: MailerService,
     private readonly communicationLogService: CommunicationLogService,
     private readonly logger: Logger,
-  ) { }
+  ) {}
 
   async sendEmail(
     emails: string[],

@@ -59,7 +59,7 @@ const CheckboxRow = ({
   </Box>
 );
 
-const ENABLE_TEMPORARY_FULL_DATA_DOWNLOAD = true;
+const ENABLE_TEMPORARY_FULL_DATA_DOWNLOAD = false;
 
 export const DownloadDataControl = () => {
   const t = useTranslations('MapPage');

@@ -14,13 +14,24 @@ import * as path from 'path';
 import { createReadStream, Stats } from 'fs';
 import { access, stat } from 'fs/promises';
 import config from 'src/config/config';
+import { FullOccurrenceDataService } from './full-occurrence-data.service';
 
 @Controller('full-occurrence-data')
 export class FullOccurrenceDataController {
   private readonly logger = new Logger(FullOccurrenceDataController.name);
 
+  constructor(
+    private readonly fullOccurrenceDataService: FullOccurrenceDataService,
+  ) {}
+
   private getFolderPath(): string {
     return config.get('fullOccurrenceDataFolder');
+  }
+
+  /** lightweight status for the UI toast (no side effects) */
+  @Get('/status')
+  async getStatus() {
+    return await this.fullOccurrenceDataService.status();
   }
 
   @Get('/:file_name')
@@ -32,6 +43,16 @@ export class FullOccurrenceDataController {
   ) {
     const folderPath = this.getFolderPath();
     const fullFileName = `${fileName}.${extension}`;
+
+    // Refresh the files if missing/stale (newer Approved dataset, approved-id set
+    // changed, or species/country edits). If a previous valid version exists we
+    // serve it now and refresh in the background, flagging it via a hint header.
+    // On a cold start (no previous version) we block until generation completes.
+    const { refreshing } =
+      await this.fullOccurrenceDataService.ensureGenerated();
+    if (refreshing) {
+      res.setHeader('X-Occurrence-Data-Refresh', 'in-progress');
+    }
     const baseFilePath = path.join(folderPath, fullFileName);
 
     const acceptEncoding = req.headers['accept-encoding'] || '';

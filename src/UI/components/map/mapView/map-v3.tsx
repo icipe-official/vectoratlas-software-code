@@ -13,6 +13,7 @@ import Box from '@mui/material/Box';
 import { Stack, Typography, useMediaQuery } from '@mui/material';
 import WebGLPointsLayer from 'ol/layer/WebGLPoints';
 import VectorSource from 'ol/source/Vector';
+import { toast } from 'react-toastify';
 import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
 import GeoJSON from 'ol/format/GeoJSON';
@@ -281,6 +282,13 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         const response = await fetch(
           '/vector-api/full-occurrence-data/data?ext=json'
         );
+        if (
+          response.headers.get('X-Occurrence-Data-Refresh') === 'in-progress'
+        ) {
+          toast.info(
+            'Occurrence data is being refreshed in the background — a new version will be ready soon.'
+          );
+        }
         const data = await response.json();
         const searchID = 'id' + Math.random().toString(16).slice(2);
         dispatch(startNewSearch(searchID));
@@ -293,106 +301,26 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     fetchData();
   }, [occurrenceData.length, dispatch, mapReady]);
 
-  //  Redux Map Data Builder
+  //  Presence/absence layers load their GeoJSON straight from the API into the
+  //  vector sources (no client-side feature building); data.json above is only
+  //  used for the non-geojson vector panel. Here we just wait until both
+  //  sources have features, then mark the layers loaded.
   useEffect(() => {
-    const presenceSource = pointLayerRef.current?.getSource();
-    const absenceSource = absenceLayerRef.current?.getSource();
-
-    if (!presenceSource || !absenceSource || !mapReady) return;
-    if (!speciesStyles || speciesStyles.length === 0) return;
-    if (occurrenceData.length === 0) return;
-
-    // Check if already loaded
-    if (presenceSource.getFeatures().length > 0) return;
-
-    try {
-      const speciesColorMap = new Map<
-        string,
-        [number, number, number, number]
-      >();
-      speciesStyles.forEach((s) => {
-        const cleanKey = String(s.species || '')
-          .toLowerCase()
-          .trim();
-        speciesColorMap.set(cleanKey, cssColorToVec4(s.color));
-      });
-
-      const presenceFeatures: Feature<Point>[] = [];
-      const absenceFeatures: Feature<Point>[] = [];
-
-      occurrenceData.forEach((item) => {
-        if (!item.location || !item.location.coordinates) return;
-
-        const coords = transform(
-          item.location.coordinates,
-          'EPSG:4326',
-          'EPSG:3857'
-        );
-        const f = new Feature({ geometry: new Point(coords) });
-
-        // Feed all backend properties into the map feature
-        Object.keys(item).forEach((key) => f.set(key, (item as any)[key]));
-
-        // Fix boolean to integer mappings for the UI filters
-        f.set('has_adult_int', item.has_adult ? 1 : 0);
-        f.set('has_larval_int', item.has_larval ? 1 : 0);
-        f.set('has_bionomics_int', item.has_bionomics ? 1 : 0);
-        f.set('has_abundance_int', item.has_abundance ? 1 : 0);
-
-        const species = normalize(String(f.get('species') ?? ''));
-        const [r, g, b, a] =
-          speciesColorMap.get(species) ?? cssColorToVec4('#038543');
-        const presenceStatus = getPresenceStatus(f.get('binary_presence'));
-
-        f.set('r', r);
-        f.set('g', g);
-        f.set('b', b);
-        f.set('a', a);
-        f.set('selected', 0);
-        f.set('highlight', 0);
-        f.set('presenceStatus', presenceStatus);
-        f.set('isPresence', presenceStatus === 'presence' ? 1 : 0);
-        f.set('isAbsence', presenceStatus === 'absence' ? 1 : 0);
-        f.set('gpuVisible', 1);
-        f.set('year_start', item.year_start_epoch);
-
-        if (item.id) f.setId(item.id);
-
-        if (presenceStatus === 'absence') {
-          f.set('baseSize', 12);
-          absenceFeatures.push(f);
-        } else {
-          f.set('baseSize', 9);
-          presenceFeatures.push(f);
-        }
-      });
-
-      presenceSource.addFeatures(presenceFeatures);
-      absenceSource.addFeatures(absenceFeatures);
-      setLoadedPresenceAbsenceLayers(true);
-    } catch (error) {
-      console.error('Failed to load map features:', error);
-    }
-  }, [mapReady, speciesStyles, occurrenceData]);
-
-  useEffect(() => {
-    if (!loadedPresenceAbsenceLayers) return;
-    const presenceSource = pointLayerRef.current?.getSource();
-    const absenceSource = absenceLayerRef.current?.getSource();
-    if (!presenceSource || !absenceSource) return;
-
-    const features = [
-      ...presenceSource.getFeatures(),
-      ...absenceSource.getFeatures(),
-    ];
-    features.forEach((f) => {
-      if (f.get('gpuVisible') === undefined) {
-        f.set('gpuVisible', 1);
+    if (!mapReady || loadedPresenceAbsenceLayers) return;
+    const t = setInterval(() => {
+      const ps = pointLayerRef.current?.getSource();
+      const as = absenceLayerRef.current?.getSource();
+      if (
+        ps &&
+        as &&
+        ps.getFeatures().length > 0 &&
+        as.getFeatures().length > 0
+      ) {
+        setLoadedPresenceAbsenceLayers(true);
       }
-    });
-    presenceSource.changed();
-    absenceSource.changed();
-  }, [loadedPresenceAbsenceLayers]);
+    }, 500);
+    return () => clearInterval(t);
+  }, [mapReady, loadedPresenceAbsenceLayers]);
 
   const previousFilterReference = useRef<VectorAtlasFilters | null>(null);
 
@@ -589,7 +517,7 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
         )
           visible = 0;
 
-        const year = f.get('year_start');
+        const year = f.get('year_start_epoch') ?? f.get('year_start');
         if (visible && timeRange.value.start && year < timeRange.value.start)
           visible = 0;
         if (visible && timeRange.value.end && year > timeRange.value.end)
@@ -664,9 +592,20 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
     setSpeciesStyles(styles);
 
-    // Create empty vector sources for presence and absence
-    const presenceSource = new VectorSource<Point>();
-    const absenceSource = new VectorSource<Point>();
+    // Presence/absence sources load the pre-built GeoJSON directly from the API
+    // (files are already EPSG:3857 with all WebGL attributes baked in)
+    const geojsonFormat = new GeoJSON({
+      dataProjection: 'EPSG:3857',
+      featureProjection: 'EPSG:3857',
+    });
+    const presenceSource = new VectorSource<Point>({
+      url: '/vector-api/full-occurrence-data/presence?ext=geojson',
+      format: geojsonFormat,
+    });
+    const absenceSource = new VectorSource<Point>({
+      url: '/vector-api/full-occurrence-data/absence?ext=geojson',
+      format: geojsonFormat,
+    });
     const hoverPresenceSource = new VectorSource<Point>();
     const hoverAbsenceSource = new VectorSource<Point>();
 

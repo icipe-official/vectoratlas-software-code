@@ -6,13 +6,12 @@ info:
 
     Vector Atlas is a comprehensive platform for managing and analyzing vector-borne disease 
     data, including entomological collections, occurrence records, and geographical information. 
-    The API provides services for file management, data processing, and geographical analysis 
+    The API provides services for occurrence search and pre-generated full occurrence datasets 
     to support vector-borne disease research and control.
 
     This API includes:
-    - File Service: Upload, download, and manage files with support for compressed versions and previews
-    - Geographic data processing and analysis
-    - Metadata management for research data
+    - Occurrence search: filter and paginate occurrence records by country, species, season, and more
+    - Full occurrence data: pre-generated occurrence JSON / GeoJSON payloads served with caching and compression
   version: 1.0.0
   contact:
     name: Vector Atlas Project
@@ -40,44 +39,34 @@ tags:
       - Single-record lookup by id
       - Field projection to limit returned fields
       - Year-range timeline filtering
+  - name: Full Occurrence Data
+    description: |
+      Pre-generated full occurrence datasets (JSON and GeoJSON) used by the map.
+
+      Files are generated on demand and cached; the payload is regenerated whenever
+      an approved dataset is added/removed, or species/country metadata changes.
 
 x-tagGroups:
   - name: Occurrence Service
     tags:
       - Occurrence
-  - name: File Service (disabled)
+  - name: Full Occurrence Data
     tags:
-      - File
+      - Full Occurrence Data
 
 # Paths are organized in separate files under paths/
-# Occurrence service endpoints are prefixed with /search
-# File service endpoints are prefixed with /files (currently disabled)
+# Occurrence search endpoint is prefixed with /search
+# Full occurrence data endpoints are prefixed with /full-occurrence-data
 paths:
   # Occurrence Service Endpoints
   /search/{entityType}:
     $ref: ./paths/occurrence/search.yaml#/paths/~1search~1{entityType}
 
-  # File Service Endpoints (disabled - proposed endpoints not currently in use)
-  # /files:
-  #   $ref: ./paths/file/files.yaml#/paths/~1files
-  # /files/upload:
-  #   $ref: ./paths/file/upload.yaml#/paths/~1files~1upload
-  # /files/{fileIdentifier}:
-  #   $ref: ./paths/file/file.yaml#/paths/~1files~1{fileIdentifier}
-  # /files/{fileIdentifier}/download:
-  #   $ref: ./paths/file/download.yaml#/paths/~1files~1{fileIdentifier}~1download
-  # /files/{fileIdentifier}/compressed:
-  #   $ref: ./paths/file/compressed.yaml#/paths/~1files~1{fileIdentifier}~1compressed
-  # /files/{fileIdentifier}/compressed/upload:
-  #   $ref: ./paths/file/compressed_upload.yaml#/paths/~1files~1{fileIdentifier}~1compressed~1upload
-  # /files/{fileIdentifier}/compressed/{compressionIdentifier}:
-  #   $ref: ./paths/file/compressed_single.yaml#/paths/~1files~1{fileIdentifier}~1compressed~1{compressionIdentifier}
-  # /files/{fileIdentifier}/preview:
-  #   $ref: ./paths/file/preview.yaml#/paths/~1files~1{fileIdentifier}~1preview
-  # /files/{fileIdentifier}/preview/upload:
-  #   $ref: ./paths/file/preview_upload.yaml#/paths/~1files~1{fileIdentifier}~1preview~1upload
-  # /files/{fileIdentifier}/preview/{previewIdentifier}:
-  #   $ref: ./paths/file/preview_single.yaml#/paths/~1files~1{fileIdentifier}~1preview~1{previewIdentifier}
+  # Full Occurrence Data Endpoints
+  /full-occurrence-data/status:
+    $ref: ./paths/occurrence/full_occurrence_data.yaml#/paths/~1full-occurrence-data~1status
+  /full-occurrence-data/{file_name}:
+    $ref: ./paths/occurrence/full_occurrence_data.yaml#/paths/~1full-occurrence-data~1{file_name}
 
 # Components are organized in separate files
 components:
@@ -93,20 +82,8 @@ components:
       $ref: ./schemas/occurrence/occurrence.yaml#/components/schemas/Occurrence
     OccurrenceSearchResult:
       $ref: ./schemas/occurrence/occurrence_search_result.yaml#/components/schemas/OccurrenceSearchResult
-
-    # File Service Schemas (disabled)
-    File:
-      $ref: ./schemas/file/file.yaml#/components/schemas/File
-    FileList:
-      $ref: ./schemas/file/file_list.yaml#/components/schemas/FileList
-    FileCompression:
-      $ref: ./schemas/file/file_compression.yaml#/components/schemas/FileCompression
-    FilePreview:
-      $ref: ./schemas/file/file_preview.yaml#/components/schemas/FilePreview
-    FileUpload:
-      $ref: ./schemas/file/file_upload.yaml#/components/schemas/FileUpload
-    FileMetadata:
-      $ref: ./schemas/file/file_metadata.yaml#/components/schemas/FileMetadata
+    FullOccurrenceDataStatus:
+      $ref: ./schemas/occurrence/full_occurrence_data_status.yaml#/components/schemas/FullOccurrenceDataStatus
 
   parameters:
     # Pagination Parameters
@@ -147,17 +124,11 @@ components:
     Fields:
       $ref: ./parameters/occurrence/search_parameters.yaml#/components/parameters/Fields
 
-    # File Service Parameters (disabled)
-    FileIdentifier:
-      $ref: ./parameters/file/file_identifier.yaml#/components/parameters/FileIdentifier
-    CompressionIdentifier:
-      $ref: ./parameters/file/compression_identifier.yaml#/components/parameters/CompressionIdentifier
-    PreviewIdentifier:
-      $ref: ./parameters/file/preview_identifier.yaml#/components/parameters/PreviewIdentifier
-    FolderName:
-      $ref: ./parameters/file/folder_name.yaml#/components/parameters/FolderName
-    SearchQuery:
-      $ref: ./parameters/file/search_query.yaml#/components/parameters/SearchQuery
+    # Full Occurrence Data Parameters
+    FullOccurrenceFileName:
+      $ref: ./parameters/occurrence/full_occurrence_data_parameters.yaml#/components/parameters/FullOccurrenceFileName
+    FullOccurrenceExt:
+      $ref: ./parameters/occurrence/full_occurrence_data_parameters.yaml#/components/parameters/FullOccurrenceExt
 
   responses:
     # Common Responses
@@ -167,16 +138,10 @@ components:
     # Occurrence Service Responses
     OccurrenceSearchResult:
       $ref: ./responses/occurrence/occurrence_search_result.yaml#/components/responses/OccurrenceSearchResult
-
-    # File Service Responses (disabled)
-    File:
-      $ref: ./responses/file/file.yaml#/components/responses/File
-    FileList:
-      $ref: ./responses/file/file_list.yaml#/components/responses/FileList
-    FileDownload:
-      $ref: ./responses/file/file_download.yaml#/components/responses/FileDownload
-    FileMetadata:
-      $ref: ./responses/file/file_metadata.yaml#/components/responses/FileMetadata
+    FullOccurrenceDataStatus:
+      $ref: ./responses/occurrence/full_occurrence_data.yaml#/components/responses/FullOccurrenceDataStatus
+    FullOccurrenceDataFile:
+      $ref: ./responses/occurrence/full_occurrence_data.yaml#/components/responses/FullOccurrenceDataFile
 
   # securitySchemes:
   #   BearerAuth:
@@ -185,6 +150,6 @@ components:
   #     bearerFormat: JWT
   #     description: JWT token for authenticated access
 
-# No global security — the occurrence search endpoint is public.
-# Authenticated endpoints (e.g. file service when re-enabled) should
-# declare security at the operation level.
+# No global security — the occurrence search and full occurrence data
+# endpoints are public. Authenticated endpoints should declare security
+# at the operation level.

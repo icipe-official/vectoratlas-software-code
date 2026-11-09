@@ -6,11 +6,14 @@ export class UpdateRecordedSpeciesInput {
   id: string;
 
   @Field({ nullable: true })
-  displayName?: string;
+  species?: string;
 
   @Field({ nullable: true })
-  category?: string;
+  species_notes?: string;
 
   @Field({ nullable: true })
-  color?: string;
+  species_id_1?: string;
+
+  @Field({ nullable: true })
+  species_id_2?: string;
 }
