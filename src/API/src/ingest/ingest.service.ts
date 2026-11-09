@@ -16,6 +16,7 @@ import { Sample } from 'src/db/occurrence/entities/sample.entity';
 import { Reference } from 'src/db/shared/entities/reference.entity';
 import { Site } from 'src/db/shared/entities/site.entity';
 import { RecordedSpecies } from 'src/db/shared/entities/recorded_species.entity';
+import { Species } from 'src/db/species/entities/species.entity';
 import { Environment } from 'src/db/bionomics/entities/environment.entity';
 import {
   DeepPartial,
@@ -41,6 +42,8 @@ export class IngestService {
     @InjectRepository(Site) private siteRepository: Repository<Site>,
     @InjectRepository(RecordedSpecies)
     private recordedSpeciesRepository: Repository<RecordedSpecies>,
+    @InjectRepository(Species)
+    private speciesRepository: Repository<Species>,
     @InjectRepository(Biology) private biologyRepository: Repository<Biology>,
     @InjectRepository(Infection)
     private infectionRepository: Repository<Infection>,
@@ -490,14 +493,21 @@ export class IngestService {
       const category = components[2].replace(/"/g, '');
       const color = components[3].replace(/"/g, '');
 
-      await this.recordedSpeciesRepository.update(
-        { id: id },
-        {
-          display_name: display_name || null,
-          category: category || null,
-          color: color || null,
-        },
-      );
+      // display metadata lives on the `species` reference row now
+      const recorded = await this.recordedSpeciesRepository.findOne({
+        where: { id: id },
+        relations: ['speciesDetails'],
+      });
+      if (recorded?.speciesDetails) {
+        await this.speciesRepository.update(
+          { id: recorded.speciesDetails.id },
+          {
+            display_name: display_name || null,
+            category: category || null,
+            color: color || null,
+          },
+        );
+      }
       rowsCounter++;
     }
 

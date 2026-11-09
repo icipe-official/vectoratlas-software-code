@@ -447,6 +447,7 @@ export class OccurrenceService {
       }
 
       if (filters.species) {
+        // recorded_species.species is the FK to species.id, and species.id = name
         query = query.andWhere('"recordedSpecies"."species" IN (:...species)', {
           species: filters.species,
         });

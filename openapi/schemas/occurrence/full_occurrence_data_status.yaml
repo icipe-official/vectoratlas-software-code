@@ -1,0 +1,27 @@
+# Full Occurrence Data Status Schema
+
+components:
+  schemas:
+    FullOccurrenceDataStatus:
+      type: object
+      required:
+        - stale
+        - refreshing
+        - hasPrevious
+      properties:
+        stale:
+          type: boolean
+          description: |
+            True when the generated payloads are missing or out of date (newer
+            approved dataset, changed approved-id set, or species/country edits
+            since the last generation).
+        refreshing:
+          type: boolean
+          description: True while a background regeneration job is running (singleton).
+        hasPrevious:
+          type: boolean
+          description: True when a previously generated, valid version of the payloads exists on disk.
+      example:
+        stale: false
+        refreshing: false
+        hasPrevious: true

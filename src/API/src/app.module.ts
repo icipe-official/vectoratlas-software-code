@@ -39,6 +39,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { BlobCleanupService } from './db/shared/blob-cleanup.service';
 import { AzureBlobService } from './db/azure-blob/azure-blob.service';
 import { CountryModule } from './db/country/country.module';
+import { SpeciesModule } from './db/species/species.module';
 import { EmailRegistryModule } from './db/email-registry/email-registry.module';
 
 @Module({
@@ -119,6 +120,7 @@ import { EmailRegistryModule } from './db/email-registry/email-registry.module';
     ExportsModule,
     FullOccurrenceDataModule,
     CountryModule,
+    SpeciesModule,
   ],
   controllers: [ConfigController],
   providers: [AzureBlobService, BlobCleanupService],

@@ -16,14 +16,27 @@ import { extractCoordinates, createWebMercatorPoint } from './coordinates.js';
 import { logger } from '@/utils/index.js';
 
 /**
+ * License attached to every generated GeoJSON FeatureCollection (foreign
+ * member). Must match the terms the UI download dialog makes users accept.
+ */
+export const LICENSE = {
+  name: 'CC BY-NC 4.0',
+  url: 'https://creativecommons.org/licenses/by-nc/4.0/deed.en',
+};
+
+/**
  * WebGL-ready properties for a GeoJSON feature
  */
 export interface WebGLFeatureProperties {
   // Original data
   id: string;
   species: string | undefined;
+  species_display_name: string | undefined;
+  species_category: string | undefined;
   binary_presence: string | undefined;
   country: string;
+  country_iso2: string | undefined;
+  country_iso3: string | undefined;
   year_start: number | undefined;
   has_adult: boolean | undefined;
   has_larval: boolean | undefined;
@@ -78,8 +91,8 @@ export function createWebGLProperties(
   const country = data.country ?? '';
   const binaryPresence = data.binary_presence ?? '';
 
-  // Get species color
-  const hexColor = getSpeciesHexColor(species);
+  // Prefer the color recorded on the species row; fall back to the static map
+  const hexColor = data.species_color || getSpeciesHexColor(species);
   const [r, g, b, a] = hexToNormalizedRgba(hexColor);
 
   // Presence status
@@ -97,8 +110,12 @@ export function createWebGLProperties(
     // Original data
     id: data.id,
     species,
+    species_display_name: data.species_display_name,
+    species_category: data.species_category,
     binary_presence: binaryPresence,
     country,
+    country_iso2: data.country_iso2,
+    country_iso3: data.country_iso3,
     year_start: year,
     has_adult: data.has_adult,
     has_larval: data.has_larval,
@@ -201,6 +218,7 @@ export function createFeatureCollection(
         name: 'urn:ogc:def:crs:EPSG::3857',
       },
     },
+        license: LICENSE,
     features,
   };
 }
@@ -256,6 +274,7 @@ export class GeoJSONBuilder {
           name: 'urn:ogc:def:crs:EPSG::3857',
         },
       },
+            license: LICENSE,
       features: this.features,
     };
   }

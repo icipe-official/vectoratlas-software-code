@@ -1,0 +1,32 @@
+# Full Occurrence Data Parameters
+
+components:
+  parameters:
+    FullOccurrenceFileName:
+      name: file_name
+      in: path
+      description: |
+        Base name of the generated payload file (without extension):
+        `data`, `presence`, or `absence`.
+      required: true
+      schema:
+        type: string
+        enum:
+          - data
+          - presence
+          - absence
+      example: "presence"
+
+    FullOccurrenceExt:
+      name: ext
+      in: query
+      description: |
+        Extension of the generated file. `json` for the occurrence records
+        array (`data` only), `geojson` for the GeoJSON FeatureCollections.
+      required: true
+      schema:
+        type: string
+        enum:
+          - json
+          - geojson
+      example: "geojson"

@@ -5,7 +5,7 @@
 import type { FeatureCollection, Feature, Geometry } from 'geojson';
 import type { OccurrenceData } from '@/types/index.js';
 import type { WebGLFeatureProperties } from './geojsonBuilder.js';
-import { createWebGLFeature } from './geojsonBuilder.js';
+import { createWebGLFeature, LICENSE } from './geojsonBuilder.js';
 import { getPresenceStatus } from './colors.js';
 import { logger } from '@/utils/index.js';
 
@@ -69,6 +69,7 @@ export class PresenceLayerBuilder {
           name: 'urn:ogc:def:crs:EPSG::3857',
         },
       },
+            license: LICENSE,
       features: this.features,
     };
   }
@@ -142,6 +143,7 @@ export class AbsenceLayerBuilder {
           name: 'urn:ogc:def:crs:EPSG::3857',
         },
       },
+            license: LICENSE,
       features: this.features,
     };
   }

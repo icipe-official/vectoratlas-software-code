@@ -72,7 +72,7 @@ export function mapOccurrencesToReturnItems(
   return items.map((x) => {
     const obj = {
       id: x.id,
-      species: x.recordedSpecies.species,
+      species: x.recordedSpecies?.species,
       location: x.site.location,
       binary_presence: x.binary_presence,
       country: x.site.country,
@@ -84,9 +84,9 @@ export function mapOccurrencesToReturnItems(
       control: x.sample?.control?.toString() || '',
       abundance_data: x.abundance_data,
       bio_data: x.bio_data,
-      display_name: x.recordedSpecies?.display_name,
-      category: x.recordedSpecies?.category,
-      color: x.recordedSpecies?.color,
+      display_name: x.recordedSpecies?.speciesDetails?.display_name,
+      category: x.recordedSpecies?.speciesDetails?.category,
+      color: x.recordedSpecies?.speciesDetails?.color,
       //has_bionomics: x.bio_data,
     };
 

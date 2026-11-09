@@ -21,15 +21,18 @@
  * Environment variables:
  *   PGPORT, PGUSER, PGPASSWORD, PDATABASE, PGHOST - PostgreSQL connection
  *   PGSSL - Enable SSL/TLS for secure connections to Azure managed PostgreSQL (default: false)
- *   TARGET_DIRECTORY - Original directory containing existing files
- *   STAGING_DIRECTORY - Temporary directory for new files
- *   FILE_PATHS_CONFIG - Path to JSON file containing file path configurations
- *   BATCH_SIZE - Number of records per batch (default: 1000)
- *   CREATE_BACKUP - Whether to create backups of existing files (default: false)
+ *   OCC_GEO_JOB_TARGET_DIRECTORY - Original directory containing existing files
+ *     (fallback: TARGET_DIRECTORY)
+ *   OCC_GEO_JOB_STAGING_DIRECTORY - Temporary directory for new files
+ *     (fallback: STAGING_DIRECTORY)
+ *   OCC_GEO_JOB_FILE_PATHS_CONFIG - Path to JSON file containing file path
+ *     configurations (fallback: FILE_PATHS_CONFIG)
+ *   OCC_GEO_JOB_BATCH_SIZE - Number of records per batch (default: 1000)
+ *   OCC_GEO_JOB_CREATE_BACKUP - Whether to create backups of existing files (default: false)
  */
 
 import { logger } from './utils/index.js';
-import { streamOccurrenceData } from './db/index.js';
+import { streamOccurrenceData, writeGenerationLedger } from './db/index.js';
 import {
   setupCoordinates,
   createOccurrenceStreamProcessor,
@@ -101,7 +104,10 @@ async function main() {
     const splitProcessor = createSplitLayerStreamProcessors();
 
     // Stream data from database in batches
-    const batchSize = parseInt(process.env.BATCH_SIZE || '1000', 10);
+    const batchSize = parseInt(
+      process.env.OCC_GEO_JOB_BATCH_SIZE || process.env.BATCH_SIZE || '1000',
+      10,
+    );
     logger.info(
       `Streaming occurrence data from database in batches of ${batchSize}...`,
     );
@@ -139,8 +145,9 @@ async function main() {
 
     // Perform atomic replacement
     logger.info('Performing atomic file replacement...');
-    const createBackup =
-      process.env.CREATE_BACKUP?.toLowerCase() === 'true' || false;
+    const createBackupEnv =
+      process.env.OCC_GEO_JOB_CREATE_BACKUP || process.env.CREATE_BACKUP;
+    const createBackup = createBackupEnv?.toLowerCase() === 'true' || false;
 
     const replaceResult = await atomicReplaceWithLedger(
       config.stagingDirectory,
@@ -167,6 +174,10 @@ async function main() {
     // Use overwrite: true to ensure compressed files are replaced when source changes
     logger.info('Compressing GeoJSON files...');
     await compressGeoJSONFiles(target, true);
+
+    // Write the generation ledger the API uses for staleness checks
+    const writtenFiles = filenames.flatMap((f) => [f, `${f}.gz`, `${f}.br`]);
+    await writeGenerationLedger(config.targetDirectory, writtenFiles);
 
     logger.info('OccurrenceGeoJob completed successfully!');
     process.exit(0);

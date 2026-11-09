@@ -5,9 +5,12 @@
  * Supports configuration via JSON file or environment variables.
  *
  * Environment variables:
- *   TARGET_DIRECTORY - Original directory containing existing files
- *   STAGING_DIRECTORY - Temporary directory for new files before atomic replacement
- *   FILE_PATHS_CONFIG - Path to JSON file containing file path configurations
+ *   OCC_GEO_JOB_TARGET_DIRECTORY - Original directory containing existing files
+ *     (fallback: TARGET_DIRECTORY)
+ *   OCC_GEO_JOB_STAGING_DIRECTORY - Temporary directory for new files before
+ *     atomic replacement (fallback: STAGING_DIRECTORY)
+ *   OCC_GEO_JOB_FILE_PATHS_CONFIG - Path to JSON file containing file path
+ *     configurations (fallback: FILE_PATHS_CONFIG)
  */
 
 import { promises as fs } from 'fs';
@@ -88,12 +91,16 @@ async function loadConfigFromFile(configPath: string): Promise<FilePathConfig> {
 function loadConfigFromEnv(): Partial<FilePathConfig> {
   const config: Partial<FilePathConfig> = {};
 
-  if (process.env.TARGET_DIRECTORY) {
-    config.targetDirectory = process.env.TARGET_DIRECTORY;
+  const targetDir =
+    process.env.OCC_GEO_JOB_TARGET_DIRECTORY || process.env.TARGET_DIRECTORY;
+  if (targetDir) {
+    config.targetDirectory = targetDir;
   }
 
-  if (process.env.STAGING_DIRECTORY) {
-    config.stagingDirectory = process.env.STAGING_DIRECTORY;
+  const stagingDir =
+    process.env.OCC_GEO_JOB_STAGING_DIRECTORY || process.env.STAGING_DIRECTORY;
+  if (stagingDir) {
+    config.stagingDirectory = stagingDir;
   }
 
   return config;
@@ -122,9 +129,11 @@ export async function getFilePathsConfig(): Promise<FilePathConfig> {
   let fileConfig: FilePathConfig | undefined;
 
   // Try to load from JSON config file if specified
-  if (process.env.FILE_PATHS_CONFIG) {
+  const filePathsConfig =
+    process.env.OCC_GEO_JOB_FILE_PATHS_CONFIG || process.env.FILE_PATHS_CONFIG;
+  if (filePathsConfig) {
     try {
-      fileConfig = await loadConfigFromFile(process.env.FILE_PATHS_CONFIG);
+      fileConfig = await loadConfigFromFile(filePathsConfig);
     } catch (error) {
       logger.warn(
         `Using default configuration due to error loading config file: ${error}`,

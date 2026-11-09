@@ -884,6 +884,20 @@ export const approveDatasetAuthenticated = async (
   return res;
 };
 
+export const deleteDatasetAuthenticated = async (
+  token: String,
+  datasetId: String
+) => {
+  const url = `${apiUrl}dataset/${datasetId}`;
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const res = await axios.delete(url, config);
+  return res;
+};
+
 export const reviewDatasetAuthenticated = async (
   token: String,
   datasetId: String,

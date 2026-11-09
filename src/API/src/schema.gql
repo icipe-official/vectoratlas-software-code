@@ -185,7 +185,9 @@ type EmailRegistry {
 
 type ExportJob {
   blobPath: String
+  clientRequestId: String
   completedAt: DateTime
+  contentHash: String
   creation: DateTime!
   doi: DOI
   downloaderEmail: String
@@ -278,6 +280,7 @@ type Mutation {
   updateCountry(input: UpdateCountryInput!): Country!
   updateRecordedSpecies(input: UpdateRecordedSpeciesInput!): RecordedSpecies!
   updateReference(input: UpdateReferenceInput!, num_id: Int!): Reference!
+  updateSpecies(input: UpdateSpeciesInput!): Species!
   updateUserRoles(input: UserRoleInput!): UserRole!
   upsertNewsTranslation(input: UpsertNewsTranslationInput!): NewsTranslation!
 }
@@ -411,6 +414,7 @@ type Query {
   allNews: [News!]!
   allRecordedSpecies: [RecordedSpecies!]!
   allReferenceData(endId: Float = null, filterField: String = "article_title", order: String = "asc", orderBy: String = "num_id", skip: Float = 0, startId: Float = 1, take: Float = 1, textFilter: String = ""): PaginatedReferenceData!
+  allSpecies: [Species!]!
   allSpeciesInformation: [SpeciesInformation!]!
   allUploadedDatasets: [UploadedDataset!]
   allUploadedModels: [UploadedModel!]
@@ -427,6 +431,8 @@ type Query {
   postProcessModel(blobLocation: String!, displayName: String!, maxValue: Float!, modelName: String!, uploadedModelId: String!): ModelProcessingStatus!
   recordedSpeciesById(id: String!): RecordedSpecies
   referenceData(id: String!): Reference!
+  species(id: String!): Species
+  speciesByName(name: String!): Species
   speciesInformationById(id: String!): SpeciesInformation!
   uploadedDatasetById(id: String!): UploadedDataset
   uploadedDatasetsByUploader(uploader: String!): [UploadedDataset!]
@@ -435,13 +441,11 @@ type Query {
   userRole(id: String!): UserRole!
 }
 
-"""recorded species data"""
+"""recorded species data (link to species reference)"""
 type RecordedSpecies {
-  category: String
-  color: String
-  display_name: String
   id: String!
   species: String!
+  speciesDetails: Species
   species_id_1: String
   species_id_2: String
   species_notes: String
@@ -521,6 +525,20 @@ type Site {
   site_notes: String
 }
 
+type Species {
+  alternative_names: [String!]!
+  category: String
+  color: String
+  creation: DateTime!
+  display_name: String
+  id: String!
+  modified: DateTime!
+  name: String!
+  owner: String
+  recorded_species: [RecordedSpecies!]
+  updater: String
+}
+
 """Information for a particular species"""
 type SpeciesInformation {
   citations: [String!]
@@ -547,10 +565,11 @@ input UpdateCountryInput {
 }
 
 input UpdateRecordedSpeciesInput {
-  category: String
-  color: String
-  displayName: String
   id: String!
+  species: String
+  species_id_1: String
+  species_id_2: String
+  species_notes: String
 }
 
 input UpdateReferenceInput {
@@ -562,6 +581,15 @@ input UpdateReferenceInput {
   report_type: String!
   v_data: Boolean!
   year: Float!
+}
+
+input UpdateSpeciesInput {
+  alternative_names: [String!]
+  category: String
+  color: String
+  display_name: String
+  id: String!
+  name: String
 }
 
 """uploaded dataset"""

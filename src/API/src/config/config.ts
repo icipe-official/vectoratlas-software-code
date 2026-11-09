@@ -51,8 +51,14 @@ const config = convict({
   fullOccurrenceDataFolder: {
     type: String,
     doc: 'Path to folder storing the full occurrence data files',
-    default: process.cwd() + '/../OccurrenceGeoJob/.tmp',
+    default: process.cwd() + '/tmp/occurrence_data',
     env: 'FULL_OCCURRENCE_DATA_FOLDER',
+  },
+  occurrenceGeoJobDir: {
+    type: String,
+    doc: 'Path to the OccurrenceGeoJob app. The API spawns `node dist/index.js` in this directory (as an awaited CLI child process) to regenerate the full occurrence data files. In the API Docker image the job is not a sibling of the API build context, so set OCC_GEO_JOB_DIR to wherever the job is embedded/mounted.',
+    default: process.cwd() + '/../OccurrenceGeoJob',
+    env: 'OCC_GEO_JOB_DIR',
   },
   databaseGuideFileName: {
     type: String,

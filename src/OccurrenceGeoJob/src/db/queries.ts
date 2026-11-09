@@ -3,7 +3,9 @@ import path from 'path';
 import { logger } from '@/utils/index.js';
 
 // SQL files are in the sql/ directory relative to project root
-const QUERIES_DIR = path.join(process.env.SQL_QUERIES_FOLDER || 'sql');
+const QUERIES_DIR = path.join(
+  process.env.OCC_GEO_JOB_SQL_QUERIES_FOLDER || process.env.SQL_QUERIES_FOLDER || 'sql',
+);
 
 /**
  * Loads SQL query from file
