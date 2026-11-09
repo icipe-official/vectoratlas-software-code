@@ -1,17 +1,13 @@
-import {
-  Entity,
-  Column,
-  OneToMany,
-  ManyToOne,
-  JoinColumn,
-} from 'typeorm';
+import { Entity, Column, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
 import { ObjectType, Field } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
 import { Occurrence } from '../../occurrence/entities/occurrence.entity';
 import { Species } from '../../species/entities/species.entity';
 
 @Entity('recorded_species')
-@ObjectType({ description: 'recorded species data (link to species reference)' })
+@ObjectType({
+  description: 'recorded species data (link to species reference)',
+})
 export class RecordedSpecies extends BaseEntity {
   // FK -> species.id (species.id = species name, like country.id = name)
   @Column('varchar')

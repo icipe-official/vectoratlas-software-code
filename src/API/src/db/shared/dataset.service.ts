@@ -171,7 +171,10 @@ export class DatasetService {
       );
 
       // helper: delete rows of every table that has a FK to $parentTable, restricted to parent ids
-      const deleteChildren = async (parentTable: string, parentIdsSql: string) => {
+      const deleteChildren = async (
+        parentTable: string,
+        parentIdsSql: string,
+      ) => {
         const children: { table_name: string; column_name: string }[] =
           await qr.query(
             `SELECT tc.table_name, kcu.column_name
@@ -194,33 +197,33 @@ export class DatasetService {
       // 1. bionomics detail children, then bionomics rows
       await deleteChildren(
         'bionomics',
-        `SELECT "bionomicsId" FROM del_occ WHERE "bionomicsId" IS NOT NULL`,
+        'SELECT "bionomicsId" FROM del_occ WHERE "bionomicsId" IS NOT NULL',
       );
       await qr.query(
-        `DELETE FROM bionomics WHERE id IN (SELECT "bionomicsId" FROM del_occ WHERE "bionomicsId" IS NOT NULL)`,
+        'DELETE FROM bionomics WHERE id IN (SELECT "bionomicsId" FROM del_occ WHERE "bionomicsId" IS NOT NULL)',
       );
 
       // 2. IR bioassay detail children, then the IR bioassay rows
       await deleteChildren(
         'insecticideResistanceBioassays',
-        `SELECT "insecticideResistanceBioassaysId" FROM del_occ WHERE "insecticideResistanceBioassaysId" IS NOT NULL`,
+        'SELECT "insecticideResistanceBioassaysId" FROM del_occ WHERE "insecticideResistanceBioassaysId" IS NOT NULL',
       );
       await qr.query(
-        `DELETE FROM "insecticideResistanceBioassays" WHERE id IN (SELECT "insecticideResistanceBioassaysId" FROM del_occ WHERE "insecticideResistanceBioassaysId" IS NOT NULL)`,
+        'DELETE FROM "insecticideResistanceBioassays" WHERE id IN (SELECT "insecticideResistanceBioassaysId" FROM del_occ WHERE "insecticideResistanceBioassaysId" IS NOT NULL)',
       );
 
       // 3. the occurrences themselves
-      await qr.query(`DELETE FROM occurrence WHERE "datasetId" = $1`, [id]);
+      await qr.query('DELETE FROM occurrence WHERE "datasetId" = $1', [id]);
 
       // 4. orphan-only cleanup of deduped rows still linked from del_occ.
       //    "Do nothing" for rows still referenced by other datasets.
       //    (Precompute the still-referenced id sets once — occurrence has no
       //    index on the FK columns, so per-row NOT EXISTS would be O(n^2).)
       await qr.query(
-        `CREATE TEMP TABLE used_sample AS SELECT DISTINCT "sampleId" AS id FROM occurrence WHERE "sampleId" IS NOT NULL`,
+        'CREATE TEMP TABLE used_sample AS SELECT DISTINCT "sampleId" AS id FROM occurrence WHERE "sampleId" IS NOT NULL',
       );
       await qr.query(
-        `CREATE TEMP TABLE used_recorded_species AS SELECT DISTINCT "recordedSpeciesId" AS id FROM occurrence WHERE "recordedSpeciesId" IS NOT NULL`,
+        'CREATE TEMP TABLE used_recorded_species AS SELECT DISTINCT "recordedSpeciesId" AS id FROM occurrence WHERE "recordedSpeciesId" IS NOT NULL',
       );
       await qr.query(
         `CREATE TEMP TABLE used_reference AS
@@ -254,7 +257,7 @@ export class DatasetService {
       );
 
       // 5. the dataset row itself
-      await qr.query(`DELETE FROM dataset WHERE id = $1`, [id]);
+      await qr.query('DELETE FROM dataset WHERE id = $1', [id]);
 
       await qr.query('DROP TABLE del_occ');
       await qr.commitTransaction();

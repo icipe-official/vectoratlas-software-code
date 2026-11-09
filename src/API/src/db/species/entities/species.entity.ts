@@ -44,7 +44,10 @@ export class Species extends BaseEntityExtended {
   alternative_names: string[];
 
   @Field(() => [RecordedSpecies], { nullable: true })
-  @OneToMany(() => RecordedSpecies, (recordedSpecies) => recordedSpecies.speciesDetails)
+  @OneToMany(
+    () => RecordedSpecies,
+    (recordedSpecies) => recordedSpecies.speciesDetails,
+  )
   recorded_species: RecordedSpecies[];
 
   @BeforeInsert()
