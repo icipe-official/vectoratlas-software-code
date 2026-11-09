@@ -126,8 +126,20 @@ async function atomicReplaceFile(
   skipped: boolean;
 }> {
   try {
-    // Verify staging file exists
-    const stats = await fs.stat(stagingPath);
+    // Verify staging file exists — if it's missing (e.g. resume with a stale
+    // ledger whose files were already cleaned up), skip instead of failing hard
+    let stats;
+    try {
+      stats = await fs.stat(stagingPath);
+    } catch (error: unknown) {
+      if ((error as { code?: string }).code === 'ENOENT') {
+        logger.warn(
+          `Staging file missing, skipping replacement: ${stagingPath}`,
+        );
+        return { success: true, checksum: undefined, skipped: true };
+      }
+      throw error;
+    }
     if (!stats.isFile()) {
       throw new Error(`Staging file is not a regular file: ${stagingPath}`);
     }
@@ -251,9 +263,11 @@ export async function atomicReplaceAll(
               await fs.unlink(stagingPath);
               logger.debug(`Cleaned up staging file (skipped): ${stagingPath}`);
             } catch (error) {
-              logger.warn(
-                `Failed to clean up staging file ${stagingPath}: ${error}`,
-              );
+              if ((error as { code?: string }).code !== "ENOENT") {
+                logger.warn(
+                  `Failed to clean up staging file ${stagingPath}: ${error}`,
+                );
+              }
             }
           }
         } else {
@@ -268,9 +282,11 @@ export async function atomicReplaceAll(
               await fs.unlink(stagingPath);
               logger.debug(`Cleaned up staging file: ${stagingPath}`);
             } catch (error) {
-              logger.warn(
-                `Failed to clean up staging file ${stagingPath}: ${error}`,
-              );
+              if ((error as { code?: string }).code !== "ENOENT") {
+                logger.warn(
+                  `Failed to clean up staging file ${stagingPath}: ${error}`,
+                );
+              }
             }
           }
         }
