@@ -24,8 +24,10 @@ export class AddNewsTranslationTable1789639000000
     // Stores per-locale translations of news articles.
     // FK to news(id) with ON DELETE CASCADE — deleting a news article
     // automatically removes all its translations.
+    // IF NOT EXISTS: the table may already exist on databases where it was
+    // created out-of-band before this migration was recorded.
     await queryRunner.query(
-      `CREATE TABLE "news_translation" (
+      `CREATE TABLE IF NOT EXISTS "news_translation" (
         "id" SERIAL PRIMARY KEY,
         "news_id" varchar(256) NOT NULL,
         "locale" varchar(5) NOT NULL,
@@ -39,15 +41,15 @@ export class AddNewsTranslationTable1789639000000
       )`,
     );
 
-    // 3. Indexes
+    // 3. Indexes (IF NOT EXISTS for the same out-of-band reason as above)
     // Unique constraint: one translation per locale per news article
     await queryRunner.query(
-      `CREATE UNIQUE INDEX "uq_news_locale"
+      `CREATE UNIQUE INDEX IF NOT EXISTS "uq_news_locale"
         ON "news_translation" ("news_id", "locale")`,
     );
     // Lookup index for finding all translations of a news article
     await queryRunner.query(
-      `CREATE INDEX "idx_news_translation_news_id"
+      `CREATE INDEX IF NOT EXISTS "idx_news_translation_news_id"
         ON "news_translation" ("news_id")`,
     );
   }
@@ -55,14 +57,14 @@ export class AddNewsTranslationTable1789639000000
   public async down(queryRunner: QueryRunner): Promise<void> {
     // Drop indexes first
     await queryRunner.query(
-      `DROP INDEX "idx_news_translation_news_id"`,
+      `DROP INDEX IF EXISTS "idx_news_translation_news_id"`,
     );
     await queryRunner.query(
-      `DROP INDEX "uq_news_locale"`,
+      `DROP INDEX IF EXISTS "uq_news_locale"`,
     );
 
     // Drop the table
-    await queryRunner.query(`DROP TABLE "news_translation"`);
+    await queryRunner.query(`DROP TABLE IF EXISTS "news_translation"`);
 
     // Restore NOT NULL constraints on news columns
     await queryRunner.query(
