@@ -84,17 +84,42 @@ export class NormalizeRecordedSpecies1793976760980 implements MigrationInterface
       `ALTER TABLE "recorded_species" ALTER COLUMN "species" SET NOT NULL`,
     );
     await queryRunner.query(`
-      ALTER TABLE "recorded_species"
-      ADD CONSTRAINT "FK_recorded_species_species"
-      FOREIGN KEY ("species") REFERENCES "species"("id")
+      DO $$ BEGIN
+        IF NOT EXISTS (
+          SELECT 1 FROM pg_constraint WHERE conname = 'FK_recorded_species_species'
+        ) THEN
+          ALTER TABLE "recorded_species"
+          ADD CONSTRAINT "FK_recorded_species_species"
+          FOREIGN KEY ("species") REFERENCES "species"("id");
+        END IF;
+      END $$;
     `);
 
-    // 4. One recorded_species row per distinct (species, id methods, notes) combination
-    await queryRunner.query(`
-      CREATE UNIQUE INDEX IF NOT EXISTS "UQ_recorded_species_composite"
-      ON "recorded_species" ("species", "species_id_1", "species_id_2", "species_notes")
-      NULLS NOT DISTINCT
-    `);
+    // 4. One recorded_species row per distinct (species, id methods, notes) combination.
+    // NULLS NOT DISTINCT needs PostgreSQL >= 15; on older servers emulate it with an
+    // expression index that maps NULL to '' — the ingest pipeline treats '' as NA
+    // anyway, so NULL and '' are the same "missing" value here, and the index then
+    // makes NULLs compare equal (same NULL-safe uniqueness semantics).
+    const [{ server_version_num }] = await queryRunner.query(
+      `SELECT current_setting('server_version_num')::int AS server_version_num`,
+    );
+    if (server_version_num >= 150000) {
+      await queryRunner.query(`
+        CREATE UNIQUE INDEX IF NOT EXISTS "UQ_recorded_species_composite"
+        ON "recorded_species" ("species", "species_id_1", "species_id_2", "species_notes")
+        NULLS NOT DISTINCT
+      `);
+    } else {
+      await queryRunner.query(`
+        CREATE UNIQUE INDEX IF NOT EXISTS "UQ_recorded_species_composite"
+        ON "recorded_species" (
+          "species",
+          COALESCE("species_id_1", ''),
+          COALESCE("species_id_2", ''),
+          COALESCE("species_notes", '')
+        )
+      `);
+    }
 
     // 5. Drop the legacy raw text column and the denormalized feature columns
     await queryRunner.query(`
