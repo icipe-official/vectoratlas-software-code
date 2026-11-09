@@ -43,16 +43,25 @@ generation:
 - Stale **with** a previous valid version: serve the stale file immediately with
   the `X-Occurrence-Data-Refresh: in-progress` header (the UI shows a toast) and
   spawn the OccurrenceGeoJob CLI in the background.
-- Stale with **no** previous version (cold start): block until generation finishes.
+- Stale with **no** previous version (cold start): wait for the lock, re-check
+  staleness (another replica may have just regenerated), then block until
+  generation finishes.
 
 Generation runs as an **awaited CLI child process** — the API spawns
 `node $OCC_GEO_JOB_DIR/dist/index.js` (default `src/OccurrenceGeoJob`) with
 `OCC_GEO_JOB_*`-prefixed env vars — never in-process, so the API event loop
 stays responsive (an earlier in-process BullMQ version blocked all endpoints
-during the big `JSON.stringify`/brotli passes). A single in-process `inflight`
-lock makes it a singleton. The job writes to a staging dir and atomically moves
-files into the target folder, skipping files whose checksum is unchanged, and
-writes the API-compatible `generation-ledger.json`.
+during the big `JSON.stringify`/brotli passes). Singleton across **all** API
+replicas (HA, shared PVC) via a Redis lock (`full-occurrence-data:generation-lock`,
+`SET NX PX` 30 min, token-checked Lua release): a background refresh spawns
+nothing when another replica holds the lock; `status()` reports `refreshing`
+from the lock too. All Redis calls have a 3 s timeout guard so a Redis outage
+cannot hang requests (generation triggering does depend on Redis, same as the
+export/email queues). `ioredis` is pinned to `^5` because `typeorm@0.3.31`
+peer-optionally requires `^5.0.4` (v6 breaks `npm ci` with ERESOLVE).
+The job writes to a staging dir and atomically moves files into the target
+folder (EXDEV copy fallback for cross-device moves), skipping files whose
+checksum is unchanged, and writes the API-compatible `generation-ledger.json`.
 
 `OCC_GEO_JOB_DIR` is API config (`src/API/src/config/config.ts`); the API
 Dockerfile is built with context `src/` (`docker build -f src/API/Dockerfile src`)
