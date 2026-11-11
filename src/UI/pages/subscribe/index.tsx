@@ -125,15 +125,16 @@ const SubscribePage = (): JSX.Element => {
 
         {status === 'unsubscribe_success' && (
           <Alert severity="success" sx={{ mt: 2 }}>
-            We've sent you a secure unsubscription link. Please check your inbox
-            to confirm.
+            We have sent you a secure unsubscription link. Please check your
+            inbox to confirm.
           </Alert>
         )}
 
         {/* New Direct Success UI */}
         {status === 'unsubscribe_direct' && (
           <Alert severity="success" sx={{ mt: 2 }}>
-            Your account notifications have been successfully disabled.
+            <p>You are not a subscriber. However your account notifications have 
+            been successfully disabled.   </p><p> Visit settings to re-enable.</p>
           </Alert>
         )}
 
