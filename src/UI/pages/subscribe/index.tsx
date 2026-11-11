@@ -4,8 +4,6 @@ import {
   Typography,
   TextField,
   Button,
-  FormControlLabel,
-  Checkbox,
   Paper,
   Alert,
   Box,
@@ -14,6 +12,7 @@ import {
 import { useTranslations } from 'next-intl';
 import { getMessages } from '../../utils/localization';
 import { GetServerSidePropsContext } from 'next';
+import Link from 'next/link';
 
 const SubscribePage = (): JSX.Element => {
   const t = useTranslations('EmailSubscription');
@@ -26,25 +25,34 @@ const SubscribePage = (): JSX.Element => {
   });
 
   const [status, setStatus] = useState<
-    'idle' | 'loading' | 'success' | 'error'
+    | 'idle'
+    | 'subscribing'
+    | 'unsubscribing'
+    | 'subscribe_success'
+    | 'unsubscribe_success'
+    | 'unsubscribe_direct'
+    | 'error'
   >('idle');
   const [errorMsg, setErrorMsg] = useState('');
 
   const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email);
-  const canSubmit =
+  const isProcessing = status === 'subscribing' || status === 'unsubscribing';
+
+  const canSubmitSubscribe =
     form.first_name.trim().length > 0 &&
     form.last_name.trim().length > 0 &&
     isValidEmail &&
-    status !== 'loading';
+    !isProcessing;
+  const canSubmitUnsubscribe = isValidEmail && !isProcessing;
 
   const handleChange = (field: string, value: string | boolean) => {
     setForm((prev) => ({ ...prev, [field]: value }));
+    if (status !== 'idle') setStatus('idle');
   };
 
-  const handleSubmit = async () => {
-    if (!canSubmit) return;
-
-    setStatus('loading');
+  const handleSubscribeSubmit = async () => {
+    if (!canSubmitSubscribe) return;
+    setStatus('subscribing');
     setErrorMsg('');
 
     try {
@@ -58,10 +66,41 @@ const SubscribePage = (): JSX.Element => {
       });
 
       if (res.ok) {
-        setStatus('success');
+        setStatus('subscribe_success');
       } else {
         const err = await res.json().catch(() => ({}));
         setErrorMsg(err.message || 'Failed to subscribe. Please try again.');
+        setStatus('error');
+      }
+    } catch {
+      setErrorMsg('Network error. Please check your connection and try again.');
+      setStatus('error');
+    }
+  };
+
+  const handleUnsubscribeRequest = async () => {
+    if (!canSubmitUnsubscribe) return;
+    setStatus('unsubscribing');
+    setErrorMsg('');
+
+    try {
+      const res = await fetch('/vector-api/request-unsubscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: form.email.trim().toLowerCase() }),
+      });
+
+      if (res.ok) {
+        const data = await res.json().catch(() => ({}));
+        // Route success state based on backend action
+        if (data.type === 'direct_disable') {
+          setStatus('unsubscribe_direct');
+        } else {
+          setStatus('unsubscribe_success');
+        }
+      } else {
+        const err = await res.json().catch(() => ({}));
+        setErrorMsg(err.message || 'Request failed. Please try again.');
         setStatus('error');
       }
     } catch {
@@ -77,93 +116,112 @@ const SubscribePage = (): JSX.Element => {
           {t('title') || 'Subscribe for Updates'}
         </Typography>
 
-        {status === 'success' ? (
+        {status === 'subscribe_success' && (
           <Alert severity="success" sx={{ mt: 2 }}>
             {t('successMessage') ||
               "Almost done! We've sent a verification link to your email — please check your inbox to confirm."}
           </Alert>
-        ) : (
-          <>
-            <Typography color="text.secondary" sx={{ mb: 3 }}>
-              {t('description') ||
-                'Get notified about news and new datasets on VectorAtlas.'}
-            </Typography>
+        )}
 
-            <TextField
-              fullWidth
-              label="First Name"
-              value={form.first_name}
-              onChange={(e) => handleChange('first_name', e.target.value)}
-              margin="normal"
-              required
-              error={status === 'error' && !form.first_name.trim()}
-            />
+        {status === 'unsubscribe_success' && (
+          <Alert severity="success" sx={{ mt: 2 }}>
+            We've sent you a secure unsubscription link. Please check your inbox
+            to confirm.
+          </Alert>
+        )}
 
-            <TextField
-              fullWidth
-              label="Last Name"
-              value={form.last_name}
-              onChange={(e) => handleChange('last_name', e.target.value)}
-              margin="normal"
-              required
-              error={status === 'error' && !form.last_name.trim()}
-            />
+        {/* New Direct Success UI */}
+        {status === 'unsubscribe_direct' && (
+          <Alert severity="success" sx={{ mt: 2 }}>
+            Your account notifications have been successfully disabled.
+          </Alert>
+        )}
 
-            <TextField
-              fullWidth
-              label="Email Address"
-              type="email"
-              value={form.email}
-              onChange={(e) => handleChange('email', e.target.value)}
-              margin="normal"
-              required
-              error={!!form.email && !isValidEmail}
-              helperText={
-                !!form.email && !isValidEmail
-                  ? 'Please enter a valid email'
-                  : ''
-              }
-            />
+        {status !== 'subscribe_success' &&
+          status !== 'unsubscribe_success' &&
+          status !== 'unsubscribe_direct' && (
+            <>
+              <Typography color="text.secondary" sx={{ mb: 3 }}>
+                {t('description') ||
+                  'Get notified about news and new datasets on VectorAtlas.'}
+              </Typography>
 
-            <Box sx={{ mt: 2 }}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={form.notifications_enabled}
-                    onChange={(e) =>
-                      handleChange('notifications_enabled', e.target.checked)
-                    }
-                  />
-                }
-                label={
-                  t('notificationsLabel') ||
-                  'Subscribe to news and dataset updates'
+              <TextField
+                fullWidth
+                label="First Name"
+                value={form.first_name}
+                margin="normal"
+                onChange={(e) => handleChange('first_name', e.target.value)}
+                disabled={isProcessing}
+              />
+
+              <TextField
+                fullWidth
+                label="Last Name"
+                value={form.last_name}
+                margin="normal"
+                onChange={(e) => handleChange('last_name', e.target.value)}
+                disabled={isProcessing}
+              />
+
+              <TextField
+                fullWidth
+                label="Email Address"
+                type="email"
+                value={form.email}
+                margin="normal"
+                required
+                onChange={(e) => handleChange('email', e.target.value)}
+                disabled={isProcessing}
+                error={!!form.email && !isValidEmail}
+                helperText={
+                  !!form.email && !isValidEmail
+                    ? 'Please enter a valid email'
+                    : ''
                 }
               />
-            </Box>
 
-            {status === 'error' && (
-              <Alert severity="error" sx={{ mt: 2 }}>
-                {errorMsg}
-              </Alert>
-            )}
-
-            <Button
-              variant="contained"
-              fullWidth
-              size="large"
-              sx={{ mt: 3 }}
-              onClick={handleSubmit}
-              disabled={!canSubmit}
-            >
-              {status === 'loading' ? (
-                <CircularProgress size={24} color="inherit" />
-              ) : (
-                t('subscribeBtn') || 'Subscribe'
+              {status === 'error' && (
+                <Alert severity="error" sx={{ mt: 2 }}>
+                  {errorMsg}
+                </Alert>
               )}
-            </Button>
-          </>
-        )}
+
+              {/* Subscribe Button */}
+              <Button
+                variant="contained"
+                fullWidth
+                size="large"
+                sx={{ mt: 3 }}
+                onClick={handleSubscribeSubmit}
+                disabled={!canSubmitSubscribe}
+                color="primary"
+              >
+                {status === 'subscribing' ? (
+                  <CircularProgress size={24} color="inherit" />
+                ) : (
+                  t('subscribeBtn') || 'Subscribe'
+                )}
+              </Button>
+
+              {/* Unsubscribe Button */}
+              <Button
+                variant="outlined"
+                fullWidth
+                size="large"
+                sx={{ mt: 2 }}
+                onClick={handleUnsubscribeRequest}
+                disabled={!canSubmitUnsubscribe}
+                color="error"
+              >
+                {status === 'unsubscribing' ? (
+                  <CircularProgress size={24} color="inherit" />
+                ) : (
+                  'Request Unsubscribe Link'
+                )}
+              </Button>
+            </>
+          )}
       </Paper>
     </Container>
   );

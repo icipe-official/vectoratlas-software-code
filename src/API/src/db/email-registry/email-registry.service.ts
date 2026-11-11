@@ -14,6 +14,11 @@ import { UnsubscribeEmailDto } from './dto/unsubscribe-email.dto';
 import { AccountStatus } from './entities/email-registry.entity';
 import { ILike } from 'typeorm';
 import * as ExcelJS from 'exceljs';
+import { UserRole } from 'src/auth/user_role/user_role.entity';
+import { Queue } from 'bullmq';
+import { OnApplicationBootstrap } from '@nestjs/common';
+import { InjectQueue } from '@nestjs/bullmq';
+import { AuthService } from 'src/auth/auth.service';
 
 /**
  * Evaluates token windows against a strict 48-hour Time-To-Live validation boundary.
@@ -26,12 +31,32 @@ export class EmailRegistryService {
     @InjectRepository(EmailRegistry)
     private readonly emailRegistryRepository: Repository<EmailRegistry>,
     private readonly emailService: EmailService,
+    @InjectRepository(UserRole)
+    private readonly userRoleRepository: Repository<UserRole>,
+    @InjectQueue('subscription-queue')
+    private readonly subscriptionQueue: Queue,
+    private readonly authService: AuthService,
   ) {}
+  async hardDeleteInactiveSubscribers(): Promise<number> {
+    const result = await this.emailRegistryRepository
+      .createQueryBuilder()
+      .delete()
+      .from(EmailRegistry)
+      .where('account_status = :unsubscribed', {
+        unsubscribed: AccountStatus.UNSUBSCRIBED,
+      })
+      .orWhere('(account_status = :pending AND token_expires_at < :now)', {
+        pending: AccountStatus.PENDING_VERIFICATION,
+        now: new Date(),
+      })
+      .execute();
 
+    return result.affected || 0;
+  }
   async subscribe(payload: SubscribeEmailDto): Promise<EmailRegistry> {
     const email = payload.email.trim().toLowerCase();
     const verificationToken = uuidv4();
-    const unsubscriptionToken = uuidv4(); // Generate early so it is immediately ready
+    const unsubscriptionToken = uuidv4();
     const codeExpiresAt = new Date(Date.now() + VERIFICATION_CODE_TTL_MS);
 
     let entry = await this.emailRegistryRepository.findOne({
@@ -82,6 +107,7 @@ export class EmailRegistryService {
     await this.emailService.sendEmail(
       [savedEntry.email],
       [],
+
       'Verify your email subscription',
       `
             <p>Thanks for subscribing to updates, ${savedEntry.first_name}.</p>
@@ -101,6 +127,7 @@ export class EmailRegistryService {
 
   async verify(query: VerifyTokenDto): Promise<EmailRegistry> {
     const trimmedToken = query.token?.trim();
+    console.log(`Backend received token for verification: [${trimmedToken}]`);
     if (!trimmedToken) {
       throw new BadRequestException(
         'Verification token parameter is missing from request.',
@@ -142,6 +169,18 @@ export class EmailRegistryService {
     // NOTE: Keep the token or invalidate cleanly without breaking single-click checks
     return await this.emailRegistryRepository.save(entry);
   }
+  async deleteExpiredPendingAccounts(): Promise<number> {
+    const result = await this.emailRegistryRepository
+      .createQueryBuilder()
+      .delete()
+      .from(EmailRegistry)
+      .where('account_status =: status', {
+        status: AccountStatus.PENDING_VERIFICATION,
+      })
+      .andWhere('token_expires_at <: now', { now: new Date() })
+      .execute();
+    return result.affected || 0;
+  }
 
   async unsubscribe(payload: UnsubscribeEmailDto): Promise<void> {
     const targetId = payload.id?.trim();
@@ -169,6 +208,19 @@ export class EmailRegistryService {
     entry.unsubscription_token = uuidv4();
 
     await this.emailRegistryRepository.save(entry);
+  }
+
+  async toggleNotificationsByEmail(
+    email: string,
+    enabled: boolean,
+  ): Promise<void> {
+    const record = await this.emailRegistryRepository.findOne({
+      where: { email: email.toLowerCase() },
+    });
+    if (record) {
+      record.notifications_enabled = enabled;
+      await this.emailRegistryRepository.save(record);
+    }
   }
 
   private async *streamVerified() {
@@ -420,7 +472,97 @@ export class EmailRegistryService {
         </body>
         </html>`;
   }
+  async createManualSubscrption(input: {
+    email: string;
+    first_name?: string;
+    last_name?: string;
+  }): Promise<EmailRegistry> {
+    const email = input.email.trim().toLowerCase();
 
+    let entry = await this.emailRegistryRepository.findOne({
+      where: { email },
+    });
+
+    if (entry) {
+      throw new BadRequestException('This email is already in the registry.');
+    }
+
+    entry = this.emailRegistryRepository.create({
+      id: uuidv4(),
+      first_name: input.first_name || '',
+      last_name: input.last_name || '',
+      email: email,
+      notifications_enabled: true,
+      account_status: AccountStatus.VERIFIED, // Admin skips pending state
+      verification_token: uuidv4(),
+      token_expires_at: new Date(Date.now() + VERIFICATION_CODE_TTL_MS),
+      unsubscription_token: uuidv4(),
+    });
+
+    return await this.emailRegistryRepository.save(entry);
+  }
+  async requestUnsubscribe(
+    email: string,
+  ): Promise<{ message: string; type: string }> {
+    const normalizedEmail = email.trim().toLowerCase();
+
+    const entry = await this.emailRegistryRepository.findOne({
+      where: { email: normalizedEmail },
+    });
+
+    if (!entry || entry.account_status === AccountStatus.UNSUBSCRIBED) {
+      // 1. Initialize Auth0 client (required based on your AuthController pattern)
+      await this.authService.init();
+
+      // 2. Fetch all Auth0 users and find the match
+      const allUsers = await this.authService.getAllUsers();
+      const appUser = allUsers?.find((u) => u.email === normalizedEmail);
+
+      // 3. If found, turn off their notifications in UserRole
+      if (appUser && appUser.user_id) {
+        const userRole = await this.userRoleRepository.findOne({
+          where: { auth0_id: appUser.user_id },
+        });
+
+        if (userRole) {
+          userRole.disable_notification = true;
+          await this.userRoleRepository.save(userRole);
+        }
+      }
+
+      return {
+        message: 'Account notifications disabled.',
+        type: 'direct_disable',
+      };
+    }
+
+    // 2. Existing Email Registry Logic
+    const frontendBaseUrl =
+      process.env.FRONTEND_BASE_URL?.trim() || 'http://localhost:3000';
+    const unsubscribeLink = new URL('/unsubscribed-success', frontendBaseUrl);
+
+    unsubscribeLink.searchParams.set('id', entry.id);
+    unsubscribeLink.searchParams.set('token', entry.unsubscription_token);
+
+    await this.emailService.sendEmail(
+      [entry.email],
+      [],
+      'Vector Atlas - Unsubscribe Request',
+      `
+        <p>Hello ${entry.first_name || ''},</p>
+        <p>We received a request to unsubscribe you from Vector Atlas updates.</p>
+        <p>If you made this request, please click the link below to confirm:</p>
+        <p><a href="${unsubscribeLink.toString()}">Confirm Unsubscription</a></p>
+        <br/>
+        <p style="font-size: 12px; color: #888888;">If you did not request this, please ignore this email.</p>
+      `,
+    );
+
+    return {
+      message: 'Unsubscribe link sent.',
+      type: 'email_sent',
+    };
+  }
   async queueDatasetCampaign(
     title: string,
     message: string,

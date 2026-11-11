@@ -6,7 +6,7 @@ import {
   FormControlLabel,
   Typography,
 } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
@@ -30,6 +30,9 @@ function UserSettingForm() {
   const isLoadingRequest = useAppSelector(
     (state) => state.auth.roleRequestLoading
   );
+  const backendDisableNotifications = useAppSelector(
+    (state) => state.auth.disableNotification
+  );
   const dispatch = useAppDispatch();
 
   const roleList = [
@@ -43,7 +46,16 @@ function UserSettingForm() {
   const [roleRequestOpen, toggleRoleRequestOpen] = useState(false);
   const [rolesRequested, setRolesRequested] = useState<string[]>([]);
   const [requestReason, setRequestReason] = useState<string>('');
-  const [disableNotification, setDisableNotification] = useState<boolean>();
+
+  const [disableNotification, setDisableNotification] =
+    useState<boolean>(false);
+
+  useEffect(() => {
+    if (backendDisableNotifications !== undefined) {
+      setDisableNotification(backendDisableNotifications);
+    }
+  }, [backendDisableNotifications]);
+
   const handleRoleCheck = (role: string) => {
     if (rolesRequested.length !== 0 && rolesRequested.includes(role)) {
       setRolesRequested(rolesRequested.filter((x) => x !== role));
@@ -54,18 +66,27 @@ function UserSettingForm() {
   };
 
   const handleDisableNotification = async () => {
-    const disable = !disableNotification;
-    setDisableNotification(disable);
-    const userId = user!.sub || '';
-    const success = await dispatch(disableNotifications({ userId, disable }));
+    const newDisableState = !disableNotification;
+
+    setDisableNotification(newDisableState);
+
+    const userId = user?.sub || '';
+    const email = user?.email || '';
+
+    const success = await dispatch(
+      disableNotifications({ userId, disable: newDisableState })
+    );
+
     if (success) {
       setRolesRequested([]);
       setRequestReason('');
+    } else {
+      setDisableNotification(!newDisableState);
     }
   };
 
   const requestRolesSubmit = async () => {
-    const email = user!.email || 'Empty';
+    const email = user?.email || 'Empty';
     const success = await dispatch(
       requestRoles({ requestReason, rolesRequested, email })
     );
@@ -102,7 +123,7 @@ function UserSettingForm() {
               id="outlined-basic"
               label={t('name')}
               variant="outlined"
-              value={user?.name}
+              value={user?.name || ''}
               fullWidth={true}
             />
           </div>
@@ -112,7 +133,7 @@ function UserSettingForm() {
               id="outlined-basic"
               label={t('email')}
               variant="outlined"
-              value={user?.email}
+              value={user?.email || ''}
               fullWidth={true}
             />
           </div>
@@ -122,8 +143,8 @@ function UserSettingForm() {
                 <Checkbox
                   id="disable-notifications"
                   data-testid="disablenotificationsfield"
-                  value={user?.disable_notification}
-                  onChange={() => handleDisableNotification()}
+                  checked={disableNotification}
+                  onChange={handleDisableNotification}
                 />
               }
               label={t('disableNotifications')}
