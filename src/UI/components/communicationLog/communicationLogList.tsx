@@ -87,7 +87,7 @@ export const CommunicationLogList = () => {
             e.preventDefault();
             router.push({
               pathname: '/communication-log/details',
-              query: { id: params.row.id }, 
+              query: { id: params.row.id },
             });
           }}
           style={{ cursor: 'pointer', textAlign: 'left' }}

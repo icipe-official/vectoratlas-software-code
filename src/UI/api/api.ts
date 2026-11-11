@@ -215,14 +215,14 @@ export const approveUploadedDatasetAuthenticated = async (
   );
   return res;
 };
-export const exportSubscriber = async (token:string) =>{
-  const config={
-  headers: {Authorization:`Bearer ${token}`},
-  responseType:'blob' as const,};
-   const res = await axios.get(`${apiUrl}export`, config);
-   return download(res.data, 'email-registry.xlsx' );
-
+export const exportSubscriber = async (token: string) => {
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+    responseType: 'blob' as const,
   };
+  const res = await axios.get(`${apiUrl}export`, config);
+  return download(res.data, 'email-registry.xlsx');
+};
 
 /**
  * Function to initiate approval of datasets. If there are no issues found, the import process
@@ -440,9 +440,9 @@ export const rejectUploadedDatasetAuthenticated = async (
   );
   return res;
 };
-export const cleanUpSubscription = async(token:string) => {
+export const cleanUpSubscription = async (token: string) => {
   const config = {
-    headers:{Authorization:`Bearer ${token}`},
+    headers: { Authorization: `Bearer ${token}` },
   };
   const res = await axios.post(`${apiUrl}subscribers/cleanup-job`, {}, config);
   return res.data;
@@ -1506,7 +1506,6 @@ export interface UnifiedRecipient {
   roles?: string[];
 }
 
-
 export const buildUnifiedRecipients = (
   platformUsers: any[],
   subscribers: any[]
@@ -1550,7 +1549,8 @@ export const buildUnifiedRecipients = (
     const isPending = sub.account_status === AccountStatus.PENDING_VERIFICATION;
     const isNotifOff = !sub.notifications_enabled;
 
-    const isDisabled = isUnsubscribed || isDeactivated || isPending || isNotifOff;
+    const isDisabled =
+      isUnsubscribed || isDeactivated || isPending || isNotifOff;
 
     let statusLabel = 'Subscriber';
     if (isUnsubscribed) statusLabel = 'Unsubscribed';
@@ -1573,7 +1573,8 @@ export const buildUnifiedRecipients = (
     } else {
       map.set(emailKey, {
         id: sub.id,
-        name: `${sub.first_name || ''} ${sub.last_name || ''}`.trim() || sub.email,
+        name:
+          `${sub.first_name || ''} ${sub.last_name || ''}`.trim() || sub.email,
         email: sub.email,
         source: 'subscriber',
         isDisabled,
@@ -1585,14 +1586,17 @@ export const buildUnifiedRecipients = (
   return Array.from(map.values());
 };
 
-export const fetchUnifiedRecipients = async (token: String): Promise<UnifiedRecipient[]> => {
+export const fetchUnifiedRecipients = async (
+  token: String
+): Promise<UnifiedRecipient[]> => {
   let platformUsers: any[] = [];
   let subscribers: any[] = [];
 
   try {
-   
-   const usersData = await fetchAllUsers(token);
-    platformUsers = Array.isArray(usersData) ? usersData : usersData?.users || [];
+    const usersData = await fetchAllUsers(token);
+    platformUsers = Array.isArray(usersData)
+      ? usersData
+      : usersData?.users || [];
   } catch (err) {
     console.error('Failed to fetch platform users:', err);
   }
@@ -1613,7 +1617,7 @@ export const fetchUnifiedRecipients = async (token: String): Promise<UnifiedReci
       }
     `;
     const gqlRes = await fetchGraphQlDataAuthenticated(query, token);
-    
+
     if (gqlRes?.data?.adminEmailRegistry?.data) {
       subscribers = gqlRes.data.adminEmailRegistry.data;
     }
