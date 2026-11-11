@@ -103,7 +103,7 @@ const CommunicationLogDetails = () => {
   const loading = useAppSelector((state) => state.communicationLog.loading);
   const isAdmin = useAppSelector((state) => state.auth.roles.includes('admin'));
   const router = useRouter();
-  const id = router.query.id as string | undefined;
+  const id = router.query.id as string;
   const [expanded, setExpanded] = useState(false);
   const [comments, setComments] = useState('');
   const [actionDialogOpen, setActionDialogOpen] = useState(false);

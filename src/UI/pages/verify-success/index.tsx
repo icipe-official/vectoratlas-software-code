@@ -76,8 +76,16 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   if (typeof token === 'string' && token.length > 0) {
     try {
+      const backendUrl =
+        process.env.API_BASE_URL || 'http://127.0.0.1:3000/vector-api';
       const res = await fetch(
-        `${process.env.API_BASE_URL}/verify?token=${encodeURIComponent(token)}`
+        `${backendUrl}/verify?token=${encodeURIComponent(token.trim())}`,
+        {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
+          },
+        }
       );
 
       if (res.ok) {
@@ -93,7 +101,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           status = 'invalid';
         }
       }
-    } catch {
+    } catch (error) {
+      console.error('Verification fetch failed:', error);
       status = 'invalid';
     }
   }

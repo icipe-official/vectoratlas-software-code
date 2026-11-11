@@ -837,9 +837,9 @@
     "apiVersion": "API Version",
     "description": "Mapping the future of research on vector-borne diseases",
     "contactTitle": "Contact Us",
-    "resourcesTitle": "Ressources",
+    "resourcesTitle": "Resources",
     "map": "Access the Map",
-    "subscribe": "Subscribe to Updates"
+    "subscribe": "Subscribe/Unsubscribe"
   },
   "EmailSubscription": {
     "title": "Subscribe for Updates",

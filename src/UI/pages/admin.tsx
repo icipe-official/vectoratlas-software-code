@@ -8,6 +8,7 @@ import { getMessages } from '../utils/localization';
 
 export default function SourcesPage(): JSX.Element {
   const t = useTranslations('AdminPage');
+
   return (
     <div>
       <main>
@@ -26,19 +27,29 @@ export default function SourcesPage(): JSX.Element {
                 <Typography color="primary" variant="h4">
                   {t('title')}
                 </Typography>
-                <Link href="/datasets" passHref>
-                  <Button
-                    variant="contained"
-                    sx={{
-                      backgroundColor: 'darkgreen',
-                      '&:hover': {
-                        backgroundColor: 'green',
-                      },
-                    }}
-                  >
-                    {t('datasets')}
-                  </Button>
-                </Link>
+
+                {/* Button Group Container */}
+                <Box sx={{ display: 'flex', gap: 2 }}>
+                  <Link href="/datasets" passHref>
+                    <Button
+                      variant="contained"
+                      sx={{
+                        backgroundColor: 'darkgreen',
+                        '&:hover': {
+                          backgroundColor: 'green',
+                        },
+                      }}
+                    >
+                      Pending Datasets
+                    </Button>
+                  </Link>
+
+                  <Link href="/subscriberList" passHref>
+                    <Button variant="contained" color="primary">
+                      Manage Subscriptions
+                    </Button>
+                  </Link>
+                </Box>
               </Box>
 
               <UserRolePanel />

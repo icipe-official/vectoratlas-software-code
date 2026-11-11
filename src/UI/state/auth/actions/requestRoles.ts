@@ -55,6 +55,7 @@ export const disableNotifications = createAsyncThunk(
     try {
       dispatch(requestLoading(true));
       const token = (getState() as AppState).auth.token;
+
       const roleRequest = await fetchGraphQlDataAuthenticated(
         disableNotificationsMutation(userId, disable),
         token
