@@ -86,10 +86,11 @@ export const SubscriptionList = () => {
   }, [token]);
 
   const handleUnsubscribe = async (subscriberRow: Subscriber) => {
-   if (!window.confirm(t('unsubscribeConfirm', { email: subscriberRow.email }))) {
+    if (
+      !window.confirm(t('unsubscribeConfirm', { email: subscriberRow.email }))
+    ) {
       return;
-    } 
-    
+    }
 
     try {
       const config = {
@@ -125,9 +126,7 @@ export const SubscriptionList = () => {
       setOpenModal(false);
       fetchSubscribers(); // Refresh the grid
     } catch (error: any) {
-      setModalError(
-        error.response?.data?.message || t('addSubscriberError')
-      );
+      setModalError(error.response?.data?.message || t('addSubscriberError'));
     } finally {
       setSubmitting(false);
     }
@@ -204,7 +203,11 @@ export const SubscriptionList = () => {
             size="small"
             disabled={isUnsubscribed}
             onClick={() => handleUnsubscribe(params.row as Subscriber)}
-            title={isUnsubscribed ? t('tooltips.alreadyUnsubscribed') : t('tooltips.unsubscribeUser')}
+            title={
+              isUnsubscribed
+                ? t('tooltips.alreadyUnsubscribed')
+                : t('tooltips.unsubscribeUser')
+            }
           >
             <DeleteIcon />
           </IconButton>

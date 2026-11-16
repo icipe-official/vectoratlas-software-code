@@ -81,12 +81,13 @@ const SubscribePage = (): JSX.Element => {
   const handleUnsubscribeRequest = async () => {
     if (!canSubmitUnsubscribe) return;
     setStatus('unsubscribing');
-    setErrorMsg('');setErrorMsg(t('networkError'));
+    setErrorMsg('');
+    setErrorMsg(t('networkError'));
     try {
       const res = await fetch('/vector-api/request-unsubscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: form.email.trim().toLowerCase() })
+        body: JSON.stringify({ email: form.email.trim().toLowerCase() }),
       });
 
       if (res.ok) {
@@ -131,7 +132,7 @@ const SubscribePage = (): JSX.Element => {
         {/* New Direct Success UI */}
         {status === 'unsubscribe_direct' && (
           <Alert severity="success" sx={{ mt: 2 }}>
-           <p>{t('unsubscribeDirectLine1')}</p>
+            <p>{t('unsubscribeDirectLine1')}</p>
             <p>{t('unsubscribeDirectLine2')}</p>
           </Alert>
         )}
@@ -174,9 +175,7 @@ const SubscribePage = (): JSX.Element => {
                 disabled={isProcessing}
                 error={!!form.email && !isValidEmail}
                 helperText={
-                  !!form.email && !isValidEmail
-                    ? t('invalid email')
-                    : ''
+                  !!form.email && !isValidEmail ? t('invalid email') : ''
                 }
               />
 

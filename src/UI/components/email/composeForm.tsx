@@ -143,13 +143,15 @@ export const ComposeMessageForm: React.FC<ComposeMessageFormProps> = ({
           color="primary"
           sx={{ mb: 3, fontWeight: 600 }}
         >
-         {t('title')}
+          {t('title')}
         </Typography>
 
         <Box component="form" onSubmit={handleSubmit} noValidate>
           <Stack spacing={3}>
             <FormControl fullWidth disabled={loading}>
-              <InputLabel id="audience-mode-label">{t('recipientGroup')}</InputLabel>
+              <InputLabel id="audience-mode-label">
+                {t('recipientGroup')}
+              </InputLabel>
               <Select
                 labelId="audience-mode-label"
                 label={t('recipientGroup')}
@@ -169,7 +171,7 @@ export const ComposeMessageForm: React.FC<ComposeMessageFormProps> = ({
             {audienceMode === 'custom' ? (
               <Autocomplete
                 multiple
-                fullWidth 
+                fullWidth
                 limitTags={5}
                 disableCloseOnSelect
                 options={recipientsList}
@@ -228,7 +230,7 @@ export const ComposeMessageForm: React.FC<ComposeMessageFormProps> = ({
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    fullWidth 
+                    fullWidth
                     label={t('selectRecipients')}
                     placeholder={t('searchPlaceholder')}
                     error={recipientsError}
@@ -325,7 +327,7 @@ export const ComposeMessageForm: React.FC<ComposeMessageFormProps> = ({
                 startIcon={<SendIcon />}
                 disabled={!isFormValid || loading}
               >
-                {t('sendBtn', {count: activeRecipientEmails.length})}
+                {t('sendBtn', { count: activeRecipientEmails.length })}
               </Button>
             </Box>
           </Stack>
