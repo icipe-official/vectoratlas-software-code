@@ -698,6 +698,7 @@
     "title": "Administration",
     "datasets": "Ensembles de données",
     "save": "Sauvegarder",
+    "unsubscribe": "Désabonné",
     "userRoles": {
       "title": "Rôles des utilisateurs",
       "uploader": "Téléchargeur",
@@ -841,14 +842,16 @@
     "contactTitle": "Contactez-nous",
     "resourcesTitle": "Ressources",
     "map": "Accéder à la carte",
-    "subscribe": "S'abonner aux mises à jour"
+    "subscribe": "S'abonner / Désabonné"
+
   },
   "EmailSubscription": {
-    "title": "S'abonner aux mises à jour",
+    "title": "S'abonner / Désabonné",
     "description": "Soyez informé des actualités et des nouveaux jeux de données sur VectorAtlas.",
     "successMessage": "Presque terminé ! Nous avons envoyé un lien de vérification à votre e-mail — veuillez consulter votre boîte de réception pour confirmer.",
     "notificationsLabel": "S'abonner aux actualités et aux mises à jour des jeux de données",
     "subscribeBtn": "S'abonner",
+    "unsubscribe": "Désabonné",
     "verifySuccessTitle": "E-mail vérifié",
     "verifySuccessBody": "Tout est prêt — vous recevrez désormais les mises à jour auxquelles vous vous êtes inscrit.",
     "verifyAlreadyTitle": "Déjà vérifié",
@@ -862,7 +865,69 @@
     "unsubscribeInvalidTitle": "Lien invalide",
     "unsubscribeInvalidBody": "Ce lien de désabonnement est invalide ou a déjà été utilisé.",
     "backHomeBtn": "Retour à VectorAtlas",
-    "subscribeAgainBtn": "S'abonner à nouveau"
+    "subscribeAgainBtn": "S'abonner à nouveau",
+    "unsubscribeRequestSuccess": "Nous vous avons envoyé un lien de désinscription sécurisé. Veuillez vérifier votre boîte de réception pour confirmer.",
+    "unsubscribeDirectLine1": "Vous n'êtes pas abonné. Cependant, les notifications de votre compte ont été désactivées avec succès.",
+    "unsubscribeDirectLine2": "Visitez les paramètres pour les réactiver.",
+    "firstName": "Prénom",
+    "lastName": "Nom de famille",
+    "emailAddress": "Adresse e-mail",
+    "invalidEmail": "Veuillez entrer un e-mail valide",
+    "requestUnsubscribeBtn": "Demander un lien de désinscription",
+    "subscribeError": "L'abonnement a échoué. Veuillez réessayer.",
+    "unsubscribeError": "La demande a échoué. Veuillez réessayer.",
+    "networkError": "Erreur réseau. Veuillez vérifier votre connexion et réessayer."
+  },
+  "Email_Compose": {
+    "title": "Rédiger un message",
+    "recipientGroup": "Groupe de destinataires",
+    "groupCustom": "Personnalisé (Utilisateurs / Abonnés)",
+    "groupAll": "Utilisateurs & Abonnés",
+    "groupSubscribers": "Tous les abonnés uniquement",
+    "groupUsers": "Tous les utilisateurs uniquement",
+    "selectRecipients": "Sélectionner les destinataires *",
+    "searchPlaceholder": "Rechercher par nom, e-mail ou rôle...",
+    "recipientsError": "Veuillez sélectionner au moins un destinataire valide",
+    "customRecipientsHelper": "Les comptes désabonnés et les utilisateurs dont les notifications sont désactivées sont grisés.",
+    "selectedRecipients": "Destinataires sélectionnés",
+    "sendingTo": "Envoi à {count} destinataire(s)",
+    "autoExcludedHelper": "Les comptes désabonnés et les utilisateurs dont les notifications sont désactivées sont automatiquement exclus.",
+    "subject": "Sujet",
+    "subjectError": "Le sujet ne peut pas être vide",
+    "messageBody": "Corps du message *",
+    "messageError": "Le message ne peut pas être vide",
+    "sendBtn": "Envoyer ({count})"
+  },
+  "ManageSubscription": {
+    "subscriberListTitle": "Liste des abonnés",
+    "exportBtn": "Exporter vers Excel",
+    "exportingBtn": "Exportation...",
+    "addSubscriberBtn": "Ajouter un abonné",
+    "exportError": "Échec du téléchargement du fichier Excel. Veuillez réessayer",
+    "unsubscribeConfirm": "Êtes-vous sûr de vouloir désabonner {email} ?",
+    "unsubscribeError": "Échec du traitement du désabonnement.",
+    "addSubscriberError": "Échec de l'ajout de l'abonné",
+    "emailRequired": "L'e-mail est requis",
+    "columns": {
+      "name": "Nom",
+      "email": "Adresse e-mail",
+      "status": "Statut",
+      "notifications": "Notifications",
+      "tokenExpiry": "Expiration du jeton",
+      "actions": "Actions"
+    },
+    "tooltips": {
+      "alreadyUnsubscribed": "Déjà désabonné",
+      "unsubscribeUser": "Désabonner l'utilisateur"
+    },
+    "dialog": {
+      "title": "Ajouter un nouvel abonné",
+      "firstName": "Prénom",
+      "lastName": "Nom de famille",
+      "emailLabel": "Adresse e-mail *",
+      "cancel": "Annuler",
+      "addUser": "Ajouter l'utilisateur"
+    }
   },
   "Admin": {
     "title": "Registre d'e-mails",

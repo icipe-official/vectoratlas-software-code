@@ -69,11 +69,11 @@ const SubscribePage = (): JSX.Element => {
         setStatus('subscribe_success');
       } else {
         const err = await res.json().catch(() => ({}));
-        setErrorMsg(err.message || 'Failed to subscribe. Please try again.');
+        setErrorMsg(err.message || t('subscriberError'));
         setStatus('error');
       }
     } catch {
-      setErrorMsg('Network error. Please check your connection and try again.');
+      setErrorMsg(t('networkError'));
       setStatus('error');
     }
   };
@@ -82,7 +82,7 @@ const SubscribePage = (): JSX.Element => {
     if (!canSubmitUnsubscribe) return;
     setStatus('unsubscribing');
     setErrorMsg('');
-
+    setErrorMsg(t('networkError'));
     try {
       const res = await fetch('/vector-api/request-unsubscribe', {
         method: 'POST',
@@ -113,7 +113,7 @@ const SubscribePage = (): JSX.Element => {
     <Container maxWidth="sm" sx={{ py: 8 }}>
       <Paper elevation={2} sx={{ p: 4 }}>
         <Typography variant="h4" gutterBottom sx={{ fontWeight: 700 }}>
-          {t('title') || 'Subscribe for Updates'}
+          {t('title') || 'Subscribe /Unsubscribe for Updates'}
         </Typography>
 
         {status === 'subscribe_success' && (
@@ -125,19 +125,15 @@ const SubscribePage = (): JSX.Element => {
 
         {status === 'unsubscribe_success' && (
           <Alert severity="success" sx={{ mt: 2 }}>
-            We have sent you a secure unsubscription link. Please check your
-            inbox to confirm.
+            {t('unsubscribeRequestSuccess')}
           </Alert>
         )}
 
         {/* New Direct Success UI */}
         {status === 'unsubscribe_direct' && (
           <Alert severity="success" sx={{ mt: 2 }}>
-            <p>
-              You are not a subscriber. However your account notifications have
-              been successfully disabled.{' '}
-            </p>
-            <p> Visit settings to re-enable.</p>
+            <p>{t('unsubscribeDirectLine1')}</p>
+            <p>{t('unsubscribeDirectLine2')}</p>
           </Alert>
         )}
 
@@ -152,7 +148,7 @@ const SubscribePage = (): JSX.Element => {
 
               <TextField
                 fullWidth
-                label="First Name"
+                label={t('firstName')}
                 value={form.first_name}
                 margin="normal"
                 onChange={(e) => handleChange('first_name', e.target.value)}
@@ -161,7 +157,7 @@ const SubscribePage = (): JSX.Element => {
 
               <TextField
                 fullWidth
-                label="Last Name"
+                label={t('lastName')}
                 value={form.last_name}
                 margin="normal"
                 onChange={(e) => handleChange('last_name', e.target.value)}
@@ -170,7 +166,7 @@ const SubscribePage = (): JSX.Element => {
 
               <TextField
                 fullWidth
-                label="Email Address"
+                label={t('emailAddress')}
                 type="email"
                 value={form.email}
                 margin="normal"
@@ -179,9 +175,7 @@ const SubscribePage = (): JSX.Element => {
                 disabled={isProcessing}
                 error={!!form.email && !isValidEmail}
                 helperText={
-                  !!form.email && !isValidEmail
-                    ? 'Please enter a valid email'
-                    : ''
+                  !!form.email && !isValidEmail ? t('invalid email') : ''
                 }
               />
 
@@ -221,7 +215,7 @@ const SubscribePage = (): JSX.Element => {
                 {status === 'unsubscribing' ? (
                   <CircularProgress size={24} color="inherit" />
                 ) : (
-                  'Request Unsubscribe Link'
+                  t('requestUnsubscribeBtn')
                 )}
               </Button>
             </>

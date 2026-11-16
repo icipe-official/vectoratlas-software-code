@@ -691,6 +691,26 @@
       "back": "Back to Source List"
     }
   },
+  "Email_Compose": {
+    "title": "Compose Message",
+    "recipientGroup": "Recipient Group",
+    "groupCustom": "Custom (Users / Subscribers)",
+    "groupAll": "Users & Subscribers",
+    "groupSubscribers": "All Subscribers Only",
+    "groupUsers": "All Users Only",
+    "selectRecipients": "Select Recipients *",
+    "searchPlaceholder": "Search by name, email, or role...",
+    "recipientsError": "Please select at least one valid recipient",
+    "customRecipientsHelper": "Unsubscribed accounts and users with disabled notifications are grayed out.",
+    "selectedRecipients": "Selected Recipients",
+    "sendingTo": "Sending to {count} recipient(s)",
+    "autoExcludedHelper": "Unsubscribed accounts and users with disabled notifications are automatically excluded.",
+    "subject": "Subject",
+    "subjectError": "Subject cannot be empty",
+    "messageBody": "Message Body *",
+    "messageError": "Message cannot be empty",
+    "sendBtn": "Send ({count})"
+  },
   "AdminPage": {
     "title": "Administration",
     "datasets": "Datasets",
@@ -704,6 +724,37 @@
       "reviewManager": "Reviewer Manager",
       "modelManager": "Model Manager",
       "disableNotifications": "Disable Email Notifications"
+    }
+  },
+ "ManageSubscription": {
+    "subscriberListTitle": "Subscriber List",
+    "exportBtn": "Export to Excel",
+    "exportingBtn": "Exporting...",
+    "addSubscriberBtn": "Add Subscriber",
+    "exportError": "Failed to Download excel file. Please try again",
+    "unsubscribeConfirm": "Are you sure you want to unsubscribe {email}?",
+    "unsubscribeError": "Failed to process unsubscription.",
+    "addSubscriberError": "Failed to add subscriber",
+    "emailRequired": "Email is required",
+    "columns": {
+      "name": "Name",
+      "email": "Email Address",
+      "status": "Status",
+      "notifications": "Notifications",
+      "tokenExpiry": "Token Expiry",
+      "actions": "Actions"
+    },
+    "tooltips": {
+      "alreadyUnsubscribed": "Already unsubscribed",
+      "unsubscribeUser": "Unsubscribe user"
+    },
+    "dialog": {
+      "title": "Add New Subscriber",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "emailLabel": "Email Address *",
+      "cancel": "Cancel",
+      "addUser": "Add User"
     }
   },
   "MapPage": {
@@ -839,15 +890,15 @@
     "contactTitle": "Contact Us",
     "resourcesTitle": "Resources",
     "map": "Access the Map",
-    "subscribe": "Subscribe/Unsubscribe"
+    "subscribe": "Subscribe / Unsubscribe"
   },
   "EmailSubscription": {
-    "title": "Subscribe for Updates",
+    "title": "Subscribe/Unsubscribe",
     "description": "Get notified about news and new datasets on VectorAtlas.",
     "successMessage": "Almost done! We've sent a verification link to your email — please check your inbox to confirm.",
     "notificationsLabel": "Subscribe to news and dataset updates",
     "subscribeBtn": "Subscribe",
-
+     "unsubscribe": "Unsubscribe",
     "verifySuccessTitle": "Email Verified",
     "verifySuccessBody": "You're all set — you'll now receive the updates you signed up for.",
     "verifyAlreadyTitle": "Already Verified",
@@ -856,7 +907,17 @@
     "verifyExpiredBody": "This verification link has expired. Please subscribe again to receive a new one.",
     "verifyInvalidTitle": "Invalid Link",
     "verifyInvalidBody": "This verification link is invalid. Please check the link or subscribe again.",
-
+    "unsubscribeRequestSuccess": "We have sent you a secure unsubscription link. Please check your inbox to confirm.",
+    "unsubscribeDirectLine1": "You are not a subscriber. However your account notifications have been successfully disabled.",
+    "unsubscribeDirectLine2": "Visit settings to re-enable.",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "emailAddress": "Email Address",
+    "invalidEmail": "Please enter a valid email",
+    "requestUnsubscribeBtn": "Request Unsubscribe Link",
+    "subscribeError": "Failed to subscribe. Please try again.",
+    "unsubscribeError": "Request failed. Please try again.",
+    "networkError": "Network error. Please check your connection and try again.",
     "unsubscribeSuccessTitle": "Unsubscribed",
     "unsubscribeSuccessBody": "You've been unsubscribed and won't receive further updates.",
     "unsubscribeInvalidTitle": "Invalid Link",
