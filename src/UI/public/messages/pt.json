@@ -844,11 +844,12 @@
     "subscribe": "Inscrever-se para Atualizações"
   },
   "EmailSubscription": {
-    "title": "Inscrever-se para Atualizações",
+    "title": "Inscrever-se / Inscrição Cancelada",
     "description": "Receba notificações sobre notícias e novos conjuntos de dados no VectorAtlas.",
     "successMessage": "Quase pronto! Enviamos um link de verificação para o seu e-mail — verifique sua caixa de entrada para confirmar.",
     "notificationsLabel": "Inscrever-se para notícias e atualizações de conjuntos de dados",
     "subscribeBtn": "Inscrever-se",
+    "unsubscribe": "Inscrição Cancelada"  ,
     "verifySuccessTitle": "E-mail Verificado",
     "verifySuccessBody": "Tudo pronto — agora você receberá as atualizações solicitadas.",
     "verifyAlreadyTitle": "Já Verificado",
@@ -862,7 +863,69 @@
     "unsubscribeInvalidTitle": "Link Inválido",
     "unsubscribeInvalidBody": "Este link de cancelamento de inscrição é inválido ou já foi utilizado.",
     "backHomeBtn": "Voltar para o VectorAtlas",
-    "subscribeAgainBtn": "Inscrever-se Novamente"
+    "subscribeAgainBtn": "Inscrever-se Novamente",
+    "unsubscribeRequestSuccess": "Enviamos um link de cancelamento de inscrição seguro. Verifique sua caixa de entrada para confirmar.",
+    "unsubscribeDirectLine1": "Você não é um assinante. No entanto, as notificações da sua conta foram desativadas com sucesso.",
+    "unsubscribeDirectLine2": "Visite as configurações para reativar.",
+    "firstName": "Nome",
+    "lastName": "Sobrenome",
+    "emailAddress": "Endereço de e-mail",
+    "invalidEmail": "Por favor, insira um e-mail válido",
+    "requestUnsubscribeBtn": "Solicitar Link de Cancelamento",
+    "subscribeError": "Falha ao assinar. Por favor, tente novamente.",
+    "unsubscribeError": "Falha na solicitação. Por favor, tente novamente.",
+    "networkError": "Erro de rede. Verifique sua conexão e tente novamente."
+  },
+  "Email_Compose": {
+    "title": "Compor Mensagem",
+    "recipientGroup": "Grupo de Destinatários",
+    "groupCustom": "Personalizado (Usuários / Assinantes)",
+    "groupAll": "Usuários e Assinantes",
+    "groupSubscribers": "Apenas Todos os Assinantes",
+    "groupUsers": "Apenas Todos os Usuários",
+    "selectRecipients": "Selecionar Destinatários *",
+    "searchPlaceholder": "Pesquisar por nome, e-mail ou função...",
+    "recipientsError": "Por favor, selecione pelo menos um destinatário válido",
+    "customRecipientsHelper": "Contas com inscrição cancelada e usuários com notificações desativadas estão esmaecidos.",
+    "selectedRecipients": "Destinatários Selecionados",
+    "sendingTo": "Enviando para {count} destinatário(s)",
+    "autoExcludedHelper": "Contas com inscrição cancelada e usuários com notificações desativadas são automaticamente excluídos.",
+    "subject": "Assunto",
+    "subjectError": "O assunto não pode estar vazio",
+    "messageBody": "Corpo da Mensagem *",
+    "messageError": "A mensagem não pode estar vazia",
+    "sendBtn": "Enviar ({count})"
+  },
+  "ManageSubscription": {
+    "subscriberListTitle": "Lista de Assinantes",
+    "exportBtn": "Exportar para Excel",
+    "exportingBtn": "Exportando...",
+    "addSubscriberBtn": "Adicionar Assinante",
+    "exportError": "Falha ao baixar o arquivo Excel. Por favor, tente novamente",
+    "unsubscribeConfirm": "Tem certeza de que deseja cancelar a inscrição de {email}?",
+    "unsubscribeError": "Falha ao processar o cancelamento da inscrição.",
+    "addSubscriberError": "Falha ao adicionar assinante",
+    "emailRequired": "O e-mail é obrigatório",
+    "columns": {
+      "name": "Nome",
+      "email": "Endereço de e-mail",
+      "status": "Status",
+      "notifications": "Notificações",
+      "tokenExpiry": "Expiração do Token",
+      "actions": "Ações"
+    },
+    "tooltips": {
+      "alreadyUnsubscribed": "Inscrição já cancelada",
+      "unsubscribeUser": "Cancelar inscrição do usuário"
+    },
+    "dialog": {
+      "title": "Adicionar Novo Assinante",
+      "firstName": "Nome",
+      "lastName": "Sobrenome",
+      "emailLabel": "Endereço de e-mail *",
+      "cancel": "Cancelar",
+      "addUser": "Adicionar Usuário"
+    }
   },
   "Admin": {
     "title": "Registro de E-mails",
