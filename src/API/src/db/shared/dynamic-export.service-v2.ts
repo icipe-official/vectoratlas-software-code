@@ -138,19 +138,15 @@ export class DynamicExportServiceV2<T = Occurrence> {
     return n;
   }
 
-  /**
-   * Use the view only when the file would come out the same as the old way:
-   *  - no user filters (the view has no filter columns yet), and
-   *  - for an ID list, every ID is in the view (the view only holds Approved
-   *    datasets, but the ID path does not check approval).
-   */
+  
+  
   private async canUseView(filters: any, ids: string[]): Promise<boolean> {
     if (!exportFromViewEnabled()) {
       this.logger.log("EXPORT_FROM_MV is not 'true'; using the join export");
       return false;
     }
-    if (filters && Object.keys(filters).length > 0) {
-      this.logger.log('Export has filters; using the join export');
+    if (!ids.length && filters && Object.keys(filters).length > 0) {
+      this.logger.log('Export has filters and no occurrence IDs; using the join export');
       return false;
     }
     if (ids.length && (await this.countViewRows(ids)) !== ids.length) {

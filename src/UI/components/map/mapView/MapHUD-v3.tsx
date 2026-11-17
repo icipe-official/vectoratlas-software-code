@@ -211,7 +211,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
         const oSpecies = String(o.species || '')
           .toLowerCase()
           .trim();
-        if (!allSelectedSpecies.includes(o.species)) return false;
+        if (!allSelectedSpecies.includes(oSpecies)) return false;
       }
 
       // 2. Country Filter (Robust with Alternative Names)
@@ -306,7 +306,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
 
       return true; // If it passes all checks, keep it!
     });
-  }, [occurrenceData, filters, doiIdSet, doiResolved]);
+  }, [occurrenceData, filters, doiIdSet, doiResolved,dbCountryData]);
 
   const OTHER_LABEL = 'others';
 
