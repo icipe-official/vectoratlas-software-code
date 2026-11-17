@@ -13,6 +13,19 @@ import { formatDate } from 'src/utils';
 import { DoiService } from '../doi/doi.service';
 import { ExportJob } from 'src/exports/export-job.entity';
 
+/**
+ * va_export_mv is a materialized view holding the finished export rows
+ * (one row per occurrence in an Approved dataset, VA template columns in order).
+ * Set EXPORT_FROM_MV=true in .env to read downloads from it.
+ */
+const EXPORT_VIEW = 'va_export_mv';
+
+/**
+ * Read at call time, not at import time: .env may be loaded (ConfigModule)
+ * after this file is imported, so a top-level constant would always be false.
+ */
+const exportFromViewEnabled = () => process.env.EXPORT_FROM_MV === 'true';
+
 const AZURE_EXPORTS_DIRECTORY =
   process.env.AZURE_EXPORTS_DIRECTORY || 'exports';
 
@@ -95,6 +108,140 @@ export class DynamicExportServiceV2<T = Occurrence> {
     private readonly doiService: DoiService,
     private readonly dataSource: DataSource,
   ) {}
+
+  // ---------------------------------------------------------------------------
+  // Materialized view (va_export_mv)
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Updates the view with the latest data. Call this after a dataset is
+   * approved. CONCURRENTLY means downloads can keep reading while it runs.
+   */
+  async refreshExportView(): Promise<void> {
+    const started = Date.now();
+    await this.dataSource.query(
+      `REFRESH MATERIALIZED VIEW CONCURRENTLY ${EXPORT_VIEW}`,
+    );
+    this.logger.log(`${EXPORT_VIEW} refreshed in ${Date.now() - started} ms`);
+  }
+
+  /** How many rows the view has (all of them, or just the given IDs). */
+  private async countViewRows(ids: string[]): Promise<number> {
+    const [{ n }] = ids.length
+      ? await this.dataSource.query(
+          `SELECT count(*)::int AS n FROM ${EXPORT_VIEW} WHERE occurrence_id = ANY($1)`,
+          [ids],
+        )
+      : await this.dataSource.query(
+          `SELECT count(*)::int AS n FROM ${EXPORT_VIEW}`,
+        );
+    return n;
+  }
+
+  /**
+   * Use the view only when the file would come out the same as the old way:
+   *  - no user filters (the view has no filter columns yet), and
+   *  - for an ID list, every ID is in the view (the view only holds Approved
+   *    datasets, but the ID path does not check approval).
+   */
+  private async canUseView(filters: any, ids: string[]): Promise<boolean> {
+    if (!exportFromViewEnabled()) {
+      this.logger.log("EXPORT_FROM_MV is not 'true'; using the join export");
+      return false;
+    }
+    if (filters && Object.keys(filters).length > 0) {
+      this.logger.log('Export has filters; using the join export');
+      return false;
+    }
+    if (ids.length && (await this.countViewRows(ids)) !== ids.length) {
+      this.logger.warn(
+        `Some requested occurrences are not in ${EXPORT_VIEW}; using the join export`,
+      );
+      return false;
+    }
+    this.logger.log(`Using ${EXPORT_VIEW} for this export`);
+    return true;
+  }
+
+  /**
+   * If the requested IDs are exactly every row in the view, drop the list so each
+   * page query does not carry tens of thousands of IDs. Only call after canUseView
+   * has confirmed every requested ID is in the view.
+   */
+  private async idsOrAll(ids: string[]): Promise<string[]> {
+    if (!ids.length) return ids;
+    const unique = new Set(ids).size;
+    return unique === (await this.countViewRows([])) ? [] : ids;
+  }
+
+  /**
+   * Copies rows from the view into the worksheet, 2000 at a time, in
+   * occurrence_id order. Each page starts after the last id of the previous
+   * page ("keyset paging"), so late pages are as fast as early ones.
+   */
+  private async writeRowsFromView(
+    worksheet: ExcelJS.Worksheet,
+    sortedColumns: RawTemplateFieldMap[],
+    ids: string[],
+    yieldAfter: number,
+    exportJob: ExportJob,
+    updateProgressCallback?: (jobId: string, progress: number) => void,
+  ): Promise<void> {
+    const pageSize = 2000;
+    const total = Math.max(await this.countViewRows(ids), 1);
+    let lastId: string | null = null;
+    let written = 0;
+    let page = 0;
+
+    while (true) {
+      const where: string[] = [];
+      const params: any[] = [];
+      if (ids.length) {
+        params.push(ids);
+        where.push(`occurrence_id = ANY($${params.length})`);
+      }
+      if (lastId !== null) {
+        params.push(lastId);
+        where.push(`occurrence_id > $${params.length}`);
+      }
+      params.push(pageSize);
+
+      const rows: Record<string, any>[] = await this.dataSource.query(
+        `SELECT * FROM ${EXPORT_VIEW}
+         ${where.length ? 'WHERE ' + where.join(' AND ') : ''}
+         ORDER BY occurrence_id
+         LIMIT $${params.length}`,
+        params,
+      );
+      if (!rows.length) break;
+
+      // The view's column names are the template_field names, so copy across directly
+      for (const r of rows) {
+        const row: Record<string, any> = {};
+        for (const col of sortedColumns) {
+          row[col.template_field] = r[col.template_field];
+        }
+        worksheet.addRow(row).commit();
+      }
+
+      written += rows.length;
+      page++;
+      if (updateProgressCallback && exportJob) {
+        updateProgressCallback(
+          exportJob.id,
+          Math.round((Math.min(written, total) / total) * 85),
+        );
+      }
+      if (page % yieldAfter === 0) {
+        await new Promise((resolve) => setImmediate(resolve));
+      }
+
+      if (rows.length < pageSize) break;
+      lastId = rows[rows.length - 1].occurrence_id;
+    }
+
+    this.logger.log(`Exported ${written} rows from ${EXPORT_VIEW}`);
+  }
 
   /**
    * Build indexed metadata tree for dynamic relation navigation
@@ -277,6 +424,29 @@ export class DynamicExportServiceV2<T = Occurrence> {
     worksheet.getRow(1).commit();
 
     const approvedIds = occurrenceIds || [];
+
+    // New: read the finished rows from the materialized view when possible
+    if (await this.canUseView(filters, approvedIds)) {
+      await this.writeRowsFromView(
+        worksheet,
+        sortedColumns,
+        await this.idsOrAll(approvedIds),
+        yieldAfter,
+        exportJob,
+        updateProgressCallback,
+      );
+      await this.makeFiltersAndDOISheet(
+        workbook,
+        filters,
+        generateDoi,
+        exportJob,
+      );
+      await worksheet.commit();
+      await workbook.commit();
+      return finalPath;
+    }
+
+    // Otherwise: the original join export below, unchanged
 
     // If no occurrenceIds provided, fetch all occurrences using filters.
     // When no IDs are provided, we also filter by dataset.status = 'Approved'
