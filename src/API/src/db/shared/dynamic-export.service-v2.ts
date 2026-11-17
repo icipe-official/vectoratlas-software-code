@@ -13,33 +13,18 @@ import { formatDate } from 'src/utils';
 import { DoiService } from '../doi/doi.service';
 import { ExportJob } from 'src/exports/export-job.entity';
 
-/**
- * va_export_mv is a materialized view holding the finished export rows
- * (one row per occurrence in an Approved dataset, VA template columns in order).
- * Set EXPORT_FROM_MV=true in .env to read downloads from it.
- */
+/** Materialized view of finished export rows (Approved datasets only). */
 const EXPORT_VIEW = 'va_export_mv';
 
-/**
- * Read at call time, not at import time: .env may be loaded (ConfigModule)
- * after this file is imported, so a top-level constant would always be false.
- */
+/** Read at call time, so .env is loaded first. */
 const exportFromViewEnabled = () => process.env.EXPORT_FROM_MV === 'true';
 
 const AZURE_EXPORTS_DIRECTORY =
   process.env.AZURE_EXPORTS_DIRECTORY || 'exports';
 
 /**
- * Non-circular relation tree for the data export.
- *
- * This is a curated subset of the Occurrence entity's relations that excludes
- * back-references (e.g., Bionomics -> Occurrence, Reference -> Bionomics) to
- * avoid circular JOINs. Each table is joined exactly once, producing a single
- * SQL query per batch via `relationLoadStrategy: 'join'`.
- *
- * Total: 40 tables, 615 columns — well within PostgreSQL's 1664-column limit.
- *
- * See docs/export-relation-tree.md for the full tree diagram and rationale.
+ * Non-circular relation tree (no back-references), so each table joins once.
+ * See docs/export-relation-tree.md.
  */
 const EXPORT_RELATIONS = {
   reference: true,
@@ -113,10 +98,7 @@ export class DynamicExportServiceV2<T = Occurrence> {
   // Materialized view (va_export_mv)
   // ---------------------------------------------------------------------------
 
-  /**
-   * Updates the view with the latest data. Call this after a dataset is
-   * approved. CONCURRENTLY means downloads can keep reading while it runs.
-   */
+  /** CONCURRENTLY lets downloads keep reading during the refresh. */
   async refreshExportView(): Promise<void> {
     const started = Date.now();
     await this.dataSource.query(
@@ -125,7 +107,7 @@ export class DynamicExportServiceV2<T = Occurrence> {
     this.logger.log(`${EXPORT_VIEW} refreshed in ${Date.now() - started} ms`);
   }
 
-  /** How many rows the view has (all of them, or just the given IDs). */
+  /** Counts all view rows, or only the given IDs. */
   private async countViewRows(ids: string[]): Promise<number> {
     const [{ n }] = ids.length
       ? await this.dataSource.query(
@@ -138,15 +120,20 @@ export class DynamicExportServiceV2<T = Occurrence> {
     return n;
   }
 
-  
-  
+  /**
+   * Uses the view only when the output matches the join export.
+   * Filters need the join, since the view has no filter columns.
+   * ID lists need every ID in the view.
+   */
   private async canUseView(filters: any, ids: string[]): Promise<boolean> {
     if (!exportFromViewEnabled()) {
       this.logger.log("EXPORT_FROM_MV is not 'true'; using the join export");
       return false;
     }
     if (!ids.length && filters && Object.keys(filters).length > 0) {
-      this.logger.log('Export has filters and no occurrence IDs; using the join export');
+      this.logger.log(
+        'Export has filters and no occurrence IDs; using the join export',
+      );
       return false;
     }
     if (ids.length && (await this.countViewRows(ids)) !== ids.length) {
@@ -159,22 +146,14 @@ export class DynamicExportServiceV2<T = Occurrence> {
     return true;
   }
 
-  /**
-   * If the requested IDs are exactly every row in the view, drop the list so each
-   * page query does not carry tens of thousands of IDs. Only call after canUseView
-   * has confirmed every requested ID is in the view.
-   */
+  /** Returns [] when the IDs cover the whole view, so pages skip the ID filter. */
   private async idsOrAll(ids: string[]): Promise<string[]> {
     if (!ids.length) return ids;
     const unique = new Set(ids).size;
     return unique === (await this.countViewRows([])) ? [] : ids;
   }
 
-  /**
-   * Copies rows from the view into the worksheet, 2000 at a time, in
-   * occurrence_id order. Each page starts after the last id of the previous
-   * page ("keyset paging"), so late pages are as fast as early ones.
-   */
+  /** Copies view rows to the worksheet in pages of 2000, keyed by occurrence_id. */
   private async writeRowsFromView(
     worksheet: ExcelJS.Worksheet,
     sortedColumns: RawTemplateFieldMap[],
@@ -211,7 +190,7 @@ export class DynamicExportServiceV2<T = Occurrence> {
       );
       if (!rows.length) break;
 
-      // The view's column names are the template_field names, so copy across directly
+      // View columns already use template_field names
       for (const r of rows) {
         const row: Record<string, any> = {};
         for (const col of sortedColumns) {
@@ -239,9 +218,7 @@ export class DynamicExportServiceV2<T = Occurrence> {
     this.logger.log(`Exported ${written} rows from ${EXPORT_VIEW}`);
   }
 
-  /**
-   * Build indexed metadata tree for dynamic relation navigation
-   */
+  /** Builds a metadata tree of relations for dynamic lookups. */
   private buildRelationIndex(
     repository: Repository<any>,
     maxDepth = 5,
@@ -365,9 +342,7 @@ export class DynamicExportServiceV2<T = Occurrence> {
     return row;
   }
 
-  /**
-   * Main memory-efficient background exporter. Writes directly to disk stream.
-   */
+  /** Streams the export to disk. Uses the view when possible. */
   async exportAllToExcelBackground(
     filters: any,
     columns: RawTemplateFieldMap[],
@@ -392,11 +367,11 @@ export class DynamicExportServiceV2<T = Occurrence> {
       targetFilePath ||
       path.join(exportDir, `va_export_${exportJob?.id || Date.now()}.xlsx`);
 
-    // 1. Initialize Streaming Workbook Writer directly to local file
+    // Shared strings and styles stay off to keep memory low
     const workbook = new ExcelJS.stream.xlsx.WorkbookWriter({
       filename: finalPath,
-      useSharedStrings: false, // Prevents holding string dictionary in V8 Heap
-      useStyles: false, // Disables keeping style objects in memory
+      useSharedStrings: false,
+      useStyles: false,
     });
 
     const worksheet = workbook.addWorksheet('Data');
@@ -412,7 +387,6 @@ export class DynamicExportServiceV2<T = Occurrence> {
 
     const relationIndex = this.buildRelationIndex(this.repository);
 
-    // 2. Add columns and flush header row
     worksheet.columns = sortedColumns.map((col) => ({
       header: col.template_field,
       key: col.template_field,
@@ -421,7 +395,6 @@ export class DynamicExportServiceV2<T = Occurrence> {
 
     const approvedIds = occurrenceIds || [];
 
-    // New: read the finished rows from the materialized view when possible
     if (await this.canUseView(filters, approvedIds)) {
       await this.writeRowsFromView(
         worksheet,
@@ -442,30 +415,20 @@ export class DynamicExportServiceV2<T = Occurrence> {
       return finalPath;
     }
 
-    // Otherwise: the original join export below, unchanged
-
-    // If no occurrenceIds provided, fetch all occurrences using filters.
-    // When no IDs are provided, we also filter by dataset.status = 'Approved'
-    // to ensure only data from approved datasets is exported.
+    // With no IDs, only Approved datasets are exported
     const useAllOccurrences = !approvedIds || approvedIds.length === 0;
 
-    // When fetching all occurrences (no explicit IDs), add a filter
-    // for approved datasets only. This ensures exports don't include
-    // data from pending or rejected datasets.
     const exportFilters = useAllOccurrences
       ? { ...(filters || {}), dataset: { status: 'Approved' } }
       : filters || {};
 
-    // Get the true total row count for accurate progress reporting.
-    // When downloading by occurrence IDs, the total is the ID count.
-    // When downloading by filters, we need a COUNT query so progress
-    // doesn't jump to 85% after the first batch.
+    // Total for progress: a COUNT when filtering, the ID count otherwise
     let total: number;
     if (useAllOccurrences) {
       total = await this.repository.count({
         where: exportFilters,
       });
-      if (total === 0) total = 1; // avoid division by zero if no rows
+      if (total === 0) total = 1;
     } else {
       total = Math.max(approvedIds.length, 1);
     }
@@ -477,7 +440,6 @@ export class DynamicExportServiceV2<T = Occurrence> {
       const skip = page * pageSize;
 
       if (useAllOccurrences) {
-        // Fetch all occurrences with filters and pagination in a single JOIN query
         entities = await this.repository.find({
           where: exportFilters,
           relations: EXPORT_RELATIONS as any,
@@ -488,7 +450,6 @@ export class DynamicExportServiceV2<T = Occurrence> {
         });
         if (!entities.length) break;
       } else {
-        // Use the existing ID-based approach with a single JOIN query
         const ids = approvedIds.slice(skip, skip + pageSize);
         if (!ids.length) break;
 
@@ -501,10 +462,9 @@ export class DynamicExportServiceV2<T = Occurrence> {
         if (!entities.length) break;
       }
 
-      // Map each entity to row and commit immediately to disk
       for (const entity of entities) {
         const row = this.mapEntityToRow(entity, sortedColumns, relationIndex);
-        worksheet.addRow(row).commit(); // Flush row memory immediately
+        worksheet.addRow(row).commit();
       }
 
       page++;
@@ -515,14 +475,12 @@ export class DynamicExportServiceV2<T = Occurrence> {
         updateProgressCallback(exportJob.id, progress);
       }
 
-      // yield every x pages
-      // Potentially gives other HTTP requests and health checks an immediate turn on the event loop
+      // Lets other requests run during long exports
       if (page % yieldAfter === 0) {
         await new Promise((resolve) => setImmediate(resolve));
       }
     }
 
-    // Add Filters and DOI Worksheet
     await this.makeFiltersAndDOISheet(
       workbook,
       filters,
@@ -530,7 +488,6 @@ export class DynamicExportServiceV2<T = Occurrence> {
       exportJob,
     );
 
-    // Finalize file write
     await worksheet.commit();
     await workbook.commit();
 
@@ -553,12 +510,10 @@ export class DynamicExportServiceV2<T = Occurrence> {
       this.logger.debug(`Processing ${Object.keys(filters).length} filters`);
       Object.keys(filters).forEach((element) => {
         const val = filters[element];
-        // Convert complex values to readable strings
         let displayValue = val;
         if (Array.isArray(val)) {
           displayValue = val.join(', ');
         } else if (typeof val === 'object' && val !== null) {
-          // Handle nested timeRange object if it wasn't sanitized
           if (element === 'timeRange' && val.start !== undefined) {
             const startDate = val.start
               ? new Date(val.start).toISOString().split('T')[0]
@@ -574,7 +529,6 @@ export class DynamicExportServiceV2<T = Occurrence> {
           typeof val === 'number' &&
           (element === 'startTimestamp' || element === 'endTimestamp')
         ) {
-          // Convert Unix timestamp to human-readable date
           displayValue = new Date(val).toISOString().split('T')[0];
         }
         this.logger.debug(`Adding filter row: ${element}=${displayValue}`);
@@ -610,7 +564,6 @@ export class DynamicExportServiceV2<T = Occurrence> {
     doi.title = 'Data Download - ' + formatDate(new Date());
     doi.approval_status = ApprovalStatus.PENDING;
 
-    // Create a human-readable version of filters for description
     const readableFilters: any = {};
     Object.keys(filters).forEach((key) => {
       const val = filters[key];

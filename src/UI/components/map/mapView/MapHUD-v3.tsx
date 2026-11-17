@@ -306,7 +306,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
 
       return true; // If it passes all checks, keep it!
     });
-  }, [occurrenceData, filters, doiIdSet, doiResolved,dbCountryData]);
+  }, [occurrenceData, filters, doiIdSet, doiResolved, dbCountryData]);
 
   const OTHER_LABEL = 'others';
 
