@@ -19,7 +19,8 @@ import {
 } from '../importWizard/types';
 import { SpreadsheetImporter } from '../importWizard';
 import { countryList } from '../../../state/map/utils/countrySpeciesLists';
-import { useAppDispatch } from '../../../state/hooks';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
+import { useOrganizationDb } from '../../shared/useOrganizationDb';
 import { uploadData } from '../../../state/upload/actions/uploadData';
 import { useRouter } from 'next/router';
 import {
@@ -50,6 +51,7 @@ const FieldIDs = {
   title: 'title',
   description: 'description',
   affiliated_institution: 'affiliated_institution',
+  organizationId: 'organizationId',
   country: 'country',
   region: 'region',
   generateDoi: 'generateDoi',
@@ -192,6 +194,16 @@ const UploadWizardForm = () => {
 
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useAppDispatch();
+  const token = useAppSelector((state) => state.auth.token);
+  const organizations = useOrganizationDb(true, token ? String(token) : null);
+  const organizationOptions: SelectFieldOption[] = [
+    { label: 'No organization selected', value: '' },
+    ...organizations.map((organization) => ({
+      label: organization.name,
+      value: organization.id,
+    })),
+  ];
+
   const router = useRouter();
   const [fields, setFields] = useState<Field<any>[]>([]);
   const [datasetType, setDatasetType] = useState(DatasetType.Occurrence);
@@ -319,6 +331,7 @@ const UploadWizardForm = () => {
           generateDoi: true, // metadata?.[FieldIDs.generateDoi], All datasets are being assigned doi
           dataFile: file,
           isValidated: !isPostUploadStepsSkipped,
+          organizationId: metadata?.[FieldIDs.organizationId] || undefined,
         })
       );
       return res;
@@ -400,6 +413,13 @@ const UploadWizardForm = () => {
             label: t('preImportComponent.institution'),
             key: FieldIDs.affiliated_institution,
             required: false,
+          },
+          {
+            type: 'Select',
+            label: 'Organization (optional)',
+            key: FieldIDs.organizationId,
+            required: false,
+            options: organizationOptions,
           },
           {
             type: 'Select',

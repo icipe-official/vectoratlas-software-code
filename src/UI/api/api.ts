@@ -753,7 +753,8 @@ export const postDatasetFileAuthenticated = async (
   datasetId?: String,
   doi?: String,
   generateDoi?: Boolean,
-  isValidated?: Boolean
+  isValidated?: Boolean,
+  organizationId?: string
 ) => {
   const formData = new FormData();
   formData.append('file', file);
@@ -772,6 +773,7 @@ export const postDatasetFileAuthenticated = async (
     is_va_data: false,
     is_validated: isValidated,
     dataset_type: dataType,
+    organizationId,
   };
   formData.append('data', JSON.stringify(data));
 
