@@ -26,6 +26,8 @@ import {
 import axios from 'axios';
 import { UploadedDatasetService } from './uploaded-dataset.service';
 import { UploadedDataset } from './entities/uploaded-dataset.entity';
+import { OrganizationService } from '../organization/organization.service';
+import { Organization } from '../organization/entities/organization.entity';
 import config from 'src/config/config';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/auth/user_role/roles.guard';
@@ -88,6 +90,7 @@ export class UploadedDatasetController {
   constructor(
     private readonly uploadedDatasetService: UploadedDatasetService,
     private readonly logger: Logger,
+    private readonly organizationService: OrganizationService,
   ) {}
 
   @Get()
@@ -104,12 +107,24 @@ export class UploadedDatasetController {
   async update(
     @AuthUser() user: any,
     @Param('id') id: string,
-    @Body() uploadedDataset: UploadedDataset,
+    @Body() body: any,
   ) {
+    const { organizationId, ...uploadedDataset } = body;
+    // the credit can only be set through a validated organizationId
+    delete uploadedDataset.organization;
+
+    let organization: Organization | null | undefined;
+    if (organizationId === null || organizationId === '') {
+      organization = null;
+    } else if (organizationId) {
+      organization = await this.organizationService.findOne(organizationId);
+    }
+
     return await this.uploadedDatasetService.update(
       id,
-      uploadedDataset,
+      uploadedDataset as UploadedDataset,
       user?.sub,
+      organization,
     );
   }
 
@@ -319,12 +334,40 @@ export class UploadedDatasetController {
     @AuthUser() user: any,
     @Body('data') data: string,
   ) {
-    console.log('Inside uploadNew');
-    if (!file) {
+    if (!data) {
+      throw new BadRequestException('Upload metadata is required.');
     }
+
+    let uploadData: any;
+
+    try {
+      uploadData = JSON.parse(data);
+    } catch {
+      throw new BadRequestException('Invalid upload metadata.');
+    }
+
+    // Organization is only ever set through its id, never as a raw object
+    const organizationId = uploadData.organizationId;
+    delete uploadData.organizationId;
+    delete uploadData.organization;
+
     const ds = new UploadedDataset();
-    Object.assign(ds, JSON.parse(data));
-    console.log('Uploaded data', ds);
+    Object.assign(ds, uploadData);
+
+    if (organizationId) {
+      if (typeof organizationId !== 'string') {
+        throw new BadRequestException('Invalid organization id.');
+      }
+      // Throws NotFoundException if the organization does not exist
+      ds.organization = await this.organizationService.findOne(organizationId);
+    }
+
+    this.logger.log(
+      `New dataset upload "${ds.title}"${
+        ds.organization ? ` credited to ${ds.organization.name}` : ''
+      }`,
+    );
+
     return await this.uploadedDatasetService.firstUpload(ds, file, user?.sub);
   }
 

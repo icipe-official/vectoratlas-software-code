@@ -7,6 +7,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { UploadedDataset } from './entities/uploaded-dataset.entity';
+import { Organization } from '../organization/entities/organization.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Any, NoNeedToReleaseEntityManagerError, Repository } from 'typeorm';
 import { UploadedDatasetLog } from '../uploaded-dataset-log/entities/uploaded-dataset-log.entity';
@@ -80,6 +81,7 @@ export class UploadedDatasetService {
 
   async getUploadedDatasets() {
     return await this.uploadedDataRepository.find({
+      relations: ['organization'],
       order: {
         modified: 'DESC',
       },
@@ -89,6 +91,7 @@ export class UploadedDatasetService {
   async getUploadedDatasetsByUploader(uploader: string) {
     return await this.uploadedDataRepository.find({
       where: { owner: uploader },
+      relations: ['organization'],
       order: {
         modified: 'DESC',
       },
@@ -98,7 +101,7 @@ export class UploadedDatasetService {
   async getUploadedDataset(id: string) {
     const res = await this.uploadedDataRepository.findOne({
       where: { id },
-      relations: ['uploaded_dataset_log', 'doi'],
+      relations: ['uploaded_dataset_log', 'doi', 'organization'],
       order: {
         uploaded_dataset_log: {
           creation: 'DESC',
@@ -114,9 +117,15 @@ export class UploadedDatasetService {
     });
   }
 
-  async update(id: string, uploadedDataset: UploadedDataset, userId: string) {
+  async update(
+    id: string,
+    uploadedDataset: UploadedDataset,
+    userId: string,
+    organization?: Organization | null,
+  ) {
     const toUpdate = await this.uploadedDataRepository.findOne({
       where: { id },
+      relations: ['organization'],
     });
     // check if its modifiable
     if (!this.getModifiableStatus().includes(uploadedDataset.status)) {
@@ -129,6 +138,9 @@ export class UploadedDatasetService {
     }
 
     const updated = Object.assign(toUpdate, uploadedDataset);
+    if (organization !== undefined) {
+      updated.organization = organization;
+    }
     updated.updater = userId;
     const res = await this.uploadedDataRepository.save(updated);
 
@@ -309,6 +321,7 @@ export class UploadedDatasetService {
     // update status to approved
     const dataset = await this.uploadedDataRepository.findOne({
       where: { id },
+      relations: ['organization'],
     });
     if (!dataset.primary_reviewers) {
       error = 'There are no assigned primary reviewers for this dataset';
@@ -504,6 +517,7 @@ export class UploadedDatasetService {
     // update status to approved
     const dataset = await this.uploadedDataRepository.findOne({
       where: { id },
+      relations: ['organization'],
     });
     if (!dataset.primary_reviewers) {
       error = 'There are no assigned primary reviewers for this dataset';

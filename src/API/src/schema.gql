@@ -92,6 +92,14 @@ input CreateNewsInput {
   title: String!
 }
 
+input CreateOrganizationInput {
+  acknowledgement: String
+  logo: String
+  name: String!
+  terms_and_conditions: String
+  website: String
+}
+
 input CreateReferenceInput {
   article_title: String!
   author: String!
@@ -160,6 +168,7 @@ type Dataset {
   fileType: String!
   id: String!
   location: String
+  organization: Organization
   region: String
   status: String
   title: String
@@ -268,7 +277,9 @@ type Mutation {
   adminAddEmailRegistry(input: ManualRegistryInput!): EmailRegistry!
   createEditNews(input: CreateNewsInput!): News!
   createEditSpeciesInformation(input: CreateSpeciesInformationInput!): SpeciesInformation!
+  createOrganization(input: CreateOrganizationInput!): Organization!
   createReference(input: CreateReferenceInput!): Reference!
+  deleteOrganization(id: String!): Organization!
   deleteSpeciesInformation(id: String!): Boolean!
   disableNotifications(disable: Boolean!, userId: String!): Boolean!
   queueDatasetCampaign(datasetUrl: String!, message: String!, title: String!): String!
@@ -276,6 +287,7 @@ type Mutation {
   requestRoles(email: String!, requestReason: String!, rolesRequested: [String!]!): Boolean!
   unsubscribeEmail(payload: UnsubscribeEmailDto!): Boolean!
   updateCountry(input: UpdateCountryInput!): Country!
+  updateOrganization(input: UpdateOrganizationInput!): Organization!
   updateRecordedSpecies(input: UpdateRecordedSpeciesInput!): RecordedSpecies!
   updateReference(input: UpdateReferenceInput!, num_id: Int!): Reference!
   updateUserRoles(input: UserRoleInput!): UserRole!
@@ -379,6 +391,19 @@ type OccurrenceReturn {
   year_start: Float
 }
 
+type Organization {
+  acknowledgement: String
+  creation: DateTime!
+  id: String!
+  logo: String
+  modified: DateTime!
+  name: String!
+  owner: String
+  terms_and_conditions: String
+  updater: String
+  website: String
+}
+
 type PaginatedOccurrenceReturnData {
   hasMore: Boolean!
   items: [OccurrenceReturn!]!
@@ -409,6 +434,7 @@ type Query {
   allDoisByStatus(status: String!): [DOI!]!
   allGeoData: Bionomics!
   allNews: [News!]!
+  allOrganizations: [Organization!]!
   allRecordedSpecies: [RecordedSpecies!]!
   allReferenceData(endId: Float = null, filterField: String = "article_title", order: String = "asc", orderBy: String = "num_id", skip: Float = 0, startId: Float = 1, take: Float = 1, textFilter: String = ""): PaginatedReferenceData!
   allSpeciesInformation: [SpeciesInformation!]!
@@ -424,6 +450,7 @@ type Query {
   getHomepageAnalytics(endAt: Float!, startAt: Float!, timezone: String!, unit: String!): HomepageStats!
   insecticideResistanceById(id: String!): InsecticideResistanceBioassays!
   newsById(id: String!): News!
+  organization(id: String!): Organization
   postProcessModel(blobLocation: String!, displayName: String!, maxValue: Float!, modelName: String!, uploadedModelId: String!): ModelProcessingStatus!
   recordedSpeciesById(id: String!): RecordedSpecies
   referenceData(id: String!): Reference!
@@ -546,6 +573,15 @@ input UpdateCountryInput {
   name: String
 }
 
+input UpdateOrganizationInput {
+  acknowledgement: String
+  id: String!
+  logo: String
+  name: String
+  terms_and_conditions: String
+  website: String
+}
+
 input UpdateRecordedSpeciesInput {
   category: String
   color: String
@@ -590,6 +626,7 @@ type UploadedDataset {
   last_status_update_date: DateTime!
   last_upload_date: DateTime!
   modified: DateTime!
+  organization: Organization
   owner: String
   primary_reviewers: [String!]
   provided_doi: String

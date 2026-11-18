@@ -21,14 +21,15 @@ import { Dataset } from '../shared/entities/dataset.entity';
 import { SharedModule } from '../shared/shared.module';
 import { DatasetUploadModule } from '../../dataset-upload/dataset-upload.module';
 import { DoiModule } from '../doi/doi.module';
+import { OrganizationModule } from '../organization/organization.module';
 
 @Module({
   imports: [
     HttpModule,
     SharedModule,
     DatasetUploadModule,
+    OrganizationModule,
     forwardRef(() => DoiModule),
-    //DoiModule,
     TypeOrmModule.forFeature([
       UploadedDataset,
       CommunicationLog,

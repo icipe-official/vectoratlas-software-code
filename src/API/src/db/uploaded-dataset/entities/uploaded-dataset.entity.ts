@@ -1,18 +1,20 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { BaseEntityExtended } from '../../base.entity.extended';
 import {
-  AfterLoad,
+  // AfterLoad,
   BeforeInsert,
   BeforeUpdate,
   Column,
   CreateDateColumn,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToMany,
   OneToOne,
 } from 'typeorm';
 import { UploadedDatasetLog } from '../../uploaded-dataset-log/entities/uploaded-dataset-log.entity';
 import { DOI } from '../../doi/entities/doi.entity';
+import { Organization } from '../../organization/entities/organization.entity';
 
 @Entity('uploaded_dataset')
 @ObjectType({ description: 'uploaded dataset' })
@@ -47,7 +49,6 @@ export class UploadedDataset extends BaseEntityExtended {
 
   /**
    * Name of the file that has been uploaded
-   * We will use this name to retrieve the file from disk
    */
   @Column({
     nullable: true,
@@ -57,7 +58,6 @@ export class UploadedDataset extends BaseEntityExtended {
 
   /**
    * Name of the file that has been converted into VA template
-   * We will use this name to retrieve the file from disk
    */
   @Column({
     nullable: true,
@@ -79,8 +79,6 @@ export class UploadedDataset extends BaseEntityExtended {
    */
   @Column({
     nullable: true,
-    // type: 'enum',
-    // enum: UploadedDatasetStatus,
   })
   @Field(() => String, { nullable: true })
   status: string;
@@ -156,7 +154,7 @@ export class UploadedDataset extends BaseEntityExtended {
   approved_by: string[];
 
   /**
-   * Who approved the uploaded dataset
+   * When the uploaded dataset was approved
    */
   @Column({
     nullable: true,
@@ -193,7 +191,7 @@ export class UploadedDataset extends BaseEntityExtended {
   is_doi_requested: boolean;
 
   /**
-   * Is Vector atlas data
+   * Is Vector Atlas data
    */
   @Column({
     nullable: true,
@@ -202,7 +200,7 @@ export class UploadedDataset extends BaseEntityExtended {
   is_va_data: boolean;
 
   /**
-   * Who abstracted VA uploaded dataset. Only applies to VA data
+   * Who abstracted VA uploaded dataset
    */
   @Column({
     nullable: true,
@@ -211,7 +209,7 @@ export class UploadedDataset extends BaseEntityExtended {
   va_data_abstracted_by: string;
 
   /**
-   * Who checked VA uploaded dataset. Only applies to VA data
+   * Who checked VA uploaded dataset
    */
   @Column({
     nullable: true,
@@ -226,7 +224,7 @@ export class UploadedDataset extends BaseEntityExtended {
   va_final_check_by: string;
 
   /**
-   * Who approved VA uploaded dataset. Only applies to VA data
+   * Who approved VA uploaded dataset
    */
   @Column({
     nullable: true,
@@ -234,19 +232,8 @@ export class UploadedDataset extends BaseEntityExtended {
   @Field(() => String, { nullable: true })
   va_final_checked_by: string;
 
-  // /**
-  //  * Name of the file that has been re-uploaded
-  //  * We will use this name to retrieve the file from disk
-  //  */
-  // @Column({
-  //   nullable: true,
-  // })
-  // @Field(() => String, { nullable: true })
-  // reuploaded_file_name: string;
-
   /**
-   * Name of the file that has been uploaded by primary reviewer
-   * We will use this name to retrieve the file from disk
+   * Name of the file uploaded by primary reviewer
    */
   @Column({
     nullable: true,
@@ -255,8 +242,7 @@ export class UploadedDataset extends BaseEntityExtended {
   uploaded_file_name_primary_reviewed: string;
 
   /**
-   * Name of the file that has been uploaded by tertiary reviewer
-   * We will use this name to retrieve the file from disk
+   * Name of the file uploaded by tertiary reviewer
    */
   @Column({
     nullable: true,
@@ -283,7 +269,7 @@ export class UploadedDataset extends BaseEntityExtended {
   reupload_requested_date: Date;
 
   /**
-   * Was dataset reupload requested
+   * Reupload request comments
    */
   @Column({
     nullable: true,
@@ -317,16 +303,6 @@ export class UploadedDataset extends BaseEntityExtended {
   })
   @Field(() => String, { nullable: true })
   reupload_comment: string;
-
-  // /**
-  //  * DOI associated with this dataset
-  //  */
-  // @OneToOne(() => DOI, (doi) => doi.id, {
-  //   eager: true,
-  //   nullable: true,
-  //   cascade: true,
-  // })
-  // doi: DOI;
 
   /**
    * Dataset type
@@ -365,7 +341,7 @@ export class UploadedDataset extends BaseEntityExtended {
   author: string;
 
   /**
-   * Is Validated
+   * Is tertiary review reassigned
    */
   @Column({
     nullable: true,
@@ -426,11 +402,6 @@ export class UploadedDataset extends BaseEntityExtended {
   /**
    * Validation errors
    */
-  @Column('int', {
-    nullable: true,
-    array: true,
-    default: [],
-  })
   @Column({ type: 'text', nullable: true })
   @Field(() => String, { nullable: true })
   validation_errors: string;
@@ -445,13 +416,15 @@ export class UploadedDataset extends BaseEntityExtended {
   ingestion_status: string;
 
   /**
-   * Authors
+   * Ingestion errors
    */
   @Column({ type: 'text', nullable: true })
   @Field(() => String, { nullable: true, defaultValue: '' })
   ingestion_errors: string;
 
-  /** Number of rows ingested */
+  /**
+   * Number of rows ingested
+   */
   @Column('int', {
     nullable: true,
     default: 0,
@@ -459,7 +432,9 @@ export class UploadedDataset extends BaseEntityExtended {
   @Field(() => Number, { nullable: true })
   total_ingested_rows: number;
 
-  /** Number of rows ingested */
+  /**
+   * Ingestion progress
+   */
   @Column('float', {
     nullable: true,
     default: 0,
@@ -468,7 +443,7 @@ export class UploadedDataset extends BaseEntityExtended {
   ingestion_progress: number;
 
   /**
-   * Reviewers who will conduct tertiary review after reassignment of the dataset
+   * Reviewers who will conduct tertiary review after reassignment
    */
   @Column('varchar', {
     nullable: true,
@@ -479,6 +454,18 @@ export class UploadedDataset extends BaseEntityExtended {
   reassigned_tertiary_reviewers: string[];
 
   // Associations
+
+  /**
+   * Organization credited for this uploaded dataset.
+   */
+  @ManyToOne(() => Organization, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn({ name: 'organization_id' })
+  @Field(() => Organization, { nullable: true })
+  organization?: Organization;
+
   @OneToMany(() => UploadedDatasetLog, (log) => log.uploaded_dataset, {
     onDelete: 'CASCADE',
   })
@@ -500,7 +487,7 @@ export class UploadedDataset extends BaseEntityExtended {
         throw 'You must specify who checked Vector Atlas data';
       }
       if (!this.va_final_checked_by) {
-        throw 'You must specify who performed final check on Vector Atlas data';
+        throw 'You must specify who performed final check on this Vector Atlas data';
       }
     }
   }
