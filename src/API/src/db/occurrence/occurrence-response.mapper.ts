@@ -20,6 +20,7 @@ export function mapOccurrencesToReturnItems(
         'ReviewedAt',
         'ApprovedBy',
         'ApprovedAt',
+        'organization',
       ],
       site: ['longitude_4', 'longitude_5'],
     },
@@ -87,6 +88,7 @@ export function mapOccurrencesToReturnItems(
       display_name: x.recordedSpecies?.display_name,
       category: x.recordedSpecies?.category,
       color: x.recordedSpecies?.color,
+      organization_id: x.dataset?.organization?.id ?? null,
       //has_bionomics: x.bio_data,
     };
 

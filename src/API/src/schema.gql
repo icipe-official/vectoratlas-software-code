@@ -386,6 +386,7 @@ type OccurrenceReturn {
   is_adult: Boolean
   is_larval: Boolean
   location: GeoJSONPoint!
+  organization_id: String
   season_val: String
   species: String
   year_start: Float
