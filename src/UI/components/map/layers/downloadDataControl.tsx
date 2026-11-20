@@ -165,6 +165,11 @@ export const DownloadDataControl = () => {
     }
 
     const ids = (filteredOccurrenceData || []).map((e) => e.id);
+    // Block the export when the map shows no records
+    if (!ids.length) {
+      toast.error(t('downloadData.errors.noRecords'));
+      return;
+    }
     const hasEmail = email.trim().length > 0 && isValidEmail(email);
 
     dispatch(
