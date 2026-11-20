@@ -93,7 +93,7 @@ export class EmailRegistryService {
     const savedEntry = await this.emailRegistryRepository.save(entry);
 
     const frontendBaseUrl =
-      process.env.FRONTEND_BASE_URL?.trim() || 'http://localhost:3000';
+      process.env.BASE_URL?.trim() || 'http://localhost:3000';
 
     const verificationLink = new URL('/verify-success', frontendBaseUrl);
     verificationLink.searchParams.set('token', verificationToken);
