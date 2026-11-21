@@ -352,7 +352,7 @@ export class EmailRegistryService {
 
     if (sendNotification) {
       const baseUrl =
-        process.env.FRONTEND_BASE_URL?.trim() || 'http://localhost:3000';
+        process.env.BASE_URL?.trim() || 'http://localhost:3000';
 
       const unsubscribeUrl = `${baseUrl}/unsubscribed-success?id=${savedRecord.id}&token=${unsubscriptionToken}`;
 
@@ -642,7 +642,7 @@ export class EmailRegistryService {
   async queueNewsCampaign(title: string, message: string, newsUrl?: string) {
     let count = 0;
     const baseUrl =
-      process.env.FRONTEND_BASE_URL?.trim() || 'http://localhost:3000';
+      process.env.BASE_URL?.trim() || 'http://localhost:3000';
 
     for await (const record of this.streamVerified()) {
       const html = this.compileNewsTemplate(
