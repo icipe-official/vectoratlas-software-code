@@ -1,18 +1,79 @@
-import React from 'react';
-import { Container, Box, Typography, Button } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import {
+  Container,
+  Box,
+  Typography,
+  Button,
+  CircularProgress,
+} from '@mui/material';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useTranslations } from 'next-intl';
 import { getMessages } from '../../utils/localization';
 import { GetServerSidePropsContext } from 'next';
 
-type VerifyStatus = 'success' | 'already_verified' | 'expired' | 'invalid';
+type VerifyStatus =
+  | 'loading'
+  | 'success'
+  | 'already_verified'
+  | 'expired'
+  | 'invalid';
 
-interface Props {
-  status: VerifyStatus;
-}
-
-const VerifySuccessPage = ({ status }: Props): JSX.Element => {
+const VerifySuccessPage = (): JSX.Element => {
   const t = useTranslations('EmailSubscription');
+  const router = useRouter();
+  const [status, setStatus] = useState<VerifyStatus>('loading');
+
+  useEffect(() => {
+    if (!router.isReady) return;
+
+    const token = router.query.token;
+    if (typeof token !== 'string' || !token.trim()) {
+      setStatus('invalid');
+      return;
+    }
+
+    const verifyEmail = async () => {
+      try {
+        const res = await fetch(
+          `/vector-api/verify?token=${encodeURIComponent(token.trim())}`,
+          {
+            method: 'GET',
+            headers: { Accept: 'application/json' },
+          }
+        );
+
+        if (res.ok) {
+          setStatus('success');
+        } else {
+          const body = await res.json().catch(() => ({}));
+          const message: string = body?.message || '';
+          if (message.toLowerCase().includes('expired')) {
+            setStatus('expired');
+          } else if (message.toLowerCase().includes('already')) {
+            setStatus('already_verified');
+          } else {
+            setStatus('invalid');
+          }
+        }
+      } catch (error) {
+        console.error('Verification fetch failed:', error);
+        setStatus('invalid');
+      }
+    };
+
+    verifyEmail();
+  }, [router.isReady, router.query.token]);
+
+  if (status === 'loading') {
+    return (
+      <Container maxWidth="sm" sx={{ py: 8 }}>
+        <Box sx={{ textAlign: 'center' }}>
+          <CircularProgress />
+        </Box>
+      </Container>
+    );
+  }
 
   const content = {
     success: {
@@ -69,50 +130,7 @@ const VerifySuccessPage = ({ status }: Props): JSX.Element => {
 };
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const messages = await getMessages(context);
-  const token = context.query.token;
-
-  let status: VerifyStatus = 'invalid';
-
-  if (typeof token === 'string' && token.length > 0) {
-    try {
-      const backendUrl =
-        process.env.BASE_URL || 'http://127.0.0.1:3000/vector-api';
-      const res = await fetch(
-        `${backendUrl}/verify?token=${encodeURIComponent(token.trim())}`,
-        {
-          method: 'GET',
-          headers: {
-            Accept: 'application/json',
-          },
-        }
-      );
-
-      if (res.ok) {
-        status = 'success';
-      } else {
-        const body = await res.json().catch(() => ({}));
-        const message: string = body?.message || '';
-        if (message.toLowerCase().includes('expired')) {
-          status = 'expired';
-        } else if (message.toLowerCase().includes('already')) {
-          status = 'already_verified';
-        } else {
-          status = 'invalid';
-        }
-      }
-    } catch (error) {
-      console.error('Verification fetch failed:', error);
-      status = 'invalid';
-    }
-  }
-
-  return {
-    props: {
-      ...messages.props,
-      status,
-    },
-  };
+  return await getMessages(context);
 }
 
 export default VerifySuccessPage;
