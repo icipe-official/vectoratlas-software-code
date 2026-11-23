@@ -124,12 +124,13 @@ export const CommunicationLogList = () => {
     },
   ];
 
+  const token = useAppSelector((state) => state.auth.token);
+
   useEffect(() => {
-    const loadData = async () => {
-      await dispatch(getAllCommunicationLogs());
-    };
-    loadData();
-  }, [dispatch]);
+    if (token) {
+      dispatch(getAllCommunicationLogs());
+    }
+  }, [token, dispatch]);
 
   return (
     <>
@@ -138,28 +139,32 @@ export const CommunicationLogList = () => {
           <div>
             <Typography variant="h5">{t('title')}</Typography>
             <DataGrid
-              rows={communicationLogList}
+              rows={communicationLogList || []}
               columns={columns}
               initialState={{
                 pagination: {
                   paginationModel: {
-                    pageSize: 5,
+                    pageSize: 10,
                   },
                 },
-                // filter: {
-                //   filterModel: {
-                //     items: [
-                //       {
-                //         id: 1,
-                //         field: 'sent_status',
-                //         operator: 'equals',
-                //         value: 'Pending',
-                //       },
-                //     ],
-                //   },
-                // },
+                sorting: {
+                  sortModel: [{ field: 'communication_date', sort: 'desc' }],
+                },
               }}
-              pageSizeOptions={[10]}
+              // filter: {
+              //   filterModel: {
+              //     items: [
+              //       {
+              //         id: 1,
+              //         field: 'sent_status',
+              //         operator: 'equals',
+              //         value: 'Pending',
+              //       },
+              //     ],
+              //   },
+              // },
+
+              pageSizeOptions={[5, 10, 25]}
               checkboxSelection
               disableRowSelectionOnClick
               onRowSelectionModelChange={(

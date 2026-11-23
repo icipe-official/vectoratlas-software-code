@@ -3,7 +3,6 @@ import { CommunicationLogService } from '../db/communication-log/communication-l
 import { CommunicationLog } from '../db/communication-log/entities/communication-log.entity';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
 import * as nodemailer from 'nodemailer';
-
 import {
   CommunicationChannelType,
   CommunicationSentStatus,
@@ -34,7 +33,6 @@ export class EmailService {
     files?: AttachmentLikeObject[],
     communicationLog?: CommunicationLog,
   ): Promise<boolean> {
-    // Normalize: accept string or array, then filter out empty/invalid entries
     if (typeof emails === 'string') {
       emails = [emails];
     }
@@ -49,68 +47,55 @@ export class EmailService {
       return false;
     }
 
-    const sendViaTransport = async () => {
-      try {
-        // //send email
-        const transporter = nodemailer.createTransport(
-          {
-            host: process.env.EMAIL_HOST,
-            port: Number(process.env.EMAIL_PORT),
-            secure: Boolean(Number(process.env.EMAIL_SECURE)),
-            auth: {
-              user: process.env.EMAIL_FROM,
-              pass: process.env.EMAIL_PASSWORD,
-            },
-          },
-          {
-            from: {
-              name: process.env.EMAIL_FROM,
-              address: process.env.EMAIL_FROM,
-            },
-          },
-        );
-        // const res = await this.mailerService.sendMail(mailOptions);
-        const res = await transporter.sendMail({
-          subject: title,
-          html: emailBody,
-          attachments: files,
-          to: emails,
-          cc: copyEmails,
-        });
-        // // Update sent status
-        this.updateSentStatus(commLog, res);
-        await this.appendToSent(
-          commLog.subject,
-          allRecipients,
-          emailBody,
-        ).catch(console.error);
-        return true;
-      } catch (err) {
-        this.logger.error(err);
-        console.log(err);
-        throw err;
-      }
-    };
-
-    const mailOptions: ISendMailOptions = {
-      from: process.env.EMAIL_FROM,
-      to: emails,
-      cc: copyEmails,
-      subject: title,
-      html: emailBody,
-      attachments: files,
-    };
-
-    // Log communication before attempting to send
+  
     const allRecipients = emails.slice();
     const commLog = await this.saveLog(
       communicationLog,
       allRecipients,
+      title,
       emailBody,
     );
 
-    await sendViaTransport();
-    return true;
+    try {
+      const transporter = nodemailer.createTransport(
+        {
+          host: process.env.EMAIL_HOST,
+          port: Number(process.env.EMAIL_PORT),
+          secure: Boolean(Number(process.env.EMAIL_SECURE)),
+          auth: {
+            user: process.env.EMAIL_FROM,
+            pass: process.env.EMAIL_PASSWORD,
+          },
+        },
+        {
+          from: {
+            name: process.env.EMAIL_FROM,
+            address: process.env.EMAIL_FROM,
+          },
+        },
+      );
+
+      const res = await transporter.sendMail({
+        subject: title,
+        html: emailBody,
+        attachments: files,
+        to: emails,
+        cc: copyEmails,
+      });
+
+      await this.updateSentStatus(commLog, res);
+      await this.appendToSent(commLog.subject, allRecipients, emailBody).catch(
+        console.error,
+      );
+      return true;
+    } catch (err: any) {
+      this.logger.error(err);
+      commLog.sent_status = CommunicationSentStatus.FAILED;
+      commLog.sent_date = new Date();
+      commLog.error_description = err?.message || String(err);
+      await this.communicationLogService.upsert(commLog);
+      throw err;
+    }
   }
 
   /**
@@ -164,7 +149,7 @@ export class EmailService {
       const finalFiles: Express.Multer.File[] = [].concat(files || []);
       const attachedFiles: AttachmentLikeObject[] = finalFiles.map((file) => {
         const tempFilePath = join(tempDir, file.originalname);
-        writeFileSync(tempFilePath, file.buffer);
+        writeFileSync(tempFilePath, new Uint8Array(file.buffer));
         return { path: tempFilePath };
       });
 
@@ -177,33 +162,33 @@ export class EmailService {
         communicationLog,
       );
       return { success: result };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(error);
-      return { success: false, message: error.message };
+      return { success: false, message: error?.message || String(error) };
     }
   }
 
   async saveLog(
     communicationLog: CommunicationLog,
     recipients: Array<string>,
+    title: string,
     message: string,
   ): Promise<CommunicationLog> {
     if (communicationLog) {
-      await this.communicationLogService.upsert(communicationLog);
+      return await this.communicationLogService.upsert(communicationLog);
     } else {
-      communicationLog = new CommunicationLog();
-      communicationLog.channel_type = CommunicationChannelType.EMAIL;
-      communicationLog.recipients = recipients;
-      communicationLog.subject = 'General Email';
-      communicationLog.message_type = 'General Email';
-      communicationLog.message = message;
-      communicationLog.sent_status = CommunicationSentStatus.PENDING;
-      communicationLog.sent_date = null;
-      communicationLog.reference_entity_type = null;
-      communicationLog.reference_entity_name = null;
-      this.communicationLogService.upsert(communicationLog);
+      const newLog = new CommunicationLog();
+      newLog.channel_type = CommunicationChannelType.EMAIL;
+      newLog.recipients = recipients;
+      newLog.subject = title || 'General Email';
+      newLog.message_type = 'General Email';
+      newLog.message = message;
+      newLog.sent_status = CommunicationSentStatus.PENDING;
+      newLog.sent_date = null;
+      newLog.reference_entity_type = null;
+      newLog.reference_entity_name = null;
+      return await this.communicationLogService.upsert(newLog);
     }
-    return communicationLog;
   }
 
   async updateSentStatus(
@@ -220,6 +205,6 @@ export class EmailService {
       communicationLog.sent_response = String(info.response);
       communicationLog.error_description = String(info.response);
     }
-    this.communicationLogService.upsert(communicationLog);
+    return await this.communicationLogService.upsert(communicationLog);
   }
 }
