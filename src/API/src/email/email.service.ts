@@ -47,7 +47,6 @@ export class EmailService {
       return false;
     }
 
-  
     const allRecipients = emails.slice();
     const commLog = await this.saveLog(
       communicationLog,
