@@ -119,24 +119,36 @@ const CommunicationLogDetails = () => {
   };
 
   useEffect(() => {
-    if (id) {
+    if (router.isReady && id && token) {
       dispatch(getCommunicationLog(id));
     }
-  }, [id, dispatch]);
+  }, [id, dispatch, token, router.isReady]);
 
   useEffect(() => {
     const setEmails = async () => {
-      let emails: string[] = [];
-      for (const userId of communicationLog?.recipients || []) {
-        try {
-          const res = await fetchAllUsersDetails(token, userId);
-          emails.push(res.name);
-        } catch (error) {
-          emails.push(userId);
-          console.log(error);
-        }
-      }
-      setRecipients(emails);
+      if (!communicationLog?.recipients || !token) return;
+
+      const recipientsList = Array.isArray(communicationLog.recipients)
+        ? communicationLog.recipients
+        : communicationLog.recipients
+            .split(',')
+            .map((s) => s.trim())
+            .filter(Boolean);
+
+      if (recipientsList.length === 0) return;
+
+      const resolved = await Promise.all(
+        recipientsList.map(async (entry: string) => {
+          if (entry.includes('@')) return entry;
+          try {
+            const res = await fetchAllUsersDetails(token, entry);
+            return res?.name || entry;
+          } catch {
+            return entry;
+          }
+        })
+      );
+      setRecipients(resolved);
     };
     setEmails();
   }, [communicationLog, token]);

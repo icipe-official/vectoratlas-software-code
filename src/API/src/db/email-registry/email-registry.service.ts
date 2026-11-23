@@ -351,8 +351,7 @@ export class EmailRegistryService {
     const savedRecord = await this.emailRegistryRepository.save(record);
 
     if (sendNotification) {
-      const baseUrl =
-        process.env.FRONTEND_BASE_URL?.trim() || 'http://localhost:3000';
+      const baseUrl = process.env.BASE_URL?.trim() || 'http://localhost:3000';
 
       const unsubscribeUrl = `${baseUrl}/unsubscribed-success?id=${savedRecord.id}&token=${unsubscriptionToken}`;
 
@@ -538,7 +537,7 @@ export class EmailRegistryService {
 
     // 2. Existing Email Registry Logic
     const frontendBaseUrl =
-      process.env.FRONTEND_BASE_URL?.trim() || 'http://localhost:3000';
+      process.env.BASE_URL?.trim() || 'http://localhost:3000';
     const unsubscribeLink = new URL('/unsubscribed-success', frontendBaseUrl);
 
     unsubscribeLink.searchParams.set('id', entry.id);
@@ -569,8 +568,7 @@ export class EmailRegistryService {
     datasetUrl: string,
   ) {
     let count = 0;
-    const baseUrl =
-      process.env.FRONTEND_BASE_URL?.trim() || 'http://localhost:3000';
+    const baseUrl = process.env.BASE_URL?.trim() || 'http://localhost:3000';
 
     for await (const record of this.streamVerified()) {
       const html = this.compileDatasetTemplate(
@@ -641,8 +639,7 @@ export class EmailRegistryService {
 
   async queueNewsCampaign(title: string, message: string, newsUrl?: string) {
     let count = 0;
-    const baseUrl =
-      process.env.FRONTEND_BASE_URL?.trim() || 'http://localhost:3000';
+    const baseUrl = process.env.BASE_URL?.trim() || 'http://localhost:3000';
 
     for await (const record of this.streamVerified()) {
       const html = this.compileNewsTemplate(
