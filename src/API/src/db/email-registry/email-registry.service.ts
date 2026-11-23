@@ -174,10 +174,10 @@ export class EmailRegistryService {
       .createQueryBuilder()
       .delete()
       .from(EmailRegistry)
-      .where('account_status =: status', {
+      .where('account_status = :status', {
         status: AccountStatus.PENDING_VERIFICATION,
       })
-      .andWhere('token_expires_at <: now', { now: new Date() })
+      .andWhere('token_expires_at < :now', { now: new Date() })
       .execute();
     return result.affected || 0;
   }
