@@ -11,13 +11,44 @@ export type OrganizationFormValues = Omit<Organization, 'id'>;
 
 const FIELDS = 'id name website logo acknowledgement terms_and_conditions';
 
+/**
+ * Route stored organization-logo URLs through the API.
+ * Other URLs, such as the Vector Atlas static logo, remain unchanged.
+ */
+export const getOrganizationLogoUrl = (
+  logo?: string | null
+): string | undefined => {
+  if (!logo) return undefined;
+
+  try {
+    const parsed = new URL(logo);
+    const segments = parsed.pathname.split('/');
+    const folderIndex = segments.indexOf('organization-logos');
+
+    if (folderIndex === -1 || folderIndex !== segments.length - 2) {
+      return logo;
+    }
+
+    const fileName = decodeURIComponent(segments[folderIndex + 1]);
+
+    if (!fileName) return logo;
+
+    const apiBase = process.env.NEXT_PUBLIC_API_URL ?? '/vector-api';
+
+    return `${apiBase.replace(/\/$/, '')}/organization/logo/${encodeURIComponent(fileName)}`;
+  } catch {
+    return logo;
+  }
+};
+
+
 async function gql<T>(
   token: string | undefined,
   query: string,
   variables?: Record<string, unknown>
 ): Promise<T> {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL ?? 'http://127.0.0.1:3001'}/graphql`,
+    `${process.env.NEXT_PUBLIC_API_URL ?? '/vector-api'}/graphql`,
     {
       method: 'POST',
       headers: {
@@ -94,3 +125,40 @@ export const deleteOrganization = async (
       { id }
     )
   ).deleteOrganization;
+export const uploadOrganizationLogo = async (
+  token: string | undefined,
+  file: File
+): Promise<string> => {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL ?? '/vector-api'}/organization/upload-logo`,
+    {
+      method: 'POST',
+      headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: formData,
+    }
+  );
+
+  let json;
+  try {
+    json = await res.json();
+  } catch {
+    throw new Error(`Logo upload failed with status ${res.status}`);
+  }
+
+  if (!res.ok) {
+    throw new Error(
+      json.message || `Logo upload failed with status ${res.status}`
+    );
+  }
+
+  if (!json.logoUrl) {
+    throw new Error('The server did not return a logo URL');
+  }
+
+  return json.logoUrl;
+};

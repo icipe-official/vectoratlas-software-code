@@ -64,11 +64,11 @@ export default function NavBar() {
       url: '/admin',
     });
     moreOptions.push({ text: t('translations'), url: '/translations-edit' });
-
     moreOptions.push({ text: t('addSource'), url: '/new_source' });
     moreOptions.push({ text: t('datasets'), url: '/uploaded-dataset/list' });
     moreOptions.push({ text: t('catalogue'), url: '/speciesCatalogue' });
     moreOptions.push({ text: t('countryCatalogue'), url: '/countryCatalogue' });
+    moreOptions.push({ text: t('organizations'), url: '/organizations' });
   }
 
   const navItemStyle = {

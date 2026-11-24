@@ -17,12 +17,12 @@
     "datasets": "Datasets",
     "editPointData": "Edit Point Data",
     "models": "Models",
-    
     "communication": "Communication",
     "countryCatalogue": "Country Catalogue",
     "doi": "DOI",
     "admin": "Admin",
-    "translations": "Translations"
+    "translations": "Translations",
+    "organizations": "Organizations"
   },
   "HomePage": {
     "list1": "Get started by editing",
@@ -635,7 +635,7 @@
       "uploadImageFile": "Upload Species Image File",
       "uploadImageFileHelperText": "Files must be smaller than {maxSize} KB",
       "distributionMapImage": "Distribution map image",
-       "citation": "Citation",
+      "citation": "Citation",
       "buttons": {
         "create": "Create",
         "update": "Update"
@@ -726,7 +726,7 @@
       "disableNotifications": "Disable Email Notifications"
     }
   },
- "ManageSubscription": {
+  "ManageSubscription": {
     "subscriberListTitle": "Subscriber List",
     "exportBtn": "Export to Excel",
     "exportingBtn": "Exporting...",
@@ -768,7 +768,7 @@
       "iroverlaysTitle": "Insecticide Resistance Overlays",
       "downloadTitle": "Download"
     },
-        "downloadData": {
+    "downloadData": {
       "downloadMapImage": "Download Map Image",
       "downloadFilteredData": "Download Data",
       "downloadFullData": "Download Full Data",
@@ -824,7 +824,6 @@
         "continue": "Continue"
       }
     },
-
     "detailedData": {
       "samplingMethod": "Sampling Method",
       "source": "Source",
@@ -839,8 +838,8 @@
       "noFilters": " All data will be shown if no filter is applied.",
       "titles": {
         "species": "Species",
-        "primary":"Primary",
-        "secondary":"Secondary",
+        "primary": "Primary",
+        "secondary": "Secondary",
         "country": "Country",
         "season": "Season",
         "control": "Control",
@@ -890,7 +889,8 @@
     "contactTitle": "Contact Us",
     "resourcesTitle": "Resources",
     "map": "Access the Map",
-    "subscribe": "Subscribe / Unsubscribe"
+    "subscribe": "Subscribe to Updates",
+    "rightsReserved": "All rights reserved."
   },
   "EmailSubscription": {
     "title": "Subscribe/Unsubscribe",
@@ -898,7 +898,7 @@
     "successMessage": "Almost done! We've sent a verification link to your email — please check your inbox to confirm.",
     "notificationsLabel": "Subscribe to news and dataset updates",
     "subscribeBtn": "Subscribe",
-     "unsubscribe": "Unsubscribe",
+    "unsubscribe": "Unsubscribe",
     "verifySuccessTitle": "Email Verified",
     "verifySuccessBody": "You're all set — you'll now receive the updates you signed up for.",
     "verifyAlreadyTitle": "Already Verified",
@@ -922,10 +922,8 @@
     "unsubscribeSuccessBody": "You've been unsubscribed and won't receive further updates.",
     "unsubscribeInvalidTitle": "Invalid Link",
     "unsubscribeInvalidBody": "This unsubscribe link is invalid or has already been used.",
-
     "backHomeBtn": "Back to VectorAtlas",
     "subscribeAgainBtn": "Subscribe Again"
-
   },
   "Admin": {
     "title": "Email Registry",
@@ -1222,5 +1220,55 @@
       }
     }
   },
-  "EditPointData": {}
+  "EditPointData": {},
+  "OrganizationPage": {
+    "title": "Organizations",
+    "add": "Add organization",
+    "edit": "Edit organization",
+    "back": "Back to organization list",
+    "search": "Search by name or website",
+    "tryAgain": "Try again",
+    "empty": "No organizations yet",
+    "noMatch": "No organizations match your search",
+    "emptyHelp": "Add the first organization to credit it on the map.",
+    "noMatchHelp": "Try a different name or clear the search.",
+    "logo": "Logo",
+    "organization": "Organization",
+    "actions": "Actions",
+    "editAction": "Edit",
+    "delete": "Delete",
+    "deleteTitle": "Delete {name}?",
+    "deleteMessage": "This permanently removes the organization and its logo. An organization that still has datasets with occurrence records cannot be deleted.",
+    "cancel": "Cancel",
+    "deleteOrganization": "Delete organization",
+    "deleting": "Deleting…",
+    "created": "Organization {name} created successfully",
+    "deleted": "Organization {name} deleted successfully",
+    "updated": "Organization {name} updated successfully",
+    "loadFailed": "Organizations could not be loaded.",
+    "createFailed": "The organization could not be created.",
+    "updateFailed": "The organization could not be updated.",
+    "deleteFailed": "The organization could not be deleted.",
+    "notSelected": "No organization was selected.",
+    "organizationLoadFailed": "The organization could not be loaded.",
+    "name": "Name",
+    "website": "Website",
+    "acknowledgement": "Acknowledgement",
+    "terms": "Terms and conditions",
+    "create": "Create organization",
+    "update": "Update organization",
+    "saving": "Saving…",
+    "reset": "Reset",
+    "enterName": "Enter the organization name.",
+    "nameLength": "Keep the name under 120 characters.",
+    "invalidWebsite": "Enter a full web address, for example https://example.org.",
+    "replaceLogo": "Replace logo",
+    "chooseImage": "Choose image",
+    "removeLogo": "Remove logo",
+    "logoHelp": "JPEG, PNG or WebP. Large images are resized automatically to fit {width} × {height} px.",
+    "resized": "Resized from {original} to {resized} ({width} × {height} px).",
+    "readyUpload": "Ready to upload ({size}, {width} × {height} px).",
+    "imageProcessFailed": "The image could not be processed.",
+    "close": "Close"
+  }
 }

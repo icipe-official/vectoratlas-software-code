@@ -62,6 +62,8 @@ import DrawerMap from '../layers/drawerMap';
 import DataDrawer from '../layers/dataDrawer';
 import MapHUD from './MapHUD-v3';
 import MapLoader from './maploader';
+import MapAttribution from './MapAttribution';
+import { fetchOrganizations, Organization } from '../../../api/organizationApi';
 import { OverlayPanel } from '../layers/OverlayPanel';
 import { TimeSeriesMapSlider } from './DateTimeSlider';
 import { registerDownloadHandler } from './downloadImageHandler';
@@ -170,6 +172,12 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   );
   const [panelOpen, setPanelOpen] = useState(true);
   const [animatedVisibleCount, setAnimatedVisibleCount] = useState(0);
+
+  /* ---------------- data credit (attribution) state ---------------- */
+  const [organizations, setOrganizations] = useState<Organization[]>([]);
+  const [visibleOrganizationIds, setVisibleOrganizationIds] = useState<
+    string[]
+  >([]);
 
   /* ---------------- Map tile loading tracking ---------------- */
   const activeTiles = useRef(0);
@@ -581,6 +589,19 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     }
   }, [filters]);
 
+  /* ---------------- load organizations that require credit ---------------- */
+  useEffect(() => {
+    let cancelled = false;
+    fetchOrganizations(token ? String(token) : undefined)
+      .then((orgs) => {
+        if (!cancelled) setOrganizations(orgs);
+      })
+      .catch((e) => console.error('Failed to load organizations:', e));
+    return () => {
+      cancelled = true;
+    };
+  }, [token]);
+
   /* ---------------- init map ONCE ---------------- */
   useEffect(() => {
     if (!mapElement.current || map) return;
@@ -938,12 +959,26 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
       const counts: Record<string, number> = {};
 
+      const organizationIds = new Set<string>();
+
       for (const f of visible) {
         const sp = normalize(String(f.get('species') ?? 'unknown'));
         counts[sp] = (counts[sp] ?? 0) + 1;
+
+        const organizationId = f.get('organization_id');
+        if (organizationId) organizationIds.add(String(organizationId));
       }
 
       setSpeciesCounts(counts);
+
+      // Only update state when the set of credited organizations changed,
+      // so panning does not trigger needless re-renders.
+      const nextOrganizationIds = Array.from(organizationIds).sort();
+      setVisibleOrganizationIds((previous) =>
+        previous.join('|') === nextOrganizationIds.join('|')
+          ? previous
+          : nextOrganizationIds
+      );
     };
 
     const throttled = () => {
@@ -1325,6 +1360,12 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
             message={
               !!doiResolverId && !doiResolved ? t('doiResolving') : undefined
             }
+          />
+
+          <MapAttribution
+            organizations={organizations}
+            visibleOrganizationIds={visibleOrganizationIds}
+            bottomOffset={isMobile ? 80 : 12}
           />
         </Box>
 

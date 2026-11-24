@@ -5,10 +5,13 @@ import { Dataset } from '../shared/entities/dataset.entity';
 import { UploadedDataset } from '../uploaded-dataset/entities/uploaded-dataset.entity';
 import { OrganizationService } from './organization.service';
 import { OrganizationResolver } from './organization.resolver';
+import { OrganizationController } from './organization.controller';
+import { AzureBlobService } from '../azure-blob/azure-blob.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Organization, Dataset, UploadedDataset])],
-  providers: [OrganizationService, OrganizationResolver],
+  controllers: [OrganizationController],
+  providers: [OrganizationService, OrganizationResolver, AzureBlobService],
   exports: [OrganizationService],
 })
 export class OrganizationModule {}

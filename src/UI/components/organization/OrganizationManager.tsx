@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   Alert,
   Avatar,
@@ -8,8 +14,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  MenuItem,
-  Select,
   Table,
   TableBody,
   TableCell,
@@ -25,6 +29,8 @@ import {
   deleteOrganization,
   fetchOrganizations,
   updateOrganization,
+  uploadOrganizationLogo,
+  getOrganizationLogoUrl,
 } from '../../api/organizationApi';
 
 interface Props {
@@ -39,17 +45,22 @@ const emptyForm: OrganizationFormValues = {
   terms_and_conditions: '',
 };
 
-type SearchField = 'name' | 'website' | 'acknowledgement';
+const MAX_LOGO_SIZE = 2 * 1024 * 1024;
+const ALLOWED_LOGO_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
 export default function OrganizationManager({ getToken }: Props) {
   const [orgs, setOrgs] = useState<Organization[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [searchField, setSearchField] = useState<SearchField>('name');
   const [search, setSearch] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<OrganizationFormValues>(emptyForm);
   const [toDelete, setToDelete] = useState<Organization | null>(null);
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const load = useCallback(async () => {
     try {
@@ -64,17 +75,33 @@ export default function OrganizationManager({ getToken }: Props) {
     load();
   }, [load]);
 
+  useEffect(() => {
+    if (!logoFile) return;
+
+    const previewUrl = URL.createObjectURL(logoFile);
+    setLogoPreview(previewUrl);
+
+    return () => URL.revokeObjectURL(previewUrl);
+  }, [logoFile]);
+
   const filtered = useMemo(
     () =>
-      orgs.filter((o) =>
-        (o[searchField] ?? '').toLowerCase().includes(search.toLowerCase())
-      ),
-    [orgs, search, searchField]
+      orgs.filter((o) => o.name.toLowerCase().includes(search.toLowerCase())),
+    [orgs, search]
   );
+
+  const resetLogoSelection = () => {
+    setLogoFile(null);
+    setLogoPreview('');
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
 
   const openCreate = () => {
     setEditingId(null);
     setForm(emptyForm);
+    resetLogoSelection();
     setDialogOpen(true);
   };
 
@@ -87,34 +114,82 @@ export default function OrganizationManager({ getToken }: Props) {
       acknowledgement: o.acknowledgement ?? '',
       terms_and_conditions: o.terms_and_conditions ?? '',
     });
+    setLogoFile(null);
+    setLogoPreview(getOrganizationLogoUrl(o.logo) ?? '');
     setDialogOpen(true);
   };
 
+  const closeDialog = () => {
+    if (saving) return;
+    setDialogOpen(false);
+    resetLogoSelection();
+  };
+
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!ALLOWED_LOGO_TYPES.includes(file.type)) {
+      setError('Please select a JPEG, PNG or WebP image.');
+      e.target.value = '';
+      return;
+    }
+
+    if (file.size > MAX_LOGO_SIZE) {
+      setError('The logo must be 2 MB or smaller.');
+      e.target.value = '';
+      return;
+    }
+
+    setError(null);
+    setLogoFile(file);
+  };
+
   const save = async () => {
+    if (!form.name.trim()) return;
+
     try {
+      setSaving(true);
       setError(null);
+
       const token = await getToken();
-      if (editingId) {
-        await updateOrganization(token, editingId, form);
-      } else {
-        await createOrganization(token, form);
+      let logoUrl = form.logo ?? '';
+
+      if (logoFile) {
+        logoUrl = await uploadOrganizationLogo(token, logoFile);
       }
+
+      const input: OrganizationFormValues = {
+        ...form,
+        name: form.name.trim(),
+        logo: logoUrl,
+      };
+
+      if (editingId) {
+        await updateOrganization(token, editingId, input);
+      } else {
+        await createOrganization(token, input);
+      }
+
       setDialogOpen(false);
+      resetLogoSelection();
       await load();
     } catch (e) {
       setError((e as Error).message);
+    } finally {
+      setSaving(false);
     }
   };
 
   const confirmDelete = async () => {
     if (!toDelete) return;
+
     try {
       setError(null);
       await deleteOrganization(await getToken(), toDelete.id);
       setToDelete(null);
       await load();
     } catch (e) {
-      // surfaces the backend's "has linked datasets" refusal
       setError((e as Error).message);
       setToDelete(null);
     }
@@ -123,7 +198,7 @@ export default function OrganizationManager({ getToken }: Props) {
   const setField =
     (k: keyof OrganizationFormValues) =>
     (e: React.ChangeEvent<HTMLInputElement>) =>
-      setForm({ ...form, [k]: e.target.value });
+      setForm((previous) => ({ ...previous, [k]: e.target.value }));
 
   return (
     <Box sx={{ p: 3 }}>
@@ -143,15 +218,6 @@ export default function OrganizationManager({ getToken }: Props) {
       )}
 
       <Box sx={{ display: 'flex', gap: 1, mb: 2, justifyContent: 'flex-end' }}>
-        <Select
-          size="small"
-          value={searchField}
-          onChange={(e) => setSearchField(e.target.value as SearchField)}
-        >
-          <MenuItem value="name">Name</MenuItem>
-          <MenuItem value="website">Website</MenuItem>
-          <MenuItem value="acknowledgement">Acknowledgement</MenuItem>
-        </Select>
         <TextField
           size="small"
           placeholder="Search..."
@@ -166,9 +232,6 @@ export default function OrganizationManager({ getToken }: Props) {
           <TableRow>
             <TableCell>Logo</TableCell>
             <TableCell>Name</TableCell>
-            <TableCell>Website</TableCell>
-            <TableCell>Acknowledgement</TableCell>
-            <TableCell>Terms and conditions</TableCell>
             <TableCell>Actions</TableCell>
           </TableRow>
         </TableHead>
@@ -176,14 +239,11 @@ export default function OrganizationManager({ getToken }: Props) {
           {filtered.map((o) => (
             <TableRow key={o.id}>
               <TableCell>
-                <Avatar variant="square" src={o.logo ?? undefined} alt={o.name}>
+                <Avatar variant="square" src={getOrganizationLogoUrl(o.logo)} alt={o.name}>
                   {o.name[0]}
                 </Avatar>
               </TableCell>
               <TableCell>{o.name}</TableCell>
-              <TableCell>{o.website}</TableCell>
-              <TableCell>{o.acknowledgement}</TableCell>
-              <TableCell>{o.terms_and_conditions}</TableCell>
               <TableCell>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                   <Button
@@ -207,7 +267,7 @@ export default function OrganizationManager({ getToken }: Props) {
           ))}
           {filtered.length === 0 && (
             <TableRow>
-              <TableCell colSpan={6} align="center">
+              <TableCell colSpan={3} align="center">
                 No organizations found
               </TableCell>
             </TableRow>
@@ -215,13 +275,7 @@ export default function OrganizationManager({ getToken }: Props) {
         </TableBody>
       </Table>
 
-      {/* Create / edit dialog */}
-      <Dialog
-        open={dialogOpen}
-        onClose={() => setDialogOpen(false)}
-        fullWidth
-        maxWidth="sm"
-      >
+      <Dialog open={dialogOpen} onClose={closeDialog} fullWidth maxWidth="sm">
         <DialogTitle>
           {editingId ? 'Edit organization' : 'Add organization'}
         </DialogTitle>
@@ -235,51 +289,68 @@ export default function OrganizationManager({ getToken }: Props) {
             onChange={setField('name')}
             sx={{ mt: 1 }}
           />
-          <TextField
-            label="Website"
-            value={form.website ?? ''}
-            onChange={setField('website')}
-          />
-          <TextField
-            label="Logo URL"
-            value={form.logo ?? ''}
-            onChange={setField('logo')}
-          />
-          {form.logo && (
-            <Avatar
-              variant="square"
-              src={form.logo}
-              sx={{ width: 64, height: 64 }}
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+            <Typography variant="subtitle2">Organization logo</Typography>
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              hidden
+              onChange={handleLogoChange}
             />
-          )}
-          <TextField
-            label="Acknowledgement"
-            multiline
-            minRows={2}
-            value={form.acknowledgement ?? ''}
-            onChange={setField('acknowledgement')}
-          />
-          <TextField
-            label="Terms and conditions"
-            multiline
-            minRows={2}
-            value={form.terms_and_conditions ?? ''}
-            onChange={setField('terms_and_conditions')}
-          />
+
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Button
+                variant="outlined"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={saving}
+              >
+                Choose image
+              </Button>
+
+              <Typography variant="body2" color="text.secondary">
+                JPEG, PNG or WebP. Maximum 2 MB.
+              </Typography>
+            </Box>
+
+            {logoPreview && (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Avatar
+                  variant="square"
+                  src={logoPreview}
+                  alt="Organization logo preview"
+                  sx={{ width: 80, height: 80 }}
+                />
+                <Button
+                  size="small"
+                  color="error"
+                  disabled={saving}
+                  onClick={() => {
+                    resetLogoSelection();
+                    setForm((previous) => ({ ...previous, logo: '' }));
+                  }}
+                >
+                  Remove logo
+                </Button>
+              </Box>
+            )}
+          </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
+          <Button onClick={closeDialog} disabled={saving}>
+            Cancel
+          </Button>
           <Button
             variant="contained"
-            disabled={!form.name.trim()}
+            disabled={!form.name.trim() || saving}
             onClick={save}
           >
-            Save
+            {saving ? 'Saving...' : 'Save'}
           </Button>
         </DialogActions>
       </Dialog>
 
-      {/* Delete confirmation */}
       <Dialog open={!!toDelete} onClose={() => setToDelete(null)}>
         <DialogTitle>Delete organization</DialogTitle>
         <DialogContent>

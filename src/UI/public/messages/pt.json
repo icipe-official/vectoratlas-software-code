@@ -22,7 +22,8 @@
     "doi": "Doi",
     "admin": "Admin",
     "translations": "Traduções",
-    "Data": "Dados"
+    "Data": "Dados",
+    "organizations": "Organizações"
   },
   "HomePage": {
     "list1": "Comece editando",
@@ -841,7 +842,8 @@
     "contactTitle": "Fale Conosco",
     "resourcesTitle": "Recursos",
     "map": "Acessar o Mapa",
-    "subscribe": "Inscrever-se para Atualizações"
+    "subscribe": "Inscrever-se para Atualizações",
+    "rightsReserved": "Todos os direitos reservados."
   },
   "EmailSubscription": {
     "title": "Inscrever-se / Inscrição Cancelada",
@@ -849,7 +851,7 @@
     "successMessage": "Quase pronto! Enviamos um link de verificação para o seu e-mail — verifique sua caixa de entrada para confirmar.",
     "notificationsLabel": "Inscrever-se para notícias e atualizações de conjuntos de dados",
     "subscribeBtn": "Inscrever-se",
-    "unsubscribe": "Inscrição Cancelada"  ,
+    "unsubscribe": "Inscrição Cancelada",
     "verifySuccessTitle": "E-mail Verificado",
     "verifySuccessBody": "Tudo pronto — agora você receberá as atualizações solicitadas.",
     "verifyAlreadyTitle": "Já Verificado",
@@ -1222,5 +1224,55 @@
       }
     }
   },
-  "EditPointData": {}
+  "EditPointData": {},
+  "OrganizationPage": {
+    "title": "Organizações",
+    "add": "Adicionar organização",
+    "edit": "Editar organização",
+    "back": "Voltar à lista de organizações",
+    "search": "Pesquisar por nome ou site",
+    "tryAgain": "Tentar novamente",
+    "empty": "Ainda não há organizações",
+    "noMatch": "Nenhuma organização corresponde à sua pesquisa",
+    "emptyHelp": "Adicione a primeira organização para atribuir-lhe crédito no mapa.",
+    "noMatchHelp": "Experimente outro nome ou limpe a pesquisa.",
+    "logo": "Logótipo",
+    "organization": "Organização",
+    "actions": "Ações",
+    "editAction": "Editar",
+    "delete": "Eliminar",
+    "deleteTitle": "Eliminar {name}?",
+    "deleteMessage": "Esta ação remove permanentemente a organização e o respetivo logótipo. Não é possível eliminar uma organização que ainda tenha conjuntos de dados com registos de ocorrências.",
+    "cancel": "Cancelar",
+    "deleteOrganization": "Eliminar organização",
+    "deleting": "A eliminar…",
+    "created": "A organização {name} foi criada com sucesso",
+    "deleted": "A organização {name} foi eliminada com sucesso",
+    "updated": "A organização {name} foi atualizada com sucesso",
+    "loadFailed": "Não foi possível carregar as organizações.",
+    "createFailed": "Não foi possível criar a organização.",
+    "updateFailed": "Não foi possível atualizar a organização.",
+    "deleteFailed": "Não foi possível eliminar a organização.",
+    "notSelected": "Nenhuma organização foi selecionada.",
+    "organizationLoadFailed": "Não foi possível carregar a organização.",
+    "name": "Nome",
+    "website": "Site",
+    "acknowledgement": "Agradecimentos",
+    "terms": "Termos e condições",
+    "create": "Criar organização",
+    "update": "Atualizar organização",
+    "saving": "A guardar…",
+    "reset": "Repor",
+    "enterName": "Introduza o nome da organização.",
+    "nameLength": "O nome deve ter menos de 120 caracteres.",
+    "invalidWebsite": "Introduza um endereço web completo, por exemplo https://example.org.",
+    "replaceLogo": "Substituir logótipo",
+    "chooseImage": "Escolher imagem",
+    "removeLogo": "Remover logótipo",
+    "logoHelp": "JPEG, PNG ou WebP. As imagens grandes são redimensionadas automaticamente para caber em {width} × {height} px.",
+    "resized": "Redimensionada de {original} para {resized} ({width} × {height} px).",
+    "readyUpload": "Pronta para carregar ({size}, {width} × {height} px).",
+    "imageProcessFailed": "Não foi possível processar a imagem.",
+    "close": "Fechar"
+  }
 }
