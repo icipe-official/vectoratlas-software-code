@@ -3980,7 +3980,7 @@ export const RAW_TEMPLATE_FIELD_MAPPING: RawTemplateFieldMap[] = [
   },
   {
     template_field: 'larval_site_data',
-    table: 'occurrence',
+    table: 'bionomics',
     table_field: 'larval_site_data',
     sequence: 6,
   },

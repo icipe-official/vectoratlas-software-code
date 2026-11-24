@@ -3,4 +3,6 @@ export class CreateExportDto {
   generateDoi?: boolean;
   downloaderName?: string;
   downloaderEmail?: string;
+  clientRequestId?: string;
+  contentHash?: string;
 }

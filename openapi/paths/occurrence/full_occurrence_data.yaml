@@ -1,0 +1,123 @@
+# Full Occurrence Data Endpoints
+# GET /full-occurrence-data/status      - generation status (stale / refreshing / has previous)
+# GET /full-occurrence-data/{file_name} - serve a generated occurrence payload file
+
+paths:
+  /full-occurrence-data/status:
+    get:
+      tags:
+        - Full Occurrence Data
+      summary: Full occurrence data generation status
+      description: |
+        Lightweight status of the pre-generated full occurrence dataset. Has no
+        side effects (never triggers generation).
+
+        The UI can use this to show a toast such as "occurrence data is being
+        refreshed" while `refreshing` is true.
+      operationId: getFullOccurrenceDataStatus
+      responses:
+        "200":
+          $ref: ../../responses/occurrence/full_occurrence_data.yaml#/components/responses/FullOccurrenceDataStatus
+        "500":
+          $ref: ../../responses/common/error.yaml#/components/responses/ServerError
+
+  /full-occurrence-data/{file_name}:
+    get:
+      tags:
+        - Full Occurrence Data
+      summary: Download a generated full occurrence data file
+      description: |
+        Serves one of the pre-generated full occurrence payload files:
+
+        - `data` with `ext=json` — full occurrence records as a JSON array
+          (used by non-map panels such as the vector/species panel)
+        - `data` with `ext=geojson` — all occurrences as a GeoJSON
+          FeatureCollection (EPSG:3857), with a `license` foreign member
+        - `presence` with `ext=geojson` — presence-only GeoJSON FeatureCollection
+          (loaded directly into the map layer)
+        - `absence` with `ext=geojson` — absence-only GeoJSON FeatureCollection
+          (loaded directly into the map layer)
+
+        Each file also exists pre-compressed as `<file>.gz` and `<file>.br`;
+        when the client sends `Accept-Encoding: br` or `gzip`, the compressed
+        variant is served with the matching `Content-Encoding` (brotli preferred
+        over gzip).
+
+        **Refresh semantics:** the payloads are (re)generated on demand when
+        they are missing or stale — i.e. a dataset was approved/disapproved/
+        deleted since the last generation (tracked via a hash of the sorted
+        approved dataset ids and the latest approval timestamp), or the
+        species/country tables changed. Generation is a singleton: concurrent
+        requests never start duplicate jobs.
+
+        - If the files are stale but a previous valid version exists, the stale
+          file is served immediately and the response carries the
+          `X-Occurrence-Data-Refresh: in-progress` hint header while the
+          refresh runs in the background.
+        - On a cold start (no previous version) the request blocks until
+          generation completes.
+
+        Responses support HTTP caching (`ETag` / `Last-Modified`, 304) and
+        byte ranges (`Accept-Ranges: bytes`, 206; range requests apply to the
+        uncompressed file only).
+      operationId: getFullOccurrenceDataFile
+      parameters:
+        - $ref: ../../parameters/occurrence/full_occurrence_data_parameters.yaml#/components/parameters/FullOccurrenceFileName
+        - $ref: ../../parameters/occurrence/full_occurrence_data_parameters.yaml#/components/parameters/FullOccurrenceExt
+        - name: Accept-Encoding
+          in: header
+          description: Client-accepted encodings; `br` is preferred over `gzip` when both are accepted and the compressed file exists
+          required: false
+          schema:
+            type: string
+          example: "br, gzip"
+        - name: If-None-Match
+          in: header
+          description: ETag from a previous response; returns 304 when it matches
+          required: false
+          schema:
+            type: string
+        - name: If-Modified-Since
+          in: header
+          description: Date from a previous `Last-Modified`; returns 304 when not modified since
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: Range
+          in: header
+          description: Byte range request (e.g. `bytes=0-1023`); only honored for the uncompressed file
+          required: false
+          schema:
+            type: string
+          example: "bytes=0-1023"
+      responses:
+        "200":
+          $ref: ../../responses/occurrence/full_occurrence_data.yaml#/components/responses/FullOccurrenceDataFile
+        "206":
+          description: Partial content (byte range of the uncompressed file)
+          headers:
+            Content-Range:
+              schema:
+                type: string
+              example: "bytes 0-1023/123456"
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        "304":
+          description: Not modified (cache validation via ETag / Last-Modified passed)
+        "400":
+          $ref: ../../responses/common/error.yaml#/components/responses/BadRequest
+        "404":
+          $ref: ../../responses/common/error.yaml#/components/responses/NotFound
+        "416":
+          description: Requested range not satisfiable
+          headers:
+            Content-Range:
+              schema:
+                type: string
+              example: "bytes */123456"
+        "500":
+          $ref: ../../responses/common/error.yaml#/components/responses/ServerError

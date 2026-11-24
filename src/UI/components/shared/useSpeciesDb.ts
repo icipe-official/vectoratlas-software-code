@@ -1,19 +1,24 @@
 import { useState, useEffect } from 'react';
 
-export interface DBRecordedSpecies {
+export interface DBSpecies {
   id: string;
+  name: string;
+  /** alias of name, kept for existing consumers */
   species: string;
   display_name: string;
   category: string;
   color: string;
 }
 
+// Back-compat alias (older consumers import this name)
+export type DBRecordedSpecies = DBSpecies;
+
 // Global cache so it only hits the database ONCE for the whole application lifetime
-let cachedDbOptions: DBRecordedSpecies[] | null = null;
-let listeners: Array<(data: DBRecordedSpecies[]) => void> = [];
+let cachedDbOptions: DBSpecies[] | null = null;
+let listeners: Array<(data: DBSpecies[]) => void> = [];
 
 export const useSpeciesDb = (isEnabled: boolean) => {
-  const [data, setData] = useState<DBRecordedSpecies[]>(cachedDbOptions || []);
+  const [data, setData] = useState<DBSpecies[]>(cachedDbOptions || []);
 
   useEffect(() => {
     if (!isEnabled) return;
@@ -31,10 +36,10 @@ export const useSpeciesDb = (isEnabled: boolean) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           query: `
-            query GetAllRecordedSpecies {
-              allRecordedSpecies {
+            query GetAllSpecies {
+              allSpecies {
                 id
-                species
+                name
                 display_name
                 category
                 color
@@ -45,7 +50,9 @@ export const useSpeciesDb = (isEnabled: boolean) => {
       })
         .then((res) => res.json())
         .then((json) => {
-          const records = json.data?.allRecordedSpecies || [];
+          const records: DBSpecies[] = (json.data?.allSpecies || []).map(
+            (r: any) => ({ ...r, species: r.name })
+          );
           cachedDbOptions = records;
           listeners.forEach((l) => l(records));
           listeners = [];

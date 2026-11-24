@@ -3,9 +3,10 @@ import { Box, Typography, Fade } from '@mui/material';
 
 interface MapLoaderProps {
   isLoading: boolean;
+  message?: string;
 }
 
-const MapLoader: React.FC<MapLoaderProps> = ({ isLoading }) => {
+const MapLoader: React.FC<MapLoaderProps> = ({ isLoading, message }) => {
   // Optional: Add a slight delay before showing the loader to prevent
   // flashing on very fast network responses.
   const [show, setShow] = useState(false);
@@ -77,7 +78,7 @@ const MapLoader: React.FC<MapLoaderProps> = ({ isLoading }) => {
             animation: 'pulseText 1.5s ease-in-out infinite',
           }}
         >
-          Gathering data for your view...
+          {message || 'Gathering data for your view...'}
         </Typography>
 
         <style>{`

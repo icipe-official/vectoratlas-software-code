@@ -13,7 +13,7 @@ VALUES(E'{id}', E'{author}', E'{article_title}', E'{journal_title}', E'{citation
 
 template_insert_site_data = """INSERT INTO public.site
 (id, country, "location", georef_source, location_2, latitude, longitude, latitude_2, longitude_2, site_notes, area_type, site, latitude_3, longitude_3, latitude_4, longitude_4, latitude_5, longitude_5, latitude_6, longitude_6, latitude_7, longitude_7, latitude_8, longitude_8, confidence_in_georef, admin_level_1, admin_level_2, country_id)
-VALUES(E'{id}', E'{country}', ST_SetSRID(ST_MakePoint({latitude},{longitude}),4326), E'{georef_source}', ST_SetSRID(ST_MakePoint({latitude_2},{longitude_2}),4326), {latitude}, {longitude}, {latitude_2}, {longitude_2}, E'{site_notes}', E'{area_type}', E'{site}', {latitude_3}, {longitude_3}, {latitude_4}, {longitude_4}, {latitude_5}, {longitude_5}, {latitude_6}, {longitude_6}, {latitude_7}, {longitude_7}, {latitude_8}, {longitude_8}, E'{confidence_in_georef}', {admin_level_1}, E'{admin_level_2}', E'{country_id}');"""
+VALUES(E'{id}', E'{country}', ST_SetSRID(ST_MakePoint({latitude},{longitude}),4326), E'{georef_source}', ST_SetSRID(ST_MakePoint({latitude_2},{longitude_2}),4326), {latitude}, {longitude}, {latitude_2}, {longitude_2}, E'{site_notes}', E'{area_type}', E'{site}', {latitude_3}, {longitude_3}, {latitude_4}, {longitude_4}, {latitude_5}, {longitude_5}, {latitude_6}, {longitude_6}, {latitude_7}, {longitude_7}, {latitude_8}, {longitude_8}, E'{confidence_in_georef}', E'{admin_level_1}', E'{admin_level_2}', E'{country_id}');"""
 
 template_insert_biology_data = """INSERT INTO public.biology
 (id, sampling_biology_1, sampling_biology_2, sampling_biology_3, sampling_biology_n, parity_n, parity_total, parity_percent, daily_survival_rate_percent, fecundity_mean_batch_size, gonotrophic_cycle_days, biology_notes)
@@ -44,8 +44,17 @@ template_insert_endoexophily_data = """INSERT INTO public.endo_exophily
 VALUES(E'{id}', E'{resting_sampling_indoor}', E'{resting_sampling_outdoor}', E'{resting_sampling_other}', E'{resting_unit}', {unfed_indoor}, {fed_indoor}, {gravid_indoor}, {total_indoor}, {unfed_outdoor}, {fed_outdoor}, {gravid_outdoor}, {total_outdoor}, {unfed_other}, {fed_other}, {gravid_other}, {total_other}, E'{resting_notes}');"""
 
 template_insert_specie_data = """INSERT INTO public.recorded_species
-(id, species_notes, species, species_id_1, species_id_2, display_name, category)
-VALUES(E'{id}', E'{species_notes}', E'{species}', E'{species_id_1}', E'{species_id_2}', E'{display_name}', E'{category}');"""
+(id, "species", species_notes, species_id_1, species_id_2)
+VALUES(E'{id}', E'{species}', E'{species_notes}', E'{species_id_1}', E'{species_id_2}')
+ON CONFLICT DO NOTHING;"""
+
+template_select_species_data = """SELECT id FROM public.species WHERE lower(trim("name")) = lower(trim(E'{species}'));"""
+
+template_select_species_data_alt = """SELECT id FROM public.species WHERE lower(trim(E'{species}')) = ANY(SELECT lower(trim(x)) FROM unnest("alternative_names") AS x);"""
+
+template_insert_species_data = """INSERT INTO public.species (id, "name", display_name)
+VALUES(E'{id}', E'{name}', E'{display_name}')
+ON CONFLICT ("name") DO NOTHING;"""
 
 template_insert_environment_data = """INSERT INTO public.environment
 (id, roof, walls, house_screening, open_eaves, cooking, sleeping_outdoors, farming, local_plants, housing_notes, community_notes, farming_notes, livestock_notes, common_occupation_1, common_occupation_2, common_occupation_3, outdoor_timings_hours, outdoor_activities_notes, average_bedtime, average_wake_time, time_people_leave_home_in_morning, hours_spent_away_from_home_per_day, seasonal_labour, livestock_1, livestock_2, livestock_3, livestock_4, environment_notes, outdoor_activities_at_night, forest)
@@ -227,5 +236,36 @@ template_update_site_data_country = (
 
 
 template_select_specie_data = (
-    """SELECT id FROM public.recorded_species WHERE species=E'{species}';"""
+    """SELECT id FROM public.recorded_species
+WHERE "species"=E'{species}'
+  AND "species_id_1" IS NOT DISTINCT FROM E'{species_id_1}'
+  AND "species_id_2" IS NOT DISTINCT FROM E'{species_id_2}'
+  AND "species_notes" IS NOT DISTINCT FROM E'{species_notes}';"""
 )
+
+
+_NULL_SENTINEL = "\x00SQLNULL\x00"
+
+
+class SQLTemplate(str):
+    """Template whose .format() renders None kwargs as a bare SQL NULL,
+    whether the placeholder is quoted (E'{x}' / '{x}') or not."""
+
+    def format(self, **kwargs):
+        out = super().format(
+            **{k: (_NULL_SENTINEL if v is None else v) for k, v in kwargs.items()}
+        )
+        return (
+            out.replace("E'" + _NULL_SENTINEL + "'", "NULL")
+            .replace("'" + _NULL_SENTINEL + "'", "NULL")
+            .replace(_NULL_SENTINEL, "NULL")
+        )
+
+
+def _wrap_templates():
+    for _name, _val in list(globals().items()):
+        if _name.startswith("template_") and isinstance(_val, str):
+            globals()[_name] = SQLTemplate(_val)
+
+
+_wrap_templates()

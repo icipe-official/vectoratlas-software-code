@@ -1,0 +1,72 @@
+# Full Occurrence Data Responses
+
+components:
+  responses:
+    FullOccurrenceDataStatus:
+      description: Generation status of the full occurrence dataset
+      content:
+        application/json:
+          schema:
+            $ref: ../../schemas/occurrence/full_occurrence_data_status.yaml#/components/schemas/FullOccurrenceDataStatus
+
+    FullOccurrenceDataFile:
+      description: |
+        The requested generated file. `Content-Type` is `application/json` for
+        `ext=json` and `application/geo+json` for `ext=geojson`. When the client
+        accepts it, a pre-compressed `.br` / `.gz` variant is served instead with
+        `Content-Encoding: br` / `gzip`.
+      headers:
+        Content-Type:
+          schema:
+            type: string
+          example: "application/geo+json"
+        Content-Encoding:
+          schema:
+            type: string
+            enum: [br, gzip]
+          description: Set when a pre-compressed variant is served
+        Content-Length:
+          schema:
+            type: integer
+        ETag:
+          schema:
+            type: string
+          description: Strong ETag (size-mtime); required for byte-range responses
+        Last-Modified:
+          schema:
+            type: string
+            format: date-time
+        Cache-Control:
+          schema:
+            type: string
+          example: "public, max-age=86400, must-revalidate"
+        Accept-Ranges:
+          schema:
+            type: string
+          example: "bytes"
+        X-Occurrence-Data-Refresh:
+          schema:
+            type: string
+            enum: [in-progress]
+          description: |
+            Present when the served file is stale and a newer version is being
+            generated in the background — the client can show a "data is being
+            refreshed" notice.
+      content:
+        application/json:
+          schema:
+            type: array
+            description: Full occurrence records (`data` + `ext=json`)
+            items:
+              type: object
+        application/geo+json:
+          schema:
+            type: object
+            description: |
+              GeoJSON FeatureCollection (EPSG:3857) with a `license` foreign
+              member (`CC BY-NC 4.0`)
+        application/octet-stream:
+          schema:
+            type: string
+            format: binary
+            description: Compressed variant (when Content-Encoding is set)

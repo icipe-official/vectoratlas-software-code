@@ -51,8 +51,14 @@ const config = convict({
   fullOccurrenceDataFolder: {
     type: String,
     doc: 'Path to folder storing the full occurrence data files',
-    default: process.cwd() + '/../OccurrenceGeoJob/.tmp',
+    default: process.cwd() + '/tmp/occurrence_data',
     env: 'FULL_OCCURRENCE_DATA_FOLDER',
+  },
+  occurrenceGeoJobDir: {
+    type: String,
+    doc: 'Path to the OccurrenceGeoJob app. The API spawns `node dist/index.js` in this directory (as an awaited CLI child process) to regenerate the full occurrence data files. In the API Docker image the job is not a sibling of the API build context, so set OCC_GEO_JOB_DIR to wherever the job is embedded/mounted.',
+    default: process.cwd() + '/../OccurrenceGeoJob',
+    env: 'OCC_GEO_JOB_DIR',
   },
   databaseGuideFileName: {
     type: String,
@@ -71,6 +77,30 @@ const config = convict({
     doc: 'After how many batches should setImmediate be called. May be useful for giving node time to clean-up memory and process other requests',
     default: 5,
     env: 'DATA_EXPORT_YIELD_AFTER',
+  },
+  exportUseSasUrls: {
+    type: Boolean,
+    doc: 'Whether to use expiring SAS URLs for export download links. When false, returns permanent blob URLs (may 403 on private containers). When true, generates read-only SAS tokens.',
+    default: true,
+    env: 'EXPORT_USE_SAS_URLS',
+  },
+  exportUseProxyDownload: {
+    type: Boolean,
+    doc: 'Whether to use the proxy download endpoint (streams file from Azure Blob through the API). Recommended — avoids ACL/SAS issues entirely. When false, falls back to SAS URLs or permanent blob URLs.',
+    default: true,
+    env: 'EXPORT_USE_PROXY_DOWNLOAD',
+  },
+  exportSasUrlTtlMinutes: {
+    type: Number,
+    doc: 'How long the SAS download URL remains valid, in minutes.',
+    default: 60,
+    env: 'EXPORT_SAS_URL_TTL_MINUTES',
+  },
+  exportDownloadBaseUrl: {
+    type: String,
+    doc: 'Base URL for the proxy download endpoint. The download link will be {baseUrl}/exports/download/{jobId}.zip. Set per deployment environment (e.g. http://localhost:3000/vector-api or https://vectoratlas.icipe.org/vector-api).',
+    default: '/vector-api',
+    env: 'EXPORT_DOWNLOAD_BASE_URL',
   },
 });
 

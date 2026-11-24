@@ -163,7 +163,7 @@ export const UploadedModelList = () => {
   };
 
   const loadUsers = async () => {
-    const res: any[] = await fetchAllUsers();
+    const res: any[] = await fetchAllUsers(token);
     setUsers(res);
   };
 

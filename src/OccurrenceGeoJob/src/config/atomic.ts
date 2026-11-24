@@ -89,6 +89,29 @@ async function createBackup(
 }
 
 /**
+ * Move a file from staging to target. rename() is atomic on POSIX but only
+ * within the same filesystem — when staging and target live on different
+ * devices (e.g. the container filesystem vs a mounted PVC in k3s) it fails
+ * with EXDEV. In that case fall back to copying to a temp file inside the
+ * target directory and renaming there (still atomic on the target device),
+ * then remove the staging file.
+ */
+async function moveFile(stagingPath: string, targetPath: string): Promise<void> {
+  try {
+    await fs.rename(stagingPath, targetPath);
+  } catch (error) {
+    if ((error as { code?: string }).code !== 'EXDEV') throw error;
+    logger.debug(
+      `rename across devices failed (EXDEV), falling back to copy: ${stagingPath} -> ${targetPath}`,
+    );
+    const tmpPath = `${targetPath}.tmp-${process.pid}`;
+    await fs.copyFile(stagingPath, tmpPath);
+    await fs.rename(tmpPath, targetPath);
+    await fs.unlink(stagingPath);
+  }
+}
+
+/**
  * Atomically replace a single file
  * Uses rename operation which is atomic on POSIX systems
  */
@@ -103,8 +126,20 @@ async function atomicReplaceFile(
   skipped: boolean;
 }> {
   try {
-    // Verify staging file exists
-    const stats = await fs.stat(stagingPath);
+    // Verify staging file exists — if it's missing (e.g. resume with a stale
+    // ledger whose files were already cleaned up), skip instead of failing hard
+    let stats;
+    try {
+      stats = await fs.stat(stagingPath);
+    } catch (error: unknown) {
+      if ((error as { code?: string }).code === 'ENOENT') {
+        logger.warn(
+          `Staging file missing, skipping replacement: ${stagingPath}`,
+        );
+        return { success: true, checksum: undefined, skipped: true };
+      }
+      throw error;
+    }
     if (!stats.isFile()) {
       throw new Error(`Staging file is not a regular file: ${stagingPath}`);
     }
@@ -150,8 +185,8 @@ async function atomicReplaceFile(
       }
     }
 
-    // Atomic rename operation
-    await fs.rename(stagingPath, targetPath);
+    // Atomic rename operation (with EXDEV copy fallback — see moveFile)
+    await moveFile(stagingPath, targetPath);
     logger.info(`Atomically replaced ${targetPath}`);
 
     return { success: true, checksum: stagingChecksum, skipped: false };
@@ -228,9 +263,11 @@ export async function atomicReplaceAll(
               await fs.unlink(stagingPath);
               logger.debug(`Cleaned up staging file (skipped): ${stagingPath}`);
             } catch (error) {
-              logger.warn(
-                `Failed to clean up staging file ${stagingPath}: ${error}`,
-              );
+              if ((error as { code?: string }).code !== "ENOENT") {
+                logger.warn(
+                  `Failed to clean up staging file ${stagingPath}: ${error}`,
+                );
+              }
             }
           }
         } else {
@@ -245,9 +282,11 @@ export async function atomicReplaceAll(
               await fs.unlink(stagingPath);
               logger.debug(`Cleaned up staging file: ${stagingPath}`);
             } catch (error) {
-              logger.warn(
-                `Failed to clean up staging file ${stagingPath}: ${error}`,
-              );
+              if ((error as { code?: string }).code !== "ENOENT") {
+                logger.warn(
+                  `Failed to clean up staging file ${stagingPath}: ${error}`,
+                );
+              }
             }
           }
         }

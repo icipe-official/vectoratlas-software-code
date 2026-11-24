@@ -4,18 +4,22 @@ This is the OpenAPI specification that defines the contract between the front-en
 
 Current OpenAPI specification in use: [3.1.0](https://spec.openapis.org/oas/v3.1.0.html)
 
-**Documentation Status:** This README documents the File Service API for the Vector Atlas Project.
+**Documentation Status:** This README documents the Occurrence Service (search + full occurrence data) for the Vector Atlas Project.
 
 ## Table of Contents
 
 - [Project Structure](#project-structure)
 - [API Architecture Overview](#api-architecture-overview)
-- [File Service Endpoints](#file-service-endpoints)
-- [Database Schema](#database-schema)
+- [Occurrence Search Endpoint](#occurrence-search-endpoint)
+- [Full Occurrence Data Endpoints](#full-occurrence-data-endpoints)
 - [Development](#development)
   - [Validating the specification](#validating-the-specification)
   - [Generating a single bundled OpenAPI file](#generating-a-single-bundled-openapi-file)
   - [Previewing the specification locally](#previewing-the-specification-locally)
+    - [Using Scalar (local server)](#using-scalar-local-server)
+    - [Using swagger-ui](#using-swagger-ui)
+    - [Using ReDoc](#using-redoc)
+  - [Publishing to the Scalar sandbox](#publishing-to-the-scalar-sandbox)
 
 ## Project Structure
 
@@ -27,230 +31,78 @@ openapi/
 ├── bundled.yaml             # Bundled single-file version
 ├── README.md               # This documentation
 ├── paths/
-│   └── file/               # File Service endpoint definitions
-│       ├── files.yaml          # GET /files - List files
-│       ├── upload.yaml         # POST /files/upload - Upload file
-│       ├── file.yaml           # GET/PUT/DELETE /files/{fileIdentifier}
-│       ├── download.yaml       # GET /files/{fileIdentifier}/download
-│       ├── compressed.yaml     # GET /files/{fileIdentifier}/compressed
-│       ├── compressed_upload.yaml # POST /files/{fileIdentifier}/compressed/upload
-│       ├── compressed_single.yaml # PUT/DELETE /files/{fileIdentifier}/compressed/{compressionIdentifier}
-│       ├── preview.yaml        # GET /files/{fileIdentifier}/preview
-│       ├── preview_upload.yaml  # POST /files/{fileIdentifier}/preview/upload
-│       └── preview_single.yaml  # PUT/DELETE /files/{fileIdentifier}/preview/{previewIdentifier}
+│   └── occurrence/          # Occurrence endpoint definitions
+│       ├── search.yaml                     # GET /search/{entityType} - Search occurrence records
+│       └── full_occurrence_data.yaml       # GET /full-occurrence-data/... - Generated payload files
 ├── schemas/
 │   ├── common/              # Common schemas
 │   │   ├── error.yaml          # Error response schema
 │   │   └── pagination.yaml     # Pagination schema
-│   └── file/                # File Service schemas
-│       ├── file.yaml           # File entity schema
-│       ├── file_compression.yaml # Compressed file schema
-│       ├── file_preview.yaml   # Preview file schema
-│       ├── file_list.yaml      # File list schema
-│       ├── file_upload.yaml    # File upload schema
-│       └── file_metadata.yaml  # File metadata schema
+│   └── occurrence/          # Occurrence schemas
+│       ├── occurrence.yaml                 # Occurrence entity schema
+│       ├── occurrence_search_result.yaml   # Search result wrapper schema
+│       └── full_occurrence_data_status.yaml # Full occurrence data status schema
 ├── responses/
 │   ├── common/              # Common responses
 │   │   └── error.yaml          # Error responses
-│   └── file/                # File Service responses
-│       ├── file.yaml           # Single file response
-│       ├── file_list.yaml      # File list response
-│       ├── file_download.yaml  # File download response
-│       └── file_metadata.yaml  # File metadata response
+│   └── occurrence/          # Occurrence responses
+│       ├── occurrence_search_result.yaml   # Search result response
+│       └── full_occurrence_data.yaml       # Full occurrence data responses
 └── parameters/
     ├── common/              # Common parameters
     │   └── pagination.yaml     # Pagination parameters
-    └── file/                # File Service parameters
-        ├── file_identifier.yaml # File identifier (UUID or slug)
-        ├── compression_identifier.yaml # Compressed file identifier (UUID or slug)
-        ├── preview_identifier.yaml # Preview file identifier (UUID or slug)
-        ├── folder_name.yaml    # Folder name filter parameter
-        └── search_query.yaml    # Search query parameter
+    └── occurrence/          # Occurrence parameters
+        ├── search_parameters.yaml              # Search query parameters
+        └── full_occurrence_data_parameters.yaml # Full occurrence data parameters
 ```
 
 ## API Architecture Overview
 
-The Vector Atlas API provides a File Service for managing files, their compressed versions, and previews. The service is designed to support:
+The Vector Atlas API exposes two public groups of endpoints:
 
-- **File Upload**: Upload new files using multipart/formdata format
-- **File Download**: Download files with support for preview and compression via query parameters
-- **File Metadata**: Retrieve file metadata and information
-- **File Listing**: List and search files with pagination
-- **Compressed Versions**: Upload compressed versions of files
-- **Previews**: Upload preview versions (thumbnails, etc.) of files
+- **Occurrence search**: query and filter occurrence records with pagination and field projection.
+- **Full occurrence data**: pre-generated occurrence payloads (JSON + GeoJSON) that back the map, served from disk with HTTP caching and compression.
 
-### Key Design Decisions
-
-1. **Unified File Identifier**: The `{fileIdentifier}` path parameter accepts both UUID and slug. The system first attempts to parse the identifier as a UUID. If that fails, it treats it as a slug.
-
-2. **Simplified Endpoints**: 
-   - Single `GET /files/{fileIdentifier}` endpoint returns file metadata (JSON)
-   - `PUT /files/{fileIdentifier}` endpoint for updating file metadata and optionally replacing file content
-   - Separate `GET /files/{fileIdentifier}/download` endpoint for binary downloads with query parameters
-
-3. **Download Query Parameters**: The download endpoint uses query parameters to provide flexibility:
-   - `preview=true` - Download the preview version of the file
-   - `compression=gzip|brotli|br` - Request a specific compression algorithm
-   - `attachment=true` - Force download with Content-Disposition: attachment header
-
-4. **HTTP Caching**: The download endpoint implements proper HTTP caching with:
-   - `Cache-Control: no-cache, must-revalidate`
-   - `Last-Modified` header
-   - `ETag` header for entity tag validation
-   - Returns `304 Not Modified` when appropriate
-   - Respects standard HTTP caching request headers (`If-None-Match`, `If-Modified-Since`, `Accept-Encoding`)
-
-### Authentication
-
-All write operations (upload, delete) require JWT authentication via Bearer token.
-
-## File Service Endpoints
-
-The File Service provides the following endpoints:
-
-### File Management
+## Occurrence Search Endpoint
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/files` | List files with optional filtering and pagination |
-| POST | `/files/upload` | Upload a new file using multipart/formdata |
-| GET | `/files/{fileIdentifier}` | Get file metadata by UUID or slug |
-| PUT | `/files/{fileIdentifier}` | Update file metadata or replace file content |
-| DELETE | `/files/{fileIdentifier}` | Delete a file by UUID or slug |
+| GET | `/search/{entityType}` | Search occurrence records (`entityType=occurrence`) with filters, pagination (`take`/`skip`), timeline ranges, and field projection (`fields`). A single record can be fetched with `?id=<id>`. |
 
-### File Download
+## Full Occurrence Data Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/files/{fileIdentifier}/download` | Download file binary with optional query params |
-
-**Query Parameters for Download:**
-- `preview` (boolean): Download preview version if true. Default: false
-- `compression` (string): Request specific compression - `gzip`, `brotli`, or `br`
-- `attachment` (boolean): Force download with `Content-Disposition: attachment` header. If true, sets the header with filename. If false or omitted, defaults to inline or omits the header (browser decides)
-
-**Request Headers (Documented in OpenAPI spec):**
-- `Accept-Encoding` - Client's accepted compression algorithms
-- `If-None-Match` - ETag value for cache validation
-- `If-Modified-Since` - Timestamp for cache validation
-
-**Response Headers:**
-- `Content-Disposition`: Attachment with filename (if attachment=true) or inline/omitted
-- `Content-Type`: File MIME type
-- `Content-Length`: File size in bytes
-- `Content-Encoding`: Compression encoding (if applied)
-- `Cache-Control`: `no-cache, must-revalidate`
-- `Last-Modified`: File modification timestamp
-- `ETag`: Entity tag for cache validation
-
-**Response Codes:**
-- `200 OK` - File downloaded successfully
-- `304 Not Modified` - File has not changed (when cache validation passes)
-- `404 Not Found` - File not found
-
-### Compressed Versions
+The API pre-generates the full occurrence dataset on demand and caches it on disk
+(`FULL_OCCURRENCE_DATA_FOLDER`). The payload is regenerated when the set of approved
+datasets changes (add / disapprove / delete), when the latest approval timestamp moves,
+or when the `species` / `country` tables are edited. Generation is a singleton job.
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/files/{fileIdentifier}/compressed` | List all compressed versions of a file |
-| POST | `/files/{fileIdentifier}/compressed/upload` | Upload a compressed version of a file |
-| PUT | `/files/{fileIdentifier}/compressed/{compressionIdentifier}` | Update compressed file metadata or replace file |
-| DELETE | `/files/{fileIdentifier}/compressed/{compressionIdentifier}` | Delete a compressed file |
+| GET | `/full-occurrence-data/status` | Generation status: `{ stale, refreshing, hasPrevious }`. No side effects. |
+| GET | `/full-occurrence-data/{file_name}?ext=<ext>` | Serve a generated file. `file_name` is `data`, `presence`, or `absence`; `ext` is `json` or `geojson`. |
 
-### Previews
+**Available files:**
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/files/{fileIdentifier}/preview` | Get preview information for a file |
-| POST | `/files/{fileIdentifier}/preview/upload` | Upload a preview version of a file |
-| PUT | `/files/{fileIdentifier}/preview/{previewIdentifier}` | Update preview file metadata or replace file |
-| DELETE | `/files/{fileIdentifier}/preview/{previewIdentifier}` | Delete a preview file |
+- `data.json` — full occurrence records as a JSON array (non-map panels)
+- `data.geojson` — all occurrences as a GeoJSON FeatureCollection (EPSG:3857)
+- `presence.geojson` — presence-only FeatureCollection (loaded directly into the map)
+- `absence.geojson` — absence-only FeatureCollection (loaded directly into the map)
 
-## Database Schema
+Each GeoJSON FeatureCollection carries a `license` foreign member
+(`CC BY-NC 4.0`, <https://creativecommons.org/licenses/by-nc/4.0/deed.en>), matching the
+terms users accept in the UI download dialog. Each file also exists as `.gz` and `.br`.
 
-The File Service is backed by the following database entities:
+**Refresh semantics:**
 
-### File
+- Stale files with a previous valid version are served immediately, with the
+  `X-Occurrence-Data-Refresh: in-progress` response header while regeneration runs in
+  the background (clients can surface a "data is being refreshed" notice).
+- On a cold start (no previous version) the request blocks until generation completes.
 
-```
-file(
-  id: uuid                  # Unique identifier
-  folder_name: text         # Name of the folder containing the file
-  name: text (nullable)     # Original filename. Can be null for temporary files
-  slug: text (nullable)     # Short unique name for URL-friendly access. Can be null for temporary files
-  mime_type: text           # MIME type of the file
-  size: integer             # Size of the file in bytes
-  created_on: timestamp     # When the file was created
-  last_updated_on: timestamp # When the file was last updated
-)
-```
-
-### File Compression
-
-```
-file_compression(
-  id: uuid                  # Unique identifier
-  file_id: uuid             # Reference to the original file
-  mime_type: text           # MIME type of the compressed file
-  size: integer             # Size of the compressed file in bytes
-  created_on: timestamp     # When the compressed file was created
-  slug: text (nullable)     # Short unique name for URL-friendly access. Can be null
-)
-```
-
-### File Preview
-
-```
-file_preview(
-  id: uuid                  # Unique identifier
-  file_id: uuid             # Reference to the original file
-  mime_type: text           # MIME type of the preview file
-  size: integer             # Size of the preview file in bytes
-  created_on: timestamp     # When the preview file was created
-  slug: text (nullable)     # Short unique name for URL-friendly access. Can be null
-  preview_type: text        # Type of preview (thumbnail, small, medium, large)
-)
-```
-
-## Storage Paths
-
-Files are stored without extensions since MIME type is captured in the database.
-
-**Structure:**
-```
-<ROOT_FOLDER>/
-├── <FOLDER_NAME>/
-│   └── <FILE_UUID>/
-│       ├── original                       # Original file (always named 'original')
-│       ├── preview                        # Preview file (always named 'preview')
-│       └── compressed/                    # Compressed versions folder
-│           ├── <COMPRESSION_FILE_UUID>    # Compressed file named by its UUID
-│           └── <COMPRESSION_FILE_UUID>    # Multiple compressed versions
-└── <FILE_UUID>/
-    └── original                          # Temporary file (no folder_name = temporary)
-```
-
-**Full Tree Example:**
-```
-storage_root/
-├── occurrence_data/
-│   └── 123e4567-e89b-12d3-a456-426614174000/
-│       ├── original                       # Original mosquito_occurrence.csv
-│       ├── preview                        # Preview thumbnail image
-│       └── compressed/
-│           ├── 223e4567-e89b-12d3-a456-426614174001  # Gzip version
-│           └── 323e4567-e89b-12d3-a456-426614174002  # Brotli version
-└── 456e7890-c12d-34ef-5678-90ab12345678/
-    └── original                           # Temporary file (no folder_name)
-```
-
-**Path Examples:**
-- Original file with folder: `{storage_root}/occurrence_data/123e4567-e89b-12d3-a456-426614174000/original`
-- Preview file: `{storage_root}/occurrence_data/123e4567-e89b-12d3-a456-426614174000/preview`
-- Compressed file (gzip): `{storage_root}/occurrence_data/123e4567-e89b-12d3-a456-426614174000/compressed/223e4567-e89b-12d3-a456-426614174001`
-- Original file without folder (temporary): `{storage_root}/456e7890-c12d-34ef-5678-90ab12345678/original`
-
-**Note:** Files without a `folder_name` are considered temporary files and are stored directly under the storage root.
+**HTTP behaviour:** `ETag` / `Last-Modified` caching with `304 Not Modified`,
+`Accept-Encoding` negotiation (`br` preferred over `gzip`), and byte-range support
+(`Accept-Ranges: bytes`, `206 Partial Content`, `416` when unsatisfiable; ranges apply
+to the uncompressed file only).
 
 ## Development
 
@@ -290,6 +142,24 @@ If you want auto-reloading, run the following in one terminal:
 npx @apidevtools/swagger-cli bundle openapi.yaml -o bundled.yaml --watch
 ```
 
+#### Using Scalar (local server)
+
+[Scalar](https://scalar.com) renders the API reference from the bundled file and starts a local server (default port 5051):
+
+```bash
+# serve bundled.yaml locally and open the browser
+npx @scalar/cli document serve bundled.yaml
+
+# custom port, and auto-reload on changes
+npx @scalar/cli document serve bundled.yaml --port 5051 --watch
+```
+
+To preview the modular `openapi.yaml` directly (Scalar resolves the `$ref`s itself), point it at the root file instead — but prefer `bundled.yaml` so what you preview matches what gets published:
+
+```bash
+npx @scalar/cli document serve openapi.yaml --watch
+```
+
 #### Using swagger-ui
 
 ```bash
@@ -307,3 +177,28 @@ npx openapicmd redoc $PATH_TO_BUNDLED_OPENAPI_FILE
 ```
 
 This will start a local server and open your browser to preview the API documentation.
+
+### Publishing to the Scalar sandbox
+
+Publish the bundled spec to a public Scalar sandbox (requires a Scalar account login on first run; use `--no-input` in CI):
+
+```bash
+npx @scalar/cli document share bundled.yaml
+```
+
+The command prints the public links, e.g.:
+
+```
+➜ API Reference: <https://sandbox.scalar.com/p/-duHK>
+➜ Editor:        <https://sandbox.scalar.com/e/-duHK>
+➜ OpenAPI JSON:  <https://sandbox.scalar.com/files/-duHK/openapi.json>
+➜ OpenAPI YAML:  <https://sandbox.scalar.com/files/-duHK/openapi.yaml>
+```
+
+Keep the token it prints — it is needed to update the same sandbox later instead of creating a new one:
+
+```bash
+npx @scalar/cli document share bundled.yaml --token=<token>
+```
+
+See [scalar.md](./scalar.md) for a captured example of a `share` run and its update token.

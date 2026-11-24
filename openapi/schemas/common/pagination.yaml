@@ -1,0 +1,39 @@
+# Common Pagination Schema
+
+components:
+  schemas:
+    Pagination:
+      type: object
+      description: Pagination information for list responses
+      properties:
+        page:
+          type: integer
+          minimum: 1
+          default: 1
+          description: Current page number
+          example: 1
+        pageSize:
+          type: integer
+          minimum: 1
+          maximum: 1000
+          default: 10
+          description: Number of items per page
+          example: 10
+        totalItems:
+          type: integer
+          minimum: 0
+          description: Total number of items available
+          example: 100
+        totalPages:
+          type: integer
+          minimum: 0
+          description: Total number of pages available
+          example: 10
+        hasNext:
+          type: boolean
+          description: Whether there is a next page
+          example: true
+        hasPrevious:
+          type: boolean
+          description: Whether there is a previous page
+          example: false

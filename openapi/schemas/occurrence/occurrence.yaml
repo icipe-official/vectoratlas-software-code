@@ -1,0 +1,93 @@
+# Occurrence Schema
+# Represents a single occurrence record returned by the search endpoint
+
+components:
+  schemas:
+    Occurrence:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the occurrence record
+          example: 42
+        species:
+          type: string
+          description: Species name associated with the occurrence
+          example: "Anopheles gambiae"
+        location:
+          type: string
+          description: Geographic location description of the collection site
+          example: "Nairobi"
+        binary_presence:
+          type:
+            - string
+            - "null"
+          description: Presence/absence indicator for the occurrence
+          example: "1"
+        country:
+          type: string
+          description: Country where the occurrence was recorded
+          example: "Kenya"
+        year_start:
+          type:
+            - integer
+            - "null"
+          description: Year the occurrence record begins
+          example: 2015
+        is_adult:
+          type: boolean
+          description: Whether the occurrence includes adult specimen data
+          example: true
+        is_larval:
+          type: boolean
+          description: Whether the occurrence includes larval specimen data
+          example: false
+        season_val:
+          type: string
+          description: Season value derived from calculated or given season
+          example: "wet"
+        insecticide:
+          type:
+            - string
+            - "null"
+          description: Insecticide resistance data indicator
+          example: "1"
+        control:
+          type: string
+          description: Control status of the sample
+          example: "0"
+        abundance_data:
+          type:
+            - string
+            - "null"
+          description: Abundance data indicator
+          example: "1"
+        bio_data:
+          type:
+            - string
+            - "null"
+          description: Bionomics data indicator
+          example: "1"
+        display_name:
+          type:
+            - string
+            - "null"
+          description: Display name of the recorded species
+          example: "Anopheles gambiae s.l."
+        category:
+          type:
+            - string
+            - "null"
+          description: Category classification of the recorded species
+          example: "vector"
+        color:
+          type:
+            - string
+            - "null"
+          description: Display color associated with the recorded species
+          example: "#FF0000"
+      description: |
+        A single occurrence record. When the `fields` query parameter is provided,
+        only the requested fields (plus `id`) are included in the response.

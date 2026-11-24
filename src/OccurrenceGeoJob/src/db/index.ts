@@ -17,3 +17,8 @@ export {
   fetchOccurrenceData,
   streamOccurrenceData,
 } from './occurrenceFetcher.js';
+export {
+  writeGenerationLedger,
+  GENERATION_LEDGER_FILE,
+  type GenerationLedger,
+} from './generationLedger.js';

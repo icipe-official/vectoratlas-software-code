@@ -8,7 +8,7 @@
     "news": "Notícias",
     "about": "Sobre",
     "more": "Mais",
-    "catalogue":"catálogo",
+    "catalogue": "catálogo",
     "help": "Ajuda",
     "login": "Conecte-se",
     "species": "Lista de espécies",
@@ -21,14 +21,13 @@
     "communication": "Comunicação",
     "doi": "Doi",
     "admin": "Admin",
-    "translations": "Traduções"
+    "translations": "Traduções",
+    "Data": "Dados"
   },
   "HomePage": {
     "list1": "Comece editando",
     "list2": "Salve e veja suas mudanças instantaneamente"
   },
- 
- 
   "cataloguePage": {
     "title": "Catálogo de espécies",
     "grid": {
@@ -69,7 +68,6 @@
       }
     }
   },
-
   "UploadedDatasetPage": {
     "title": "Carregue o novo conjunto de dados"
   },
@@ -140,13 +138,13 @@
       "originalData": "Dados originais",
       "primaryReviewedData": "Dados primários revisados",
       "tertiaryReviewedData": "Dados revisados terciários",
-      "reassignedForTertiaryReview": "Reatribuído para revisão terciária", 
+      "reassignedForTertiaryReview": "Reatribuído para revisão terciária",
       "isValidated": "Está validado?",
       "validationStartRow": "Linha inicial de validação",
       "validationEndRow": "Linha final de validação",
       "errorRows": "Linhas com erros",
       "errors": "Erros de validação",
-      "totalRows": "Total de linhas", 
+      "totalRows": "Total de linhas",
       "ingestionStatus": "Status de ingestão",
       "ingestionErrors": "Erros de ingestão",
       "totalIngestedRows": "Total de linhas ingeridas",
@@ -205,9 +203,9 @@
       "attachDataset": "Anexe o conjunto de dados",
       "validDataset": "O conjunto de dados é válido",
       "datasetHasErrors": "O conjunto de dados contém erros",
-       "aggregateValidationErrors": "Validação de todo o conjunto de dados",
-       "groupErrorsBy": "Erros de grupo por", 
-      "errorType": "Tipo de erro", 
+      "aggregateValidationErrors": "Validação de todo o conjunto de dados",
+      "groupErrorsBy": "Erros de grupo por",
+      "errorType": "Tipo de erro",
       "row": "Linha",
       "errors": {
         "attachFile": "Você deve anexar um arquivo"
@@ -238,7 +236,13 @@
         "sourceId": "ID de origem"
       }
     },
-    "pendingReupload": "Reupload pendente"
+    "pendingReupload": "Reupload pendente",
+    "approvalDialog": {
+      "attachDataset": "Anexar conjunto de dados",
+      "ingestionFailure": "O conjunto de dados não foi ingerido",
+      "ingestionSuccess": "O conjunto de dados foi ingerido",
+      "intro": "Clique no botão de aprovação para aprovar este conjunto de dados"
+    }
   },
   "UploadWizardPage": {
     "title": "Upload de dados",
@@ -553,7 +557,10 @@
       "paragraph3": "O Vector Atlas é uma iniciativa da Universidade de Oxford, do International Center of Insect Physiology and Ecology (ICIPE) e do Projeto Malaria Atlas, financiado pela Fundação Bill e Melinda Gates e trabalhando em colaboração com GBIF, IR Mapper, PAMCA, VectorBase, Global Vector Hub, Amplicon Project, MalariaGen, Target Malaria",
       "paragraph4A": "No momento, estamos coletando feedback dos produtores e usuários de dados vetoriais para nos ajudar a garantir que o Atlas vetorial forneça o máximo de uso.  ",
       "youtubeLinkText": "Aqui",
-      "paragraph4B": "Como alternativa, entre em contato conosco diretamente"
+      "paragraph4B": "Como alternativa, entre em contato conosco diretamente",
+      "paragraph4": "Fornece um 'ponto único' de acesso a dados relacionados e referenciados cruzadamente, e sustenta um conjunto abrangente de mapas vetoriais, incluindo suitability de espécies, resistência fenotípica a inseticidas e abundância relativa. Todos os dados curados e superfícies modeladas estão disponíveis para download através da página de mapas desta plataforma. Trabalhando em estreita colaboração com equipes especializadas em vetores no Burkina Faso, Costa do Marfim, República Democrática do Congo, Nigéria, Senegal e Uganda, estamos trazendo a modelagem espacial para o centro das decisões de controle vetorial da malária.",
+      "paragraph5": "O Vector Atlas é uma iniciativa da Universidade de Oxford, do Centro Internacional de Fisiologia e Ecologia de Insetos (icipe) e da The Kids (Austrália), em colaboração com o Malaria Atlas Project e financiado pela Gates Foundation.",
+      "paragraph6": "Estamos sempre interessados em receber feedback para continuar desenvolvendo os recursos do Vector Atlas compartilhados através desta plataforma. Se você tiver comentários, perguntas ou sugestões, entre em contato conosco por e-mail."
     },
     "office": {
       "address": "Endereço",
@@ -585,50 +592,84 @@
       "resetZoom": "Redefinir zoom",
       "closePreview": "Fechar visualização"
     },
-    "speciesInformationEditor": { 
-      "create": "Criar informações da espécie", 
-      "edit": "Editar informações da espécie", 
-      "name": "Nome", 
-      "nameHelperText": "O nome não pode estar vazio", 
-      "shortDescription": "Descrição curta", 
-      "shortDescriptionHelperText": "A descrição curta não pode estar vazia", 
-      "fullDescription": "Descrição completa", 
-      "image": "Imagem da espécie", 
-      "uploadImageFile": "Carregar imagem da espécie", 
-      "uploadImageFileHelperText": "Os arquivos devem ser menores que {maxSize} KB", 
+    "speciesInformationEditor": {
+      "create": "Criar informações da espécie",
+      "edit": "Editar informações da espécie",
+      "name": "Nome",
+      "nameHelperText": "O nome não pode estar vazio",
+      "shortDescription": "Descrição curta",
+      "shortDescriptionHelperText": "A descrição curta não pode estar vazia",
+      "fullDescription": "Descrição completa",
+      "image": "Imagem da espécie",
+      "uploadImageFile": "Carregar imagem da espécie",
+      "uploadImageFileHelperText": "Os arquivos devem ser menores que {maxSize} KB",
       "distributionMapImage": "Mapa de distribuição",
-      "citation": "Citações", 
-      "buttons": { 
-        "create": "Criar", 
-        "update": "Atualizar" 
-      } 
+      "citation": "Citações",
+      "buttons": {
+        "create": "Criar",
+        "update": "Atualizar"
+      }
+    },
+    "countryTable": {
+      "editPage": {
+        "alerts": {
+          "errorText": "Falha ao executar a transmissão do banco de dados.",
+          "errorTitle": "Erro de envio",
+          "loadError": "Falha ao carregar o registro do perfil do país ativo do banco de dados.",
+          "notFound": "Registro do país não encontrado no banco de dados.",
+          "successText": "Nome de exibição do país atualizado com sucesso.",
+          "successTitle": "País atualizado"
+        },
+        "alternativeNamesHelper": "Nomes anteriores do banco de dados são armazenados aqui para evitar quebrar dados de mapas antigos.",
+        "alternativeNamesLabel": "Nomes alternativos (backups legados)",
+        "backBtn": "← Voltar ao catálogo",
+        "cancel": "Cancelar",
+        "coreIdLabel": "ID principal do sistema (imutável)",
+        "displayNameHelper": "Atualize este campo para corrigir capitalização ou formatação.",
+        "displayNameLabel": "Nome de exibição do país",
+        "displayNamePlaceholder": "ex. Costa do Marfim",
+        "header": "Editar nome do país",
+        "updateBtn": "Atualizar nome"
+      },
+      "filters": {
+        "searchPlaceholder": "Pesquisar países..."
+      },
+      "grid": {
+        "alternativeNames": "Nomes alternativos (legado)",
+        "name": "Nome do país"
+      },
+      "tableStates": {
+        "empty": "Nenhum registro corresponde aos filtros atuais.",
+        "loading": "Carregando países..."
+      },
+      "title": "Catálogo do registro de países"
     }
   },
   "SourcesPage": {
-  "title": "Lista de fontes",
-  "filters": {
-    "titleFilter": "Filtrar por título",
-    "fieldTitle": "Título",
-    "fieldAuthor": "Autor",
-    "fieldJournalTitle": "Título do periódico",
-    "searchPlaceholder": "Pesquisar..."
+    "title": "Lista de fontes",
+    "filters": {
+      "titleFilter": "Filtrar por título",
+      "fieldTitle": "Título",
+      "fieldAuthor": "Autor",
+      "fieldJournalTitle": "Título do periódico",
+      "searchPlaceholder": "Pesquisar..."
+    },
+    "grid": {
+      "author": "Autor",
+      "title": "Título",
+      "journalTitle": "Título do periódico",
+      "year": "Ano",
+      "actions": "Ações"
+    },
+    "edit": "Editar",
+    "delete": "Excluir",
+    "deleteConfirm": {
+      "title": "Excluir esta fonte?",
+      "message": "Esta ação não pode ser desfeita. Tem certeza de que deseja excluir esta fonte?",
+      "confirm": "Excluir",
+      "cancel": "Cancelar"
+    }
   },
-  "grid": {
-    "author": "Autor",
-    "title": "Título",
-    "journalTitle": "Título do periódico",
-    "year": "Ano",
-    "actions": "Ações"
-  },
-  "edit": "Editar",
-  "delete": "Excluir",
-  "deleteConfirm": {
-    "title": "Excluir esta fonte?",
-    "message": "Esta ação não pode ser desfeita. Tem certeza de que deseja excluir esta fonte?",
-    "confirm": "Excluir",
-    "cancel": "Cancelar"
-  }
-},
   "NewSourcePage": {
     "title": "Adicione uma nova fonte de referência",
     "editTitle": "Editar fonte de referência",
@@ -651,7 +692,6 @@
       "reset": "Reiniciar",
       "update": "Atualizar",
       "back": "Voltar à lista de fontes"
-
     }
   },
   "AdminPage": {
@@ -671,16 +711,23 @@
   },
   "MapPage": {
     "areaModeOn": "Modo de área ligado",
+    "doiResolving": "Resolvendo DOI...",
+    "doiResolveError": "Não foi possível resolver este DOI. O link pode ser inválido ou os dados podem não estar mais disponíveis.",
     "drawerMap": {
       "filtersTitle": "Filtros",
       "overlaysTitle": "Sobreposições",
       "baseMapTitle": "Mapa base",
-      "downloadTitle": "Download"
+      "downloadTitle": "Download",
+      "iroverlaysTitle": "Camadas de resistência a inseticidas"
     },
-        "downloadData": {
+    "downloadData": {
       "downloadMapImage": "Baixe a imagem do mapa",
       "downloadFilteredData": "Baixar dados",
       "downloadConfirmationTitle": "Download de confirmação",
+      "maintenanceNotice": {
+        "title": "Em manutenção",
+        "message": "O download filtrado está em manutenção no momento e voltará em breve."
+      },
       "termsA": "Eu li e concordo com o",
       "termsB": "Termos e Condições",
       "licenseTerms": {
@@ -708,6 +755,13 @@
       "requestDoi": "Solicite doi para esses dados filtrados",
       "fullName": "Nome completo",
       "email": "Endereço de email",
+      "contactInfoPromptDOI": "Suas informações de contato (necessárias para DOI e entrega por e-mail):",
+      "contactInfoPromptOptional": "Informações de contato (opcional mas recomendado — enviaremos um link de download por e-mail se o download direto estiver lento ou em manutenção):",
+      "emailConfirmationMessage": "Sua exportação de dados foi enfileirada. Um link de download será enviado para seu endereço de e-mail, geralmente em algumas horas. Você pode fechar esta página enquanto ela é processada.",
+      "directDownloadConfirmationMessage": "Sua exportação de dados foi enfileirada e será baixada diretamente quando estiver pronta. Isso pode levar alguns minutos para grandes conjuntos de dados.",
+      "fullDataDownloadStarting": "Iniciando download de dados completos...",
+      "fullDataDownloadSuccess": "O download de dados completos foi iniciado. O arquivo será baixado automaticamente.",
+      "fullDataDownloadError": "Falha ao iniciar download de dados completos: {error}",
       "errors": {
         "name": "Nome completo é necessário",
         "email": "O endereço de e-mail é necessário",
@@ -719,7 +773,8 @@
       "buttons": {
         "cancel": "Cancelar",
         "continue": "Continuar"
-      }
+      },
+      "downloadFullData": "Baixar dados completos"
     },
     "detailedData": {
       "samplingMethod": "Método de amostragem",
@@ -758,6 +813,12 @@
         "genotypic": "Genotípico",
         "both": "Ambos",
         "noData": "Sem dados"
+      },
+      "tooltips": {
+        "bionomics": "Mostrar apenas pontos de dados que incluem informações bionômicas detalhadas.",
+        "country": "Filtrar os pontos do mapa por país.",
+        "geno": "Filtrar por dados de resistência genotípica.",
+        "pheno": "Filtrar por dados de resistência fenotípica."
       }
     },
     "dateFilter": {
@@ -783,11 +844,12 @@
     "subscribe": "Inscrever-se para Atualizações"
   },
   "EmailSubscription": {
-    "title": "Inscrever-se para Atualizações",
+    "title": "Inscrever-se / Inscrição Cancelada",
     "description": "Receba notificações sobre notícias e novos conjuntos de dados no VectorAtlas.",
     "successMessage": "Quase pronto! Enviamos um link de verificação para o seu e-mail — verifique sua caixa de entrada para confirmar.",
     "notificationsLabel": "Inscrever-se para notícias e atualizações de conjuntos de dados",
     "subscribeBtn": "Inscrever-se",
+    "unsubscribe": "Inscrição Cancelada"  ,
     "verifySuccessTitle": "E-mail Verificado",
     "verifySuccessBody": "Tudo pronto — agora você receberá as atualizações solicitadas.",
     "verifyAlreadyTitle": "Já Verificado",
@@ -801,7 +863,69 @@
     "unsubscribeInvalidTitle": "Link Inválido",
     "unsubscribeInvalidBody": "Este link de cancelamento de inscrição é inválido ou já foi utilizado.",
     "backHomeBtn": "Voltar para o VectorAtlas",
-    "subscribeAgainBtn": "Inscrever-se Novamente"
+    "subscribeAgainBtn": "Inscrever-se Novamente",
+    "unsubscribeRequestSuccess": "Enviamos um link de cancelamento de inscrição seguro. Verifique sua caixa de entrada para confirmar.",
+    "unsubscribeDirectLine1": "Você não é um assinante. No entanto, as notificações da sua conta foram desativadas com sucesso.",
+    "unsubscribeDirectLine2": "Visite as configurações para reativar.",
+    "firstName": "Nome",
+    "lastName": "Sobrenome",
+    "emailAddress": "Endereço de e-mail",
+    "invalidEmail": "Por favor, insira um e-mail válido",
+    "requestUnsubscribeBtn": "Solicitar Link de Cancelamento",
+    "subscribeError": "Falha ao assinar. Por favor, tente novamente.",
+    "unsubscribeError": "Falha na solicitação. Por favor, tente novamente.",
+    "networkError": "Erro de rede. Verifique sua conexão e tente novamente."
+  },
+  "Email_Compose": {
+    "title": "Compor Mensagem",
+    "recipientGroup": "Grupo de Destinatários",
+    "groupCustom": "Personalizado (Usuários / Assinantes)",
+    "groupAll": "Usuários e Assinantes",
+    "groupSubscribers": "Apenas Todos os Assinantes",
+    "groupUsers": "Apenas Todos os Usuários",
+    "selectRecipients": "Selecionar Destinatários *",
+    "searchPlaceholder": "Pesquisar por nome, e-mail ou função...",
+    "recipientsError": "Por favor, selecione pelo menos um destinatário válido",
+    "customRecipientsHelper": "Contas com inscrição cancelada e usuários com notificações desativadas estão esmaecidos.",
+    "selectedRecipients": "Destinatários Selecionados",
+    "sendingTo": "Enviando para {count} destinatário(s)",
+    "autoExcludedHelper": "Contas com inscrição cancelada e usuários com notificações desativadas são automaticamente excluídos.",
+    "subject": "Assunto",
+    "subjectError": "O assunto não pode estar vazio",
+    "messageBody": "Corpo da Mensagem *",
+    "messageError": "A mensagem não pode estar vazia",
+    "sendBtn": "Enviar ({count})"
+  },
+  "ManageSubscription": {
+    "subscriberListTitle": "Lista de Assinantes",
+    "exportBtn": "Exportar para Excel",
+    "exportingBtn": "Exportando...",
+    "addSubscriberBtn": "Adicionar Assinante",
+    "exportError": "Falha ao baixar o arquivo Excel. Por favor, tente novamente",
+    "unsubscribeConfirm": "Tem certeza de que deseja cancelar a inscrição de {email}?",
+    "unsubscribeError": "Falha ao processar o cancelamento da inscrição.",
+    "addSubscriberError": "Falha ao adicionar assinante",
+    "emailRequired": "O e-mail é obrigatório",
+    "columns": {
+      "name": "Nome",
+      "email": "Endereço de e-mail",
+      "status": "Status",
+      "notifications": "Notificações",
+      "tokenExpiry": "Expiração do Token",
+      "actions": "Ações"
+    },
+    "tooltips": {
+      "alreadyUnsubscribed": "Inscrição já cancelada",
+      "unsubscribeUser": "Cancelar inscrição do usuário"
+    },
+    "dialog": {
+      "title": "Adicionar Novo Assinante",
+      "firstName": "Nome",
+      "lastName": "Sobrenome",
+      "emailLabel": "Endereço de e-mail *",
+      "cancel": "Cancelar",
+      "addUser": "Adicionar Usuário"
+    }
   },
   "Admin": {
     "title": "Registro de E-mails",
@@ -1012,14 +1136,16 @@
       }
     },
     "Source": {
-  "createSuccess": "Referência criada com id {id}",
-  "updateSuccess": "Referência {id} atualizada com sucesso",
-  "errors": {
-    "createError": "Erro desconhecido na criação de uma nova referência. ",
-    "duplicateSource": "Referência com o título {article_title} já existe",
-    "updateError": "Erro desconhecido ao atualizar a referência. Tente novamente."
-  }
-},
+      "createSuccess": "Referência criada com id {id}",
+      "updateSuccess": "Referência {id} atualizada com sucesso",
+      "errors": {
+        "createError": "Erro desconhecido na criação de uma nova referência. ",
+        "duplicateSource": "Referência com o título {article_title} já existe",
+        "updateError": "Erro desconhecido ao atualizar a referência. Tente novamente.",
+        "deleteError": "Erro desconhecido ao excluir a referência. Tente novamente."
+      },
+      "deleteSuccess": "Referência {id} excluída com sucesso"
+    },
     "SpeciesInformation": {
       "updateSuccess": "Informações sobre espécies atualizadas com id {id}",
       "createSuccess": "Informações de novas espécies criadas com id {id}",
@@ -1095,5 +1221,6 @@
         "errorText": "Falha ao executar a transmissão para o banco de dados."
       }
     }
-  }
+  },
+  "EditPointData": {}
 }

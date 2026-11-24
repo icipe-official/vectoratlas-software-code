@@ -1,20 +1,65 @@
-import React from 'react';
-import { Container, Box, Typography, Button } from '@mui/material';
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  Container,
+  Box,
+  Typography,
+  Button,
+  CircularProgress,
+} from '@mui/material';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { getMessages } from '../../utils/localization';
 import { GetServerSidePropsContext } from 'next';
+import { useRouter } from 'next/router';
+import { apiUrl } from '../../api/api';
 
-type UnsubscribeStatus = 'success' | 'invalid';
+type UnsubscribeStatus = 'loading' | 'success' | 'invalid';
 
-interface Props {
-  status: UnsubscribeStatus;
-}
-
-const UnsubscribePage = ({ status }: Props): JSX.Element => {
+const UnsubscribePage = (): JSX.Element => {
   const t = useTranslations('EmailSubscription');
+  const router = useRouter();
+  const [status, setStatus] = useState<UnsubscribeStatus>('loading');
+  const hasAttempted = useRef(false);
+
+  useEffect(() => {
+    if (!router.isReady || hasAttempted.current) return;
+
+    const { id, token } = router.query;
+
+    if (typeof id === 'string' && typeof token === 'string' && id && token) {
+      hasAttempted.current = true;
+
+      const processUnsubscribe = async () => {
+        try {
+          const res = await fetch(`${apiUrl}unsubscribe`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: id.trim(), token: token.trim() }),
+          });
+
+          if (res.ok || res.status === 204) {
+            setStatus('success');
+          } else {
+            setStatus('invalid');
+          }
+        } catch (err) {
+          console.error('Unsubscribe request failed:', err);
+          setStatus('invalid');
+        }
+      };
+
+      processUnsubscribe();
+    } else if (router.isReady) {
+      setStatus('invalid');
+    }
+  }, [router.isReady, router.query]);
 
   const content = {
+    loading: {
+      title: 'Processing...',
+      body: 'Please wait while we process your request.',
+      color: 'text.primary',
+    },
     success: {
       title: t('unsubscribeSuccessTitle') || 'Unsubscribed',
       body:
@@ -41,46 +86,29 @@ const UnsubscribePage = ({ status }: Props): JSX.Element => {
         >
           {content.title}
         </Typography>
-        <Typography color="text.secondary" sx={{ mb: 4 }}>
-          {content.body}
-        </Typography>
-        <Link href="/" passHref>
-          <Button variant="contained">
-            {t('backHomeBtn') || 'Back to VectorAtlas'}
-          </Button>
-        </Link>
+
+        {status === 'loading' ? (
+          <CircularProgress sx={{ my: 3 }} />
+        ) : (
+          <Typography color="text.secondary" sx={{ mb: 4 }}>
+            {content.body}
+          </Typography>
+        )}
+
+        {status !== 'loading' && (
+          <Link href="/" passHref>
+            <Button variant="contained">
+              {t('backHomeBtn') || 'Back to VectorAtlas'}
+            </Button>
+          </Link>
+        )}
       </Box>
     </Container>
   );
 };
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const messages = await getMessages(context);
-  const { id, token } = context.query;
-
-  let status: UnsubscribeStatus = 'invalid';
-
-  if (typeof id === 'string' && typeof token === 'string' && id && token) {
-    try {
-      const res = await fetch(`${process.env.API_BASE_URL}/unsubscribe`, {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, token }),
-      });
-
-      status = res.ok ? 'success' : 'invalid';
-    } catch (err) {
-      console.error('unsubscribe fetch failed:', err);
-      status = 'invalid';
-    }
-  }
-
-  return {
-    props: {
-      ...messages.props,
-      status,
-    },
-  };
+  return await getMessages(context);
 }
 
 export default UnsubscribePage;

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import * as fs from 'fs';
@@ -14,43 +14,46 @@ import {
   RAW_TEMPLATE_FIELD_EXCLUDED,
   RAW_TEMPLATE_FIELD_MAPPING,
 } from 'src/db/occurrence/template-mapping';
-import { extractFileNameFromBlobUrl, maskEmail } from 'src/utils';
+import { maskEmail } from 'src/utils';
 
 @Injectable()
 @Processor('exports')
 export class ExportsProcessorV2 extends WorkerHost {
+  private readonly logger = new Logger(ExportsProcessorV2.name);
   constructor(
     private readonly exportsService: ExportsServiceV2,
     private readonly emailService: EmailService,
     private readonly dynamicExportService: DynamicExportServiceV2<Occurrence>,
   ) {
     super();
-    console.log('ExportsProcessorV2 constructed');
+    this.logger.log('ExportsProcessorV2 constructed');
   }
 
   @OnWorkerEvent('ready')
   onReady() {
-    console.log('Exports worker v2 is ready');
+    this.logger.log('Exports worker v2 is ready');
   }
 
   @OnWorkerEvent('active')
   onActive(job: Job) {
-    console.log('Exports worker v2 active job:', job.id, job.data);
+    this.logger.log(`Exports worker v2 active job: ${job.id}`);
   }
 
   @OnWorkerEvent('completed')
   onCompleted(job: Job) {
-    console.log('Exports worker v2 completed job:', job.id);
+    this.logger.log(`Exports worker v2 completed job: ${job.id}`);
   }
 
   @OnWorkerEvent('failed')
   onFailed(job: Job | undefined, err: Error) {
-    console.error('Exports worker v2 failed job:', job?.id, err?.message);
+    this.logger.error(
+      `Exports worker v2 failed job: ${job?.id} ${err?.message}`,
+    );
   }
 
   @OnWorkerEvent('error')
   onError(err: Error) {
-    console.error('Exports worker v2 error:', err?.message);
+    this.logger.error(`Exports worker v2 error: ${err?.message}`);
   }
 
   formatDate = (date: Date) => {
@@ -61,9 +64,7 @@ export class ExportsProcessorV2 extends WorkerHost {
   };
 
   async process(job: Job<{ exportJobId: string }>) {
-    const USE_SAS_EXPIRING_URLS = false;
-
-    console.log('ExportsProcessor picked job v2:', job.id, job.data);
+    this.logger.log(`ExportsProcessor picked job v2: ${job.id}`);
 
     const exportJob = await this.exportsService.findById(job.data.exportJobId);
     if (!exportJob) throw new Error('Export job not found v2');
@@ -81,17 +82,19 @@ export class ExportsProcessorV2 extends WorkerHost {
 
     try {
       const rawFilters = exportJob.filtersJson ?? {};
-      console.log(
-        'Occurrence Ids scheduled length: ',
-        exportJob.occurrence_ids?.length?.toString() ?? '0',
+      this.logger.log(
+        `Occurrence Ids scheduled length: ${
+          exportJob.occurrence_ids?.length?.toString() ?? '0'
+        }`,
       );
 
       // 1. FILTER SANITIZATION
       const sanitizedFilters = this.sanitizeFilters(rawFilters);
 
-      console.log(
-        'Final Sanitized Filters for Service:',
-        JSON.stringify(sanitizedFilters),
+      this.logger.log(
+        `Final Sanitized Filters for Service: ${JSON.stringify(
+          sanitizedFilters,
+        )}`,
       );
 
       const take = config.get('dataExportBatchSize');
@@ -120,41 +123,32 @@ export class ExportsProcessorV2 extends WorkerHost {
       await this.exportsService.updateProgress(exportJob.id, 90);
 
       // 4. STREAM ZIP ARCHIVE DIRECTLY TO AZURE BLOB STORAGE
-      let fileName = `filteredData-${exportJob.id}.zip`;
-      let blobPath = `${exportJob.id}/${fileName}`;
+      const fileName = `filteredData-${exportJob.id}.zip`;
+      const blobPath = `${exportJob.id}/${fileName}`;
       let uploadedFileUrl = null;
 
-      if (USE_SAS_EXPIRING_URLS === false) {
-        uploadedFileUrl = await this.exportsService.uploadLocalFileToAzureBlob(
-          zipFilePath,
-          blobPath,
-        );
-        blobPath = extractFileNameFromBlobUrl(uploadedFileUrl);
-        fileName = blobPath.split('/')[1];
-      } else {
-        uploadedFileUrl = await this.exportsService.uploadLocalFileToAzureBlob(
-          zipFilePath,
-          blobPath,
-        );
-      }
+      uploadedFileUrl = await this.exportsService.uploadLocalFileToAzureBlob(
+        zipFilePath,
+        blobPath,
+      );
 
       // 5. MARK COMPLETED
       await this.exportsService.updateProgress(exportJob.id, 100);
       await this.exportsService.markCompleted(exportJob.id, blobPath, fileName);
 
       // 6. SEND EMAIL NOTIFICATION
-      if (exportJob.downloaderEmail) {
+      if (exportJob.downloaderEmail && exportJob.downloaderEmail.trim()) {
         // Re-fetch export job to get the DOI (which was created during Excel generation)
         const updatedExportJob = await this.exportsService.findById(
           exportJob.id,
         );
 
-        if (USE_SAS_EXPIRING_URLS) {
-          const { downloadUrl } = await this.exportsService.getDownloadLink(
-            updatedExportJob.id,
-          );
-          uploadedFileUrl = downloadUrl;
-        }
+        // Always fetch the download link from the service — it handles
+        // proxy download (default), SAS URL, or permanent blob URL based on config.
+        const { downloadUrl } = await this.exportsService.getDownloadLink(
+          updatedExportJob.id,
+        );
+        uploadedFileUrl = downloadUrl;
 
         const dateDownloaded = this.formatDate(
           updatedExportJob.modified || new Date(),
@@ -171,7 +165,7 @@ export class ExportsProcessorV2 extends WorkerHost {
             <p>The VectorAtlas data export you requested has been processed successfully!</p>
             <p>Note that the download link will <span style="color:rgb(251,51,51)"> expire after 3 days.</span> </p>
             <p>
-              Kindly cite this dataset as follows: The Vector Atlas DataBase (VADB) downloaded ${dateDownloaded}, https://vectoratlas.icipe.org/, DOI: ${doiLink}. (please ensure original data sources are maintained)
+              Kindly cite this dataset as follows: The Vector Atlas DataBase (VADB) downloaded ${dateDownloaded}, <a href="https://vectoratlas.icipe.org/">https://vectoratlas.icipe.org/</a>, DOI: <a href="${doiLink}">${doiLink}</a>. (please ensure original data sources are maintained)
             </p>
             <div style="margin: 25px 0;">
               <a href="${uploadedFileUrl}" 
@@ -192,7 +186,7 @@ export class ExportsProcessorV2 extends WorkerHost {
         );
 
         try {
-          console.log(
+          this.logger.log(
             `Notification email sent to ${maskEmail(
               updatedExportJob.downloaderEmail,
             )}`,
@@ -200,9 +194,9 @@ export class ExportsProcessorV2 extends WorkerHost {
         } catch (e) {}
       }
 
-      console.log('Marked completed v2:', exportJob.id);
+      this.logger.log(`Marked completed v2: ${exportJob.id}`);
     } catch (error: any) {
-      console.error('Processor failed for job v2:', exportJob.id, error);
+      this.logger.error(`Processor failed for job v2: ${exportJob.id}`, error);
       await this.exportsService.markFailed(
         exportJob.id,
         error?.message ?? 'Unknown error',
@@ -326,7 +320,7 @@ export class ExportsProcessorV2 extends WorkerHost {
         const guideBuffer = fs.readFileSync(guideDocPath);
         zip.file(guideFileName, guideBuffer);
       } else {
-        console.warn(
+        this.logger.warn(
           `Vector Atlas Database Guide document not found at: ${guideDocPath}`,
         );
       }
@@ -337,12 +331,12 @@ export class ExportsProcessorV2 extends WorkerHost {
       // 4. Listen for completion on the output write stream!
       // Listening to outputStream 'finish' ensures the file handle is completely closed on disk
       outputStream.on('finish', () => {
-        console.log('ZIP output stream finished flushing to disk.');
+        this.logger.log('ZIP output stream finished flushing to disk.');
         resolve();
       });
 
       outputStream.on('error', (err) => {
-        console.error('Error writing ZIP file to disk:', err);
+        this.logger.error('Error writing ZIP file to disk:', err);
         reject(err);
       });
 
@@ -356,7 +350,7 @@ export class ExportsProcessorV2 extends WorkerHost {
         })
         .pipe(outputStream)
         .on('error', (err) => {
-          console.error('Error in JSZip node stream:', err);
+          this.logger.error('Error in JSZip node stream:', err);
           reject(err);
         });
     });

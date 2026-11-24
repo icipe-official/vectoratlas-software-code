@@ -3,9 +3,14 @@ import type { Geometry } from 'geojson';
 export interface OccurrenceData {
   id: string;
   species: string | undefined;
+  species_display_name: string | undefined;
+  species_category: string | undefined;
+  species_color: string | undefined;
   binary_presence: string | undefined;
   location: Geometry;
   country: string;
+  country_iso2: string | undefined;
+  country_iso3: string | undefined;
   year_start: number | undefined;
   season_val: string | undefined;
   insecticide: string | undefined;

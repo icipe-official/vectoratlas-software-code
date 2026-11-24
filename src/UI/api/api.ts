@@ -15,14 +15,16 @@ import { debug, error } from 'console';
 import { getUniqueObjectValues } from '../utils/utils';
 import FormData from 'form-data';
 import pako from 'pako';
+import { blob } from 'stream/consumers';
 
 export const createBackgroundExport = async (payload: {
   filtersJson: string;
   generateDoi?: boolean;
   downloaderName?: string;
   downloaderEmail?: string;
-
   occurrenceIds?: string[];
+  clientRequestId?: string;
+  contentHash?: string;
 }) => {
   // compress ids
   const gzipped = pako.gzip(JSON.stringify(payload.occurrenceIds || []));
@@ -34,16 +36,25 @@ export const createBackgroundExport = async (payload: {
   formData.append('idFile', blob, 'ids.gz');
   formData.append('filtersJson', payload.filtersJson);
   formData.append('generateDoi', payload.generateDoi);
-  formData.append('downloaderName', payload.downloaderName);
-  formData.append('downloaderEmail', payload.downloaderEmail);
+  formData.append('downloaderName', payload.downloaderName || '');
+  formData.append('downloaderEmail', payload.downloaderEmail || '');
+  formData.append('clientRequestId', payload.clientRequestId || '');
+  formData.append('contentHash', payload.contentHash || '');
 
   //const res = await axios.post(`${apiUrl}exports`, payload);
-  const res = await axios.post(`${apiUrl}exports`, formData);
+  const res = await axios.post(`${apiUrl}exports`, formData, {
+    timeout: 60000, // 60s — envoy may take up to ~20s before returning 504,
+    // and the retry after that needs headroom too. The POST itself just
+    // queues a BullMQ job, but the DB insert + ID decompression on a
+    // capped shared DB can be slow.
+  });
   return res.data;
 };
 
 export const getBackgroundExportStatus = async (jobId: string) => {
-  const res = await axios.get(`${apiUrl}exports/${jobId}`);
+  const res = await axios.get(`${apiUrl}exports/${jobId}`, {
+    timeout: 10000, // 10s — simple DB lookup, should respond well within this
+  });
   return res.data;
 };
 const protectedUrl = '/api/protected/';
@@ -203,6 +214,14 @@ export const approveUploadedDatasetAuthenticated = async (
     }
   );
   return res;
+};
+export const exportSubscriber = async (token: string) => {
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+    responseType: 'blob' as const,
+  };
+  const res = await axios.get(`${apiUrl}export`, config);
+  return download(res.data, 'email-registry.xlsx');
 };
 
 /**
@@ -420,6 +439,13 @@ export const rejectUploadedDatasetAuthenticated = async (
     }
   );
   return res;
+};
+export const cleanUpSubscription = async (token: string) => {
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  const res = await axios.post(`${apiUrl}subscribers/cleanup-job`, {}, config);
+  return res.data;
 };
 
 export const reviewUploadedDatasetAuthenticated = async (
@@ -873,6 +899,20 @@ export const approveDatasetAuthenticated = async (
     },
   };
   const res = await axios.post(url, {}, config);
+  return res;
+};
+
+export const deleteDatasetAuthenticated = async (
+  token: String,
+  datasetId: String
+) => {
+  const url = `${apiUrl}dataset/${datasetId}`;
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const res = await axios.delete(url, config);
   return res;
 };
 
@@ -1390,8 +1430,11 @@ export const fetchManyUsersDetails = async (
   return res.data;
 };
 
-export const fetchAllUsers = async () => {
-  const res = await axios.get(`${apiUrl}auth/users`);
+export const fetchAllUsers = async (token: String) => {
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  const res = await axios.get(`${apiUrl}auth/users`, config);
   return res.data;
 };
 
@@ -1446,4 +1489,143 @@ export const uploadSpeciesImageAuthenticated = async (
   );
 
   return res.data;
+};
+
+export enum AccountStatus {
+  PENDING_VERIFICATION = 'pending_verification',
+  VERIFIED = 'verified',
+  DEACTIVATED = 'deactivated',
+  UNSUBSCRIBED = 'unsubscribed',
+}
+
+export interface UnifiedRecipient {
+  id: string;
+  name: string;
+  email: string;
+  source: 'user' | 'subscriber';
+  isDisabled: boolean;
+  statusLabel: string;
+  roles?: string[];
+}
+
+export const buildUnifiedRecipients = (
+  platformUsers: any[],
+  subscribers: any[]
+): UnifiedRecipient[] => {
+  const map = new Map<string, UnifiedRecipient>();
+
+  for (const user of platformUsers || []) {
+    if (!user.email) continue;
+
+    const roles: string[] = [];
+    if (user.is_admin) roles.push('Admin');
+    if (user.is_uploader) roles.push('Uploader');
+    if (user.is_reviewer) roles.push('Reviewer');
+    if (user.is_editor) roles.push('Editor');
+    if (user.is_reviewer_manager) roles.push('Reviewer Manager');
+    if (user.is_model_manager) roles.push('Model Manager');
+
+    const isDisabled = Boolean(user.disable_notification);
+
+    map.set(user.email.toLowerCase(), {
+      id: user.auth0_id || user.user_id || user.email,
+      name: user.name || user.nickname || user.email,
+      email: user.email,
+      source: 'user',
+      isDisabled,
+      statusLabel: isDisabled
+        ? 'Notifications Off'
+        : roles.length > 0
+        ? `User (${roles.join(', ')})`
+        : 'User',
+      roles,
+    });
+  }
+
+  for (const sub of subscribers || []) {
+    if (!sub.email) continue;
+    const emailKey = sub.email.toLowerCase();
+
+    const isUnsubscribed = sub.account_status === AccountStatus.UNSUBSCRIBED;
+    const isDeactivated = sub.account_status === AccountStatus.DEACTIVATED;
+    const isPending = sub.account_status === AccountStatus.PENDING_VERIFICATION;
+    const isNotifOff = !sub.notifications_enabled;
+
+    const isDisabled =
+      isUnsubscribed || isDeactivated || isPending || isNotifOff;
+
+    let statusLabel = 'Subscriber';
+    if (isUnsubscribed) statusLabel = 'Unsubscribed';
+    else if (isDeactivated) statusLabel = 'Deactivated';
+    else if (isPending) statusLabel = 'Pending Verification';
+    else if (isNotifOff) statusLabel = 'Notifications Off';
+
+    if (map.has(emailKey)) {
+      const existing = map.get(emailKey)!;
+      const combinedDisabled = existing.isDisabled || isDisabled;
+      map.set(emailKey, {
+        ...existing,
+        isDisabled: combinedDisabled,
+        statusLabel: combinedDisabled
+          ? isDisabled
+            ? statusLabel
+            : existing.statusLabel
+          : `${existing.statusLabel} & Subscriber`,
+      });
+    } else {
+      map.set(emailKey, {
+        id: sub.id,
+        name:
+          `${sub.first_name || ''} ${sub.last_name || ''}`.trim() || sub.email,
+        email: sub.email,
+        source: 'subscriber',
+        isDisabled,
+        statusLabel,
+      });
+    }
+  }
+
+  return Array.from(map.values());
+};
+
+export const fetchUnifiedRecipients = async (
+  token: String
+): Promise<UnifiedRecipient[]> => {
+  let platformUsers: any[] = [];
+  let subscribers: any[] = [];
+
+  try {
+    const usersData = await fetchAllUsers(token);
+    platformUsers = Array.isArray(usersData)
+      ? usersData
+      : usersData?.users || [];
+  } catch (err) {
+    console.error('Failed to fetch platform users:', err);
+  }
+
+  try {
+    const query = `
+      query {
+        adminEmailRegistry {
+          data {
+            id
+            first_name
+            last_name
+            email
+            account_status
+            notifications_enabled
+          }
+        }
+      }
+    `;
+    const gqlRes = await fetchGraphQlDataAuthenticated(query, token);
+
+    if (gqlRes?.data?.adminEmailRegistry?.data) {
+      subscribers = gqlRes.data.adminEmailRegistry.data;
+    }
+  } catch (err) {
+    console.error('Failed to fetch email subscribers:', err);
+  }
+
+  return buildUnifiedRecipients(platformUsers, subscribers);
 };

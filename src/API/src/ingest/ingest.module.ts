@@ -13,6 +13,7 @@ import { Sample } from 'src/db/occurrence/entities/sample.entity';
 import { Reference } from 'src/db/shared/entities/reference.entity';
 import { Site } from 'src/db/shared/entities/site.entity';
 import { RecordedSpecies } from 'src/db/shared/entities/recorded_species.entity';
+import { Species } from 'src/db/species/entities/species.entity';
 import { IngestController } from './ingest.controller';
 import { IngestService } from './ingest.service';
 import { OccurrenceService } from 'src/db/occurrence/occurrence.service';
@@ -74,6 +75,7 @@ import { Vgsc402AlleleFrequencies } from 'src/db/insecticideResistance/entities/
       Site,
       Dataset,
       RecordedSpecies,
+      Species,
       Environment,
       Biology,
       Infection,

@@ -24,6 +24,7 @@ export class AuthController {
         sub: userId,
         scope: createScope(userEntity),
         aud: process.env.AUTH0_AUDIENCE,
+        disable_notification: userEntity.disable_notification || false,
       };
       const token = jwt.create(claims, process.env.TOKEN_KEY);
       token.setExpiration(new Date().getTime() + 60000 * 1000);

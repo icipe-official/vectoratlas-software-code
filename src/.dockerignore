@@ -1,0 +1,8 @@
+# Applied when the build context is src/ (e.g. docker build -f API/Dockerfile src)
+**/node_modules
+**/dist
+**/.tmp
+**/tmp
+**/logs
+**/*.log
+**/.git

@@ -15,6 +15,9 @@ import { logger, evaluateBooleanOrUndefined } from '@/utils/index.js';
 interface OccurrenceRow {
   occurrence_id: string;
   recorded_species_species: string | null;
+  species_display_name: string | null;
+  species_category: string | null;
+  species_color: string | null;
   occurrence_binary_presence: string | null;
   occurrence_abundance_data: string | null;
   occurrence_bio_data: string | null;
@@ -25,6 +28,9 @@ interface OccurrenceRow {
   occurrence_larval_data: string | null;
   occurrence_adult_data: string | null;
   site_country: string | null;
+  country_name: string | null;
+  country_iso2: string | null;
+  country_iso3: string | null;
   site_location_geojson: string | null;
   sample_control: string | null;
 }
@@ -67,9 +73,14 @@ function transformRow(row: OccurrenceRow): OccurrenceData {
   return {
     id: row.occurrence_id,
     species: row.recorded_species_species ?? undefined,
+    species_display_name: row.species_display_name ?? undefined,
+    species_category: row.species_category ?? undefined,
+    species_color: row.species_color ?? undefined,
     binary_presence: row.occurrence_binary_presence ?? undefined,
     location,
-    country: row.site_country ?? '',
+    country: row.site_country ?? row.country_name ?? '',
+    country_iso2: row.country_iso2 ?? undefined,
+    country_iso3: row.country_iso3 ?? undefined,
     year_start: row.occurrence_year_start ?? undefined,
     // Boolean fields using evaluateBooleanOrUndefined
     has_adult: evaluateBooleanOrUndefined(row.occurrence_adult_data),

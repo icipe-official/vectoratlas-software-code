@@ -80,7 +80,7 @@ function Footer() {
               <Link href="/subscribe" passHref legacyBehavior>
                 <MuiLink
                   underline="hover"
-                  sx={{ fontWeight: 600, color: 'primary.main' }}
+                  sx={{ fontWeight: 300, color: 'primary.main' }}
                 >
                   {t('subscribe') || 'Subscribe to Updates'}
                 </MuiLink>

@@ -35,6 +35,7 @@ export default async function handler(
         token: token,
         // Safely split the scope field into an array of roles
         roles: verifiedToken?.body.scope?.split(',') || [],
+        disable_notification: verifiedToken?.body.disable_notification || false,
       };
 
       res.status(200).json(userInfo);

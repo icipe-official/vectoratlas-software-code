@@ -1,26 +1,23 @@
-import { Entity, Column, OneToOne, OneToMany, BeforeInsert } from 'typeorm';
+import { Entity, Column, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
 import { ObjectType, Field } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
 import { Occurrence } from '../../occurrence/entities/occurrence.entity';
+import { Species } from '../../species/entities/species.entity';
 
 @Entity('recorded_species')
-@ObjectType({ description: 'recorded species data' })
+@ObjectType({
+  description: 'recorded species data (link to species reference)',
+})
 export class RecordedSpecies extends BaseEntity {
-  @Column('varchar', { nullable: true })
-  @Field({ nullable: false })
+  // FK -> species.id (species.id = species name, like country.id = name)
+  @Column('varchar')
+  @Field()
   species: string;
 
-  @Column('varchar', { nullable: true })
-  @Field({ nullable: true })
-  display_name: string;
-
-  @Column('varchar', { nullable: true })
-  @Field({ nullable: true })
-  category: string;
-
-  @Column('varchar', { nullable: true })
-  @Field({ nullable: true })
-  color: string;
+  @ManyToOne(() => Species, (species) => species.recorded_species)
+  @JoinColumn({ name: 'species' })
+  @Field(() => Species, { nullable: true })
+  speciesDetails: Species;
 
   @Column('varchar', { nullable: true })
   @Field({ nullable: true })
@@ -37,9 +34,4 @@ export class RecordedSpecies extends BaseEntity {
   // Associations
   @OneToMany(() => Occurrence, (occurrence) => occurrence.recordedSpecies)
   occurrence: Occurrence;
-
-  @BeforeInsert()
-  generateDisplayName() {
-    this.display_name = this.display_name ?? this.species;
-  }
 }

@@ -227,7 +227,7 @@ export const UploadedDatasetList = () => {
   };
 
   const loadUsers = async () => {
-    const res: any[] = await fetchAllUsers();
+    const res: any[] = await fetchAllUsers(token);
     setUsers(res);
   };
 

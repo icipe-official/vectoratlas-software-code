@@ -16,6 +16,9 @@ import { useTranslations } from 'next-intl';
 
 // 1. Import the new background export thunk instead of getFilteredData
 import { triggerBackgroundExport } from '../../../state/map/actions/triggerbackgroundexport';
+import { MaintenanceNotice } from '../../shared/MaintenanceNotice';
+import { toast } from 'react-toastify';
+import { downloadTemplate } from '../../../state/upload/actions/downloadTemplate';
 
 // Single shared text size/line-height for every label, header, and bullet in the dialog.
 const DIALOG_TEXT_SX = { fontSize: '0.9rem', lineHeight: 1.5 };
@@ -55,6 +58,23 @@ const CheckboxRow = ({
     </Typography>
   </Box>
 );
+
+// True when a single filter value holds something real.
+// Handles arrays, plain values, and objects such as timeRange { start, end }.
+const isFilledValue = (v: any): boolean => {
+  if (v === null || v === undefined || v === '') return false;
+  if (Array.isArray(v)) return v.length > 0;
+  if (typeof v === 'object') return Object.values(v).some(isFilledValue);
+  return true;
+};
+
+// True when at least one filter has a real value.
+// Filters in the store are shaped as { value: ... }, so unwrap .value first.
+const hasActiveFilters = (filters: Record<string, any> | null | undefined) =>
+  !!filters &&
+  Object.values(filters).some((filter) => isFilledValue(filter?.value));
+
+const ENABLE_TEMPORARY_FULL_DATA_DOWNLOAD = false;
 
 export const DownloadDataControl = () => {
   const t = useTranslations('MapPage');
@@ -104,6 +124,10 @@ export const DownloadDataControl = () => {
       if (!name.trim()) return t('downloadData.errors.name');
       if (!email.trim()) return t('downloadData.errors.email');
       if (!isValidEmail(email)) return t('downloadData.errors.invalidEmail');
+    } else {
+      // Without DOI, email is optional but if provided must be valid
+      if (email.trim() && !isValidEmail(email))
+        return t('downloadData.errors.invalidEmail');
     }
     return '';
   };
@@ -150,24 +174,92 @@ export const DownloadDataControl = () => {
   const handleDownload = async () => {
     if (validationMessage) return;
 
+    const filtersActive = hasActiveFilters(currentFilters);
+
+    // No filters: send no IDs, and the backend exports all Approved records.
+    // Filters on: send the filtered IDs. An empty result means nothing matches.
+    const ids = filtersActive
+      ? (filteredOccurrenceData || []).map((e) => e.id)
+      : [];
+
+    if (filtersActive && !ids.length) {
+      toast.error(t('downloadData.errors.noRecords'));
+      return;
+    }
+
+    // Subscribe only once we know the export can start.
     if (subscribeToMailingList) {
       const subscriptionSuccess = await handleSubscriptionCall();
       if (!subscriptionSuccess) return;
     }
 
-    const ids = (filteredOccurrenceData || []).map((e) => e.id);
-    // 2. Dispatch the new background export action
+    const hasEmail = email.trim().length > 0 && isValidEmail(email);
+
     dispatch(
       triggerBackgroundExport({
-        filters: currentFilters,
+        filters: filtersActive ? currentFilters : ({} as typeof currentFilters),
         generateDoi: generateDOI,
-        downloaderName: name,
-        downloaderEmail: email,
+        downloaderName: name.trim() || undefined,
+        downloaderEmail: hasEmail ? email.trim() : undefined,
         occurrenceIds: ids,
       })
     );
 
+    // Show a confirmation toast — different message depending on
+    // whether the user provided an email for delivery.
+    if (hasEmail) {
+      toast.success(t('downloadData.emailConfirmationMessage'), {
+        autoClose: 8000,
+      });
+    } else {
+      toast.success(t('downloadData.directDownloadConfirmationMessage'), {
+        autoClose: 8000,
+      });
+    }
+
     setOpenDialog(false);
+  };
+
+  // TEMPORARY FIX
+  const handleFullDataDownload = async () => {
+    if (validationMessage) return;
+
+    // Show loading toast
+    const loadingToastId = toast.info(
+      t('downloadData.fullDataDownloadStarting'),
+      {
+        autoClose: false,
+      }
+    );
+
+    try {
+      // Await the dispatch so the dialog stays open while downloading
+      await dispatch(
+        downloadTemplate({
+          dataType: 'full_data',
+          dataSource: 'Vector Atlas',
+          extension: 'zip',
+        })
+      );
+
+      // Update toast to show success
+      toast.update(loadingToastId, {
+        render: t('downloadData.fullDataDownloadSuccess'),
+        type: 'success',
+        autoClose: 8000,
+      });
+    } catch (error) {
+      // Update toast to show error
+      toast.update(loadingToastId, {
+        render: t('downloadData.fullDataDownloadError', {
+          error: error instanceof Error ? error.message : String(error),
+        }),
+        type: 'error',
+        autoClose: 8000,
+      });
+    } finally {
+      setOpenDialog(false);
+    }
   };
 
   return (
@@ -179,7 +271,9 @@ export const DownloadDataControl = () => {
         className="umami--click--download-filtered"
         sx={{ margin: 0, marginTop: 2, width: '100%' }}
       >
-        {t('downloadData.downloadFilteredData')}
+        {ENABLE_TEMPORARY_FULL_DATA_DOWNLOAD
+          ? t('downloadData.downloadFullData')
+          : t('downloadData.downloadFilteredData')}
       </Button>
 
       <Dialog
@@ -190,6 +284,7 @@ export const DownloadDataControl = () => {
       >
         <DialogTitle>{t('downloadData.downloadConfirmationTitle')}</DialogTitle>
         <DialogContent>
+          <MaintenanceNotice />
           {/* Checkbox 1: accept CC BY-NC 4.0 terms */}
           <CheckboxRow
             checked={acceptLicense}
@@ -330,50 +425,63 @@ export const DownloadDataControl = () => {
             {t('downloadData.dataRetentionCommitment')}
           </CheckboxRow>
 
-          <Typography
-            sx={{ ...DIALOG_TEXT_SX, fontWeight: 600, margin: '8px 0 8px' }}
-          >
-            {t('downloadData.pleaseConfirm')}
-          </Typography>
-
-          {/* Checkbox 4 (optional): subscribe to mailing list for updates */}
-          <CheckboxRow
-            checked={subscribeToMailingList}
-            onChange={(e) => setSubscribeToMailingList(e.target.checked)}
-          >
-            {t('downloadData.notifyMe') ||
-              'Subscribe to our mailing list for updates'}
-          </CheckboxRow>
-
-          <CheckboxRow
-            checked={includeDOI}
-            onChange={(e) => {
-              setIncludeDOI(e.target.checked);
-              if (!e.target.checked) {
-                setGenerateDOI(false);
-                if (!subscribeToMailingList) {
-                  setName(user ? user.name || '' : '');
-                  setEmail(user ? user.email || '' : '');
-                }
-              } else {
-                setGenerateDOI(true);
-              }
-            }}
-          >
-            {t('downloadData.requestDoi')}
-          </CheckboxRow>
-
-          {(includeDOI || subscribeToMailingList) && (
+          {!ENABLE_TEMPORARY_FULL_DATA_DOWNLOAD && (
             <>
+              <Typography
+                sx={{ ...DIALOG_TEXT_SX, fontWeight: 600, margin: '8px 0 8px' }}
+              >
+                {t('downloadData.pleaseConfirm')}
+              </Typography>
+
+              {/* Checkbox 4 (optional): notify me when new data is added */}
+              {/* <CheckboxRow */}
+              {/*   checked={notifyMe} */}
+              {/*   onChange={(e) => setNotifyMe(e.target.checked)} */}
+              {/* > */}
+              {/*   {t('downloadData.notifyMe')} */}
+              {/* </CheckboxRow> */}
+
+              {/* Optional: Request DOI for this filtered data */}
+              <CheckboxRow
+                checked={includeDOI}
+                onChange={(e) => {
+                  setIncludeDOI(e.target.checked);
+                  if (!e.target.checked) {
+                    setGenerateDOI(false);
+                  } else {
+                    setGenerateDOI(true);
+                  }
+                }}
+              >
+                {t('downloadData.requestDoi')}
+              </CheckboxRow>
+            </>
+          )}
+
+          {/* Contact information section.
+              When DOI is requested, name and email are required.
+              When DOI is not requested, they are optional but recommended —
+              if provided, the download link is also sent via email as a
+              backup in case direct download is slow or unavailable. */}
+
+          {!ENABLE_TEMPORARY_FULL_DATA_DOWNLOAD && (
+            <>
+              <Typography
+                sx={{ ...DIALOG_TEXT_SX, fontWeight: 600, margin: '8px 0 8px' }}
+              >
+                {includeDOI
+                  ? t('downloadData.contactInfoPromptDOI')
+                  : t('downloadData.contactInfoPromptOptional')}
+              </Typography>
               <TextField
-                label={t('downloadData.fullName') + ' *'}
+                label={t('downloadData.fullName') + (includeDOI ? ' *' : '')}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 fullWidth
                 margin="dense"
               />
               <TextField
-                label={t('downloadData.email') + ' *'}
+                label={t('downloadData.email') + (includeDOI ? ' *' : '')}
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -395,7 +503,13 @@ export const DownloadDataControl = () => {
             {t('downloadData.buttons.cancel')}
           </Button>
           <Button
-            onClick={handleDownload}
+            onClick={() => {
+              if (ENABLE_TEMPORARY_FULL_DATA_DOWNLOAD) {
+                handleFullDataDownload();
+              } else {
+                handleDownload();
+              }
+            }}
             variant="contained"
             disabled={!!validationMessage}
           >

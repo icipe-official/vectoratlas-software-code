@@ -6,6 +6,7 @@ export interface AuthState {
   roles: String[];
   token: String;
   isLoading: Boolean;
+  disableNotification: boolean;
   roleRequestLoading: boolean;
 }
 
@@ -15,6 +16,7 @@ export const initialState: () => AuthState = () => ({
   token: '',
   isLoading: true,
   roleRequestLoading: false,
+  disableNotification: false,
 });
 
 export const authSlice = createSlice({
@@ -37,6 +39,10 @@ export const authSlice = createSlice({
       state.roles = action.payload.roles;
       state.token = action.payload.token;
       state.isLoading = false;
+      state.disableNotification =
+        action.payload.disable_notification ||
+        action.payload.disableNotification ||
+        false;
     });
   },
 });

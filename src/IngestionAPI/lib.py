@@ -2,7 +2,7 @@
 import datetime
 from enum import Enum
 from pprint import pprint
-import re, os
+import re, os, math
 import shutil
 import pandas as pd
 import openpyxl, csv
@@ -281,62 +281,64 @@ def get_uuid():
 
 
 def get_int_val(num: str):
+    if num is None:
+        return None
     num = str(num).replace(",", "")
     num = num.split(".")[0]
     num = num.replace(" ", "")
+    if is_na(num):
+        return None
     try:
-        if is_na(num):
-            return None
         return int(num)
     except ValueError:
-        return 0
+        return None
 
 
 def get_int_key_val(data_row, key: str):
-    num = "0"
-    if key in data_row:
-        num = data_row[key]
-
-    return get_int_val(num)
+    return get_int_val(data_row.get(key))
 
 
 def is_na(val: str):
-    return val.strip().replace(" ", "").lower() in ["na", "n/a"]
+    if val is None:
+        return True
+    return str(val).strip().replace(" ", "").lower() in ["na", "n/a", "nan", "null", ""]
 
 
 def get_float_val(num: str):
+    if num is None:
+        return None
     num = str(num).replace("−", "-")
     num = num.replace(" ", "")
+    if is_na(num):
+        return None
     try:
-        if is_na(num):
-            return None
-        return float(num)
+        val = float(num)
     except ValueError:
-        return 0.0
+        return None
+    if math.isnan(val) or math.isinf(val):
+        return None
+    return val
 
 
 def get_float_key_val(data_row, key: str):
-    num = "0"
-    if key in data_row:
-        num = data_row[key]
-
-    return get_float_val(num)
+    return get_float_val(data_row.get(key))
 
 
 def get_bool_val(val: str):
-    if val:
-        cleaned_val = str(val).strip().lower()
-        if cleaned_val in ["yes", "true", "1", "y", "t"]:
-            return True
-    return False
+    if val is None:
+        return None
+    cleaned_val = str(val).strip().lower()
+    if is_na(cleaned_val):
+        return None
+    if cleaned_val in ["yes", "true", "1", "y", "t"]:
+        return True
+    if cleaned_val in ["no", "false", "0", "n", "f"]:
+        return False
+    return None
 
 
 def get_bool_key_val(data_row, key: str):
-    val = "0"
-    if key in data_row:
-        val = data_row[key]
-
-    return get_bool_val(val)
+    return get_bool_val(data_row.get(key))
 
 
 def record_exist(conn, query):
@@ -353,8 +355,8 @@ def datetime_from_month_year(month: str, year: str):
     y = get_int_val(year)
     m = get_int_val(month)
     fd = datetime.datetime.now()
-    if y != 0 and m != 0:
-        fd = datetime.datetime(year=get_int_val(year), month=get_int_val(month), day=1)
+    if y and m:
+        fd = datetime.datetime(year=y, month=m, day=1)
     return fd
 
 
@@ -711,6 +713,7 @@ def validate_data(
         "WRONG_COORDS": [],
         "NO_AUTHORS": [],
         "COUNTRY_CODES": [],
+        "SPECIES_NOT_FOUND": [],
         "GENERAL_ERRORS": [],
     }
     errors = []
@@ -832,6 +835,39 @@ def validate_data(
                         {"row": i + 1, "error": err, "source_id": source_id}
                     )
                     continue
+
+                # species must exist in the reference table (same rule as country)
+                species_name = str(item.get("species", "") or "").strip()
+                if species_name:
+                    norm_species = species_name.lower()
+                    species_ok = bool(
+                        record_exist(
+                            conn,
+                            query=template_select_species_data.format(
+                                species=norm_species
+                            ),
+                        )
+                        or record_exist(
+                            conn,
+                            query=template_select_species_data_alt.format(
+                                species=norm_species
+                            ),
+                        )
+                    )
+                    if not species_ok:
+                        err = f"SPECIES {species_name} does not exist"
+                        logger.error(err)
+                        item["SPECIES_NOT_FOUND"] = True
+                        errors.append(item)
+                        errorsObj["SPECIES_NOT_FOUND"].append(
+                            {
+                                "row": i + 1,
+                                "error": err,
+                                "source_id": source_id,
+                                "species": species_name,
+                            }
+                        )
+                        continue
 
                 lat = (
                     get_float_val(item["latitude_ 1"])
@@ -1654,37 +1690,67 @@ def load_site_data(conn, data_row) -> str:
             latitude_8=get_float_key_val(data_row, "latitude_8"),
             longitude_8=get_float_key_val(data_row, "longitude_8"),
             confidence_in_georef=get_string_key_val(data_row, "confidence_in_georef"),
-            admin_level_1=0,  # ?get_string_key_val(data_row, "admin level_1"]),
+            admin_level_1=get_string_key_val(data_row, "admin_level_1"),
             admin_level_2=get_string_key_val(data_row, "admin_level_2"),
         )
         run_query(conn, query)
         return id
 
 
+def get_species_id(conn, data_row) -> str:
+    """Lookup-or-create the normalized `species` reference row (country-style:
+    id = lower(trim(name)), lookup by name or alternative_names)."""
+    raw_species = get_string_key_val(data_row, "species")
+    norm = raw_species.strip().lower() if raw_species else ""
+    if not norm:
+        return "unknown"
+    species_id = record_exist(
+        conn, query=template_select_species_data.format(species=norm)
+    )
+    if not species_id:
+        species_id = record_exist(
+            conn, query=template_select_species_data_alt.format(species=norm)
+        )
+    if not species_id:
+        run_query(
+            conn,
+            template_insert_species_data.format(
+                id=norm, name=norm, display_name=raw_species or norm
+            ),
+        )
+        species_id = record_exist(
+            conn, query=template_select_species_data.format(species=norm)
+        )
+    return species_id or "unknown"
+
+
 def load_specie_data(conn, data_row) -> str:
+    species = get_species_id(conn, data_row)  # species FK value (= species name)
+    species_notes = get_string_key_val(data_row, "species_notes") or None
+    species_id_1 = get_string_key_val(data_row, "species_id_1") or None
+    species_id_2 = get_string_key_val(data_row, "species_id_2") or None
+
     _record_exist = record_exist(
         conn,
         query=template_select_specie_data.format(
-            species=get_string_key_val(data_row, "species"),
+            species=species,
+            species_notes=species_notes,
+            species_id_1=species_id_1,
+            species_id_2=species_id_2,
         ),
     )
-    # print(f"RECORD EXIST:::: {_record_exist}")
     if _record_exist:
         return _record_exist
-    else:
-        id = get_uuid()
-        species = get_string_key_val(data_row, "species")
-        query = template_insert_specie_data.format(
-            id=id,
-            species_notes=get_string_key_val(data_row, "species_notes"),
-            species=species,
-            species_id_1=get_string_key_val(data_row, "species_id_1"),
-            species_id_2=get_string_key_val(data_row, "species_id_2"),
-            display_name=species,
-            category="",
-        )
-        run_query(conn, query)
-        return id
+    id = get_uuid()
+    query = template_insert_specie_data.format(
+        id=id,
+        species=species,
+        species_notes=species_notes,
+        species_id_1=species_id_1,
+        species_id_2=species_id_2,
+    )
+    run_query(conn, query)
+    return id
 
 
 def load_sampling_method_data(conn, data_row) -> str:

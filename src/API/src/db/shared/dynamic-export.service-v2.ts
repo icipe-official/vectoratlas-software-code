@@ -1,11 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, In, Repository } from 'typeorm';
 import * as ExcelJS from 'exceljs';
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { DynamicRelationLoader } from '../shared/dynamic-relation-loader';
 import { Occurrence } from '../occurrence/entities/occurrence.entity';
 import { RawTemplateFieldMap } from '../occurrence/template-mapping';
 import { ApprovalStatus, DOISourceType } from 'src/commonTypes';
@@ -14,8 +13,69 @@ import { formatDate } from 'src/utils';
 import { DoiService } from '../doi/doi.service';
 import { ExportJob } from 'src/exports/export-job.entity';
 
+/** Materialized view of finished export rows (Approved datasets only). */
+const EXPORT_VIEW = 'va_export_mv';
+
+/** Read at call time, so .env is loaded first. */
+const exportFromViewEnabled = () => process.env.EXPORT_FROM_MV === 'true';
+
 const AZURE_EXPORTS_DIRECTORY =
   process.env.AZURE_EXPORTS_DIRECTORY || 'exports';
+
+/**
+ * Non-circular relation tree (no back-references), so each table joins once.
+ * See docs/export-relation-tree.md.
+ */
+const EXPORT_RELATIONS = {
+  reference: true,
+  site: true,
+  recordedSpecies: true,
+  sample: true,
+  dataset: true,
+  bionomics: {
+    biology: true,
+    infection: true,
+    bitingRate: true,
+    anthropoZoophagic: true,
+    endoExophagic: true,
+    bitingActivity: true,
+    endoExophily: true,
+    environment: true,
+    LarvalSite: true,
+  },
+  insecticideResistanceBioassays: {
+    genotypicRepresentativeness: true,
+    vgscMethodAndSample: true,
+    vgscGeneytpeFrequencies: true,
+    kdrGenotypeFrequencies: true,
+    vgsc995AlleleFrequencies: true,
+    vgsc402GenotypeFrequencies: true,
+    vgsc402AlleleFrequencies: true,
+    vgsc1570GenotypeFrequencies: true,
+    vgsc1570AlleleFrequencies: true,
+    rdlMethodAndSample: true,
+    rdl296GenotypeFrequencies: true,
+    rdl296AlleleFrequencies: true,
+    ace1MethodAndSample: true,
+    ace1GenotypeFrequencies: true,
+    ace1AlleleFrequencies: true,
+    gsteMethodAndSample: true,
+    gste2_119AlleleFrequencies: true,
+    gste2_119GenotypeFrequencies: true,
+    gste2_114AlleleFrequencies: true,
+    gste2_114GenotypeFrequencies: true,
+    cyp4j5AlleleFrequencies: true,
+    cyp4j5GenotypeFrequencies: true,
+    cyp6p4AlleleFrequencies: true,
+    cyp6p4GenotypeFrequencies: true,
+    cyp6aapAlleleFrequencies: true,
+    cyp6aapGenotypeFrequencies: true,
+    cytochromesP450_cypMethodAndSample: true,
+    vgsc995GenotypeFrequenciesFormally1014: true,
+    rdl296cRdl296gRdl296sGenotypeFrequencies: true,
+    ace1GenotypeFrequenciesFormally119: true,
+  },
+};
 
 type RelationIndexNode = {
   tableName: string;
@@ -26,6 +86,7 @@ type RelationIndexNode = {
 
 @Injectable()
 export class DynamicExportServiceV2<T = Occurrence> {
+  private readonly logger = new Logger(DynamicExportServiceV2.name);
   constructor(
     @InjectRepository(Occurrence)
     private readonly repository: Repository<Occurrence>,
@@ -33,9 +94,131 @@ export class DynamicExportServiceV2<T = Occurrence> {
     private readonly dataSource: DataSource,
   ) {}
 
+  // ---------------------------------------------------------------------------
+  // Materialized view (va_export_mv)
+  // ---------------------------------------------------------------------------
+
+  /** CONCURRENTLY lets downloads keep reading during the refresh. */
+  async refreshExportView(): Promise<void> {
+    const started = Date.now();
+    await this.dataSource.query(
+      `REFRESH MATERIALIZED VIEW CONCURRENTLY ${EXPORT_VIEW}`,
+    );
+    this.logger.log(`${EXPORT_VIEW} refreshed in ${Date.now() - started} ms`);
+  }
+
+  /** Counts all view rows, or only the given IDs. */
+  private async countViewRows(ids: string[]): Promise<number> {
+    const [{ n }] = ids.length
+      ? await this.dataSource.query(
+          `SELECT count(*)::int AS n FROM ${EXPORT_VIEW} WHERE occurrence_id = ANY($1)`,
+          [ids],
+        )
+      : await this.dataSource.query(
+          `SELECT count(*)::int AS n FROM ${EXPORT_VIEW}`,
+        );
+    return n;
+  }
+
   /**
-   * Build indexed metadata tree for dynamic relation navigation
+   * Uses the view only when the output matches the join export.
+   * Filters need the join, since the view has no filter columns.
+   * ID lists need every ID in the view.
    */
+  private async canUseView(filters: any, ids: string[]): Promise<boolean> {
+    if (!exportFromViewEnabled()) {
+      this.logger.log("EXPORT_FROM_MV is not 'true'; using the join export");
+      return false;
+    }
+    if (!ids.length && filters && Object.keys(filters).length > 0) {
+      this.logger.log(
+        'Export has filters and no occurrence IDs; using the join export',
+      );
+      return false;
+    }
+    if (ids.length && (await this.countViewRows(ids)) !== ids.length) {
+      this.logger.warn(
+        `Some requested occurrences are not in ${EXPORT_VIEW}; using the join export`,
+      );
+      return false;
+    }
+    this.logger.log(`Using ${EXPORT_VIEW} for this export`);
+    return true;
+  }
+
+  /** Returns [] when the IDs cover the whole view, so pages skip the ID filter. */
+  private async idsOrAll(ids: string[]): Promise<string[]> {
+    if (!ids.length) return ids;
+    const unique = new Set(ids).size;
+    return unique === (await this.countViewRows([])) ? [] : ids;
+  }
+
+  /** Copies view rows to the worksheet in pages of 2000, keyed by occurrence_id. */
+  private async writeRowsFromView(
+    worksheet: ExcelJS.Worksheet,
+    sortedColumns: RawTemplateFieldMap[],
+    ids: string[],
+    yieldAfter: number,
+    exportJob: ExportJob,
+    updateProgressCallback?: (jobId: string, progress: number) => void,
+  ): Promise<void> {
+    const pageSize = 2000;
+    const total = Math.max(await this.countViewRows(ids), 1);
+    let lastId: string | null = null;
+    let written = 0;
+    let page = 0;
+
+    while (true) {
+      const where: string[] = [];
+      const params: any[] = [];
+      if (ids.length) {
+        params.push(ids);
+        where.push(`occurrence_id = ANY($${params.length})`);
+      }
+      if (lastId !== null) {
+        params.push(lastId);
+        where.push(`occurrence_id > $${params.length}`);
+      }
+      params.push(pageSize);
+
+      const rows: Record<string, any>[] = await this.dataSource.query(
+        `SELECT * FROM ${EXPORT_VIEW}
+         ${where.length ? 'WHERE ' + where.join(' AND ') : ''}
+         ORDER BY occurrence_id
+         LIMIT $${params.length}`,
+        params,
+      );
+      if (!rows.length) break;
+
+      // View columns already use template_field names
+      for (const r of rows) {
+        const row: Record<string, any> = {};
+        for (const col of sortedColumns) {
+          row[col.template_field] = r[col.template_field];
+        }
+        worksheet.addRow(row).commit();
+      }
+
+      written += rows.length;
+      page++;
+      if (updateProgressCallback && exportJob) {
+        updateProgressCallback(
+          exportJob.id,
+          Math.round((Math.min(written, total) / total) * 85),
+        );
+      }
+      if (page % yieldAfter === 0) {
+        await new Promise((resolve) => setImmediate(resolve));
+      }
+
+      if (rows.length < pageSize) break;
+      lastId = rows[rows.length - 1].occurrence_id;
+    }
+
+    this.logger.log(`Exported ${written} rows from ${EXPORT_VIEW}`);
+  }
+
+  /** Builds a metadata tree of relations for dynamic lookups. */
   private buildRelationIndex(
     repository: Repository<any>,
     maxDepth = 5,
@@ -159,9 +342,7 @@ export class DynamicExportServiceV2<T = Occurrence> {
     return row;
   }
 
-  /**
-   * Main memory-efficient background exporter. Writes directly to disk stream.
-   */
+  /** Streams the export to disk. Uses the view when possible. */
   async exportAllToExcelBackground(
     filters: any,
     columns: RawTemplateFieldMap[],
@@ -180,17 +361,17 @@ export class DynamicExportServiceV2<T = Occurrence> {
       fs.mkdirSync(exportDir, { recursive: true });
     }
 
-    console.log('Using pageSize of', pageSize);
+    this.logger.log(`Using pageSize of ${pageSize}`);
 
     const finalPath =
       targetFilePath ||
       path.join(exportDir, `va_export_${exportJob?.id || Date.now()}.xlsx`);
 
-    // 1. Initialize Streaming Workbook Writer directly to local file
+    // Shared strings and styles stay off to keep memory low
     const workbook = new ExcelJS.stream.xlsx.WorkbookWriter({
       filename: finalPath,
-      useSharedStrings: false, // Prevents holding string dictionary in V8 Heap
-      useStyles: false, // Disables keeping style objects in memory
+      useSharedStrings: false,
+      useStyles: false,
     });
 
     const worksheet = workbook.addWorksheet('Data');
@@ -206,19 +387,51 @@ export class DynamicExportServiceV2<T = Occurrence> {
 
     const relationIndex = this.buildRelationIndex(this.repository);
 
-    // 2. Add columns and flush header row
     worksheet.columns = sortedColumns.map((col) => ({
       header: col.template_field,
       key: col.template_field,
     }));
     worksheet.getRow(1).commit();
 
-    const loader = new DynamicRelationLoader(this.repository);
     const approvedIds = occurrenceIds || [];
 
-    // If no occurrenceIds provided, fetch all occurrences using filters
+    if (await this.canUseView(filters, approvedIds)) {
+      await this.writeRowsFromView(
+        worksheet,
+        sortedColumns,
+        await this.idsOrAll(approvedIds),
+        yieldAfter,
+        exportJob,
+        updateProgressCallback,
+      );
+      await this.makeFiltersAndDOISheet(
+        workbook,
+        filters,
+        generateDoi,
+        exportJob,
+      );
+      await worksheet.commit();
+      await workbook.commit();
+      return finalPath;
+    }
+
+    // With no IDs, only Approved datasets are exported
     const useAllOccurrences = !approvedIds || approvedIds.length === 0;
-    const total = useAllOccurrences ? 1 : Math.max(approvedIds.length, 1);
+
+    const exportFilters = useAllOccurrences
+      ? { ...(filters || {}), dataset: { status: 'Approved' } }
+      : filters || {};
+
+    // Total for progress: a COUNT when filtering, the ID count otherwise
+    let total: number;
+    if (useAllOccurrences) {
+      total = await this.repository.count({
+        where: exportFilters,
+      });
+      if (total === 0) total = 1;
+    } else {
+      total = Math.max(approvedIds.length, 1);
+    }
 
     let page = 0;
     let entities: any[] = [];
@@ -227,30 +440,31 @@ export class DynamicExportServiceV2<T = Occurrence> {
       const skip = page * pageSize;
 
       if (useAllOccurrences) {
-        // Fetch all occurrences with filters and pagination
-        entities = await loader.find({
-          where: filters || {},
+        entities = await this.repository.find({
+          where: exportFilters,
+          relations: EXPORT_RELATIONS as any,
+          relationLoadStrategy: 'join',
           order: { id: 'ASC' },
           skip,
           take: pageSize,
         });
         if (!entities.length) break;
       } else {
-        // Use the existing ID-based approach
         const ids = approvedIds.slice(skip, skip + pageSize);
         if (!ids.length) break;
 
-        entities = await loader.find({
-          where: { id: In(ids) },
+        entities = await this.repository.find({
+          where: { id: In(ids) as any },
+          relations: EXPORT_RELATIONS as any,
+          relationLoadStrategy: 'join',
           order: { id: 'ASC' },
         });
         if (!entities.length) break;
       }
 
-      // Map each entity to row and commit immediately to disk
       for (const entity of entities) {
         const row = this.mapEntityToRow(entity, sortedColumns, relationIndex);
-        worksheet.addRow(row).commit(); // Flush row memory immediately
+        worksheet.addRow(row).commit();
       }
 
       page++;
@@ -261,14 +475,12 @@ export class DynamicExportServiceV2<T = Occurrence> {
         updateProgressCallback(exportJob.id, progress);
       }
 
-      // yield every x pages
-      // Potentially gives other HTTP requests and health checks an immediate turn on the event loop
+      // Lets other requests run during long exports
       if (page % yieldAfter === 0) {
         await new Promise((resolve) => setImmediate(resolve));
       }
     }
 
-    // Add Filters and DOI Worksheet
     await this.makeFiltersAndDOISheet(
       workbook,
       filters,
@@ -276,7 +488,6 @@ export class DynamicExportServiceV2<T = Occurrence> {
       exportJob,
     );
 
-    // Finalize file write
     await worksheet.commit();
     await workbook.commit();
 
@@ -292,17 +503,17 @@ export class DynamicExportServiceV2<T = Occurrence> {
     const sheet2 = workbook.addWorksheet('Filters & DOI');
     sheet2.addRow(['Filters', '']).commit();
 
-    console.log('makeFiltersAndDOISheet filters:', JSON.stringify(filters));
+    this.logger.debug(
+      `makeFiltersAndDOISheet filters: ${JSON.stringify(filters)}`,
+    );
     if (filters) {
-      console.log(`Processing ${Object.keys(filters).length} filters`);
+      this.logger.debug(`Processing ${Object.keys(filters).length} filters`);
       Object.keys(filters).forEach((element) => {
         const val = filters[element];
-        // Convert complex values to readable strings
         let displayValue = val;
         if (Array.isArray(val)) {
           displayValue = val.join(', ');
         } else if (typeof val === 'object' && val !== null) {
-          // Handle nested timeRange object if it wasn't sanitized
           if (element === 'timeRange' && val.start !== undefined) {
             const startDate = val.start
               ? new Date(val.start).toISOString().split('T')[0]
@@ -318,10 +529,9 @@ export class DynamicExportServiceV2<T = Occurrence> {
           typeof val === 'number' &&
           (element === 'startTimestamp' || element === 'endTimestamp')
         ) {
-          // Convert Unix timestamp to human-readable date
           displayValue = new Date(val).toISOString().split('T')[0];
         }
-        console.log(`Adding filter row: ${element}=${displayValue}`);
+        this.logger.debug(`Adding filter row: ${element}=${displayValue}`);
         sheet2.addRow([element, displayValue]).commit();
       });
 
@@ -354,7 +564,6 @@ export class DynamicExportServiceV2<T = Occurrence> {
     doi.title = 'Data Download - ' + formatDate(new Date());
     doi.approval_status = ApprovalStatus.PENDING;
 
-    // Create a human-readable version of filters for description
     const readableFilters: any = {};
     Object.keys(filters).forEach((key) => {
       const val = filters[key];

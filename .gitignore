@@ -9,3 +9,6 @@ e2e/npm-debug.log
 
 src/Help/venv/
 src/UI/.env
+
+**/.tmp/
+src/API/tmp/

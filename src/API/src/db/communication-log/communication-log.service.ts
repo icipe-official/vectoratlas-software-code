@@ -26,7 +26,7 @@ export class CommunicationLogService {
   async getCommunications() {
     return await this.communicationLogRepository.find({
       order: {
-        modified: 'DESC',
+        communication_date: 'DESC',
       },
     });
   }
@@ -35,6 +35,7 @@ export class CommunicationLogService {
     return await this.communicationLogRepository.find({
       where: { sent_status: sentStatus },
       order: {
+        sent_date: 'DESC',
         modified: 'DESC',
       },
     });

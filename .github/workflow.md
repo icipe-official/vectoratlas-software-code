@@ -26,7 +26,7 @@ All workflows automatically detect the target environment based on the git branc
 
 **Behavior:**
 - Detects the target environment based on the base branch
-- Runs change detection to identify which services (API, UI, OccurrenceGeoJob) have been modified
+- Runs change detection to identify which services (API, UI) have been modified; the API also triggers on changes to `src/OccurrenceGeoJob/**` because the job is embedded in the API image
 - For each changed service:
   - Sets up Node.js with appropriate version
   - Installs dependencies with `npm ci`
@@ -37,8 +37,7 @@ All workflows automatically detect the target environment based on the git branc
 **Jobs:**
 - `set-environment` - Determines environment (test/production) from branch
 - `detect-changes` - Identifies changed services using dorny/paths-filter
-- `build-occurrencegeojob` - Builds & tests OccurrenceGeoJob (Node 20.x)
-- `build-api` - Builds & tests API (Node 22.x)
+- `build-api` - Builds & tests API (Node 22.x); also triggered by `src/OccurrenceGeoJob/**` changes
 - `build-ui` - Builds & tests UI (Node 18.x)
 - `skip-*` - Skip messages for unchanged services
 
@@ -57,7 +56,7 @@ All workflows automatically detect the target environment based on the git branc
 - Detects the target environment based on the branch
 - Runs change detection to identify which services have been modified
 - For each changed service:
-  - Builds Docker image with appropriate tags (`latest` and commit SHA)
+  - Builds Docker image with appropriate tags (`latest` and commit SHA); the API image is built with context `src/` (`docker build -f src/API/Dockerfile src`) so it embeds the OccurrenceGeoJob
   - For UI service: injects `NEXT_PUBLIC_TOKEN_KEY` from secrets
   - Pushes both tags to ghcr.io
 - Updates the appropriate helm values file in `icipe-official/VA-Cube-Configs`:
@@ -71,7 +70,6 @@ All workflows automatically detect the target environment based on the git branc
 - `detect-changes` - Identifies changed services via git diff
 - `api-ci` - CI checks for API service
 - `ui-ci` - CI checks for UI service
-- `occurrencegeojob-ci` - CI checks for OccurrenceGeoJob service
 - `build-and-push` - Builds and pushes Docker images to ghcr.io
 - `update-configs` - Updates helm values with new image SHA tags
 

@@ -2,8 +2,10 @@
 import {
   Controller,
   Post,
+  Delete,
   UploadedFile,
   UseInterceptors,
+  UseGuards,
   Body,
   Get,
   Param,
@@ -12,6 +14,10 @@ import {
   Logger,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from 'src/auth/user_role/roles.guard';
+import { Roles } from 'src/auth/user_role/roles.decorator';
+import { Role } from 'src/auth/user_role/role.enum';
 import { DatasetService } from './dataset.service';
 import { Response } from 'express';
 
@@ -63,5 +69,12 @@ export class DatasetController {
       this.logger.error('Failed to retrieve dataset.');
       throw new HttpException('Failed to retrieve dataset.', 500);
     }
+  }
+
+  @Delete(':id')
+  @UseGuards(AuthGuard('va'), RolesGuard)
+  @Roles(Role.Admin)
+  async deleteDataset(@Param('id') id: string) {
+    return await this.datasetService.deleteDatasetData(id);
   }
 }

@@ -412,13 +412,11 @@ export const roleRequestMutation = (
 export const disableNotificationsMutation = (
   userId: string,
   disable: boolean
-) => {
-  return `
+) => `
   mutation {
     disableNotifications(userId: "${userId}", disable: ${disable})
   }
-  `;
-};
+`;
 
 export const triggerModelTransform = (
   displayName: String,

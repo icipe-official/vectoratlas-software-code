@@ -27,6 +27,7 @@ import {
 import { StatusRenderer } from '../shared/statusRenderer';
 import DateRenderer from '../shared/dateRenderer';
 import { useTranslations } from 'next-intl';
+import { ComposeMessageForm } from '../email/composeForm';
 
 interface IDoiRequest {
   id: string;
@@ -40,31 +41,22 @@ interface IDoiRequest {
 const APPROVE: string = 'Approve';
 const REJECT: string = 'Reject';
 
-function AddToolbar() {
+function CustomToolbar() {
   return (
     <GridToolbarContainer
       sx={{ display: 'flex', justifyContent: 'space-between' }}
     >
-      {/* <Button color="primary" startIcon={<AddIcon />} onClick={() => {}}>
-        Approve
-      </Button>
+      <div>
+        <GridToolbarFilterButton />
+      </div>
       <Button
         color="primary"
         startIcon={<AddIcon />}
-        // onClick={handleUploadDataset}
-        href="/upload"
+        href="/communication-log/compose"
       >
-        Reject
-      </Button> */}
+        Compose
+      </Button>
     </GridToolbarContainer>
-  );
-}
-
-function FilterToolbar() {
-  return (
-    <div>
-      <GridToolbarFilterButton />
-    </div>
   );
 }
 
@@ -81,32 +73,28 @@ export const CommunicationLogList = () => {
 
   // const columns: GridColDef<typeof rows[number]>[] = [
   const columns: GridColDef[] = [
-    //const columns = [
     {
       field: 'subject',
       headerName: t('grid.subject'),
       width: 330,
       editable: false,
-      renderCell: (params: GridRenderCellParams<any, any>) => (
+      valueGetter: (params: any) => params.row.subject || '',
+      renderCell: (params: GridRenderCellParams) => (
         <Link
-          // href={`/uploaded-dataset/details/${params.value}`}
-          onClick={() => {
+          component="button"
+          variant="body2"
+          onClick={(e) => {
+            e.preventDefault();
             router.push({
               pathname: '/communication-log/details',
-              query: { id: params.value },
+              query: { id: params.row.id },
             });
           }}
+          style={{ cursor: 'pointer', textAlign: 'left' }}
         >
-          {params.value}
+          {params.row.subject}
         </Link>
       ),
-      valueGetter: (params: GridValueGetterParams) => {
-        return (
-          <Link href={`/communication-log/${params.row.id}`}>
-            {params.row.subject}
-          </Link>
-        );
-      },
     },
     {
       field: 'message_type',
@@ -130,18 +118,19 @@ export const CommunicationLogList = () => {
       type: 'string',
       width: 150,
       editable: false,
-      renderCell: (params: GridRenderCellParams<any, any>) => (
+      renderCell: (params: GridRenderCellParams) => (
         <StatusRenderer status={params.value} statusTitle={params.value} />
       ),
     },
   ];
 
+  const token = useAppSelector((state) => state.auth.token);
+
   useEffect(() => {
-    const loadData = async () => {
-      await dispatch(getAllCommunicationLogs());
-    };
-    loadData();
-  }, [dispatch]);
+    if (token) {
+      dispatch(getAllCommunicationLogs());
+    }
+  }, [token, dispatch]);
 
   return (
     <>
@@ -150,28 +139,32 @@ export const CommunicationLogList = () => {
           <div>
             <Typography variant="h5">{t('title')}</Typography>
             <DataGrid
-              rows={communicationLogList}
+              rows={communicationLogList || []}
               columns={columns}
               initialState={{
                 pagination: {
                   paginationModel: {
-                    pageSize: 5,
+                    pageSize: 10,
                   },
                 },
-                // filter: {
-                //   filterModel: {
-                //     items: [
-                //       {
-                //         id: 1,
-                //         field: 'sent_status',
-                //         operator: 'equals',
-                //         value: 'Pending',
-                //       },
-                //     ],
-                //   },
-                // },
+                sorting: {
+                  sortModel: [{ field: 'communication_date', sort: 'desc' }],
+                },
               }}
-              pageSizeOptions={[10]}
+              // filter: {
+              //   filterModel: {
+              //     items: [
+              //       {
+              //         id: 1,
+              //         field: 'sent_status',
+              //         operator: 'equals',
+              //         value: 'Pending',
+              //       },
+              //     ],
+              //   },
+              // },
+
+              pageSizeOptions={[5, 10, 25]}
               checkboxSelection
               disableRowSelectionOnClick
               onRowSelectionModelChange={(
@@ -187,7 +180,7 @@ export const CommunicationLogList = () => {
                 }
               }}
               slots={{
-                toolbar: FilterToolbar, // AddToolbar,
+                toolbar: CustomToolbar,
               }}
             />
           </div>
