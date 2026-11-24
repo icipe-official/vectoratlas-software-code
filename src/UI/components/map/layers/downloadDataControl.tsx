@@ -59,6 +59,21 @@ const CheckboxRow = ({
   </Box>
 );
 
+// True when a single filter value holds something real.
+// Handles arrays, plain values, and objects such as timeRange { start, end }.
+const isFilledValue = (v: any): boolean => {
+  if (v === null || v === undefined || v === '') return false;
+  if (Array.isArray(v)) return v.length > 0;
+  if (typeof v === 'object') return Object.values(v).some(isFilledValue);
+  return true;
+};
+
+// True when at least one filter has a real value.
+// Filters in the store are shaped as { value: ... }, so unwrap .value first.
+const hasActiveFilters = (filters: Record<string, any> | null | undefined) =>
+  !!filters &&
+  Object.values(filters).some((filter) => isFilledValue(filter?.value));
+
 const ENABLE_TEMPORARY_FULL_DATA_DOWNLOAD = false;
 
 export const DownloadDataControl = () => {
@@ -159,17 +174,30 @@ export const DownloadDataControl = () => {
   const handleDownload = async () => {
     if (validationMessage) return;
 
+    const filtersActive = hasActiveFilters(currentFilters);
+
+    // No filters: send no IDs, and the backend exports all Approved records.
+    // Filters on: send the filtered IDs. An empty result means nothing matches.
+    const ids = filtersActive
+      ? (filteredOccurrenceData || []).map((e) => e.id)
+      : [];
+
+    if (filtersActive && !ids.length) {
+      toast.error(t('downloadData.errors.noRecords'));
+      return;
+    }
+
+    // Subscribe only once we know the export can start.
     if (subscribeToMailingList) {
       const subscriptionSuccess = await handleSubscriptionCall();
       if (!subscriptionSuccess) return;
     }
 
-    const ids = (filteredOccurrenceData || []).map((e) => e.id);
     const hasEmail = email.trim().length > 0 && isValidEmail(email);
 
     dispatch(
       triggerBackgroundExport({
-        filters: currentFilters,
+        filters: filtersActive ? currentFilters : ({} as typeof currentFilters),
         generateDoi: generateDOI,
         downloaderName: name.trim() || undefined,
         downloaderEmail: hasEmail ? email.trim() : undefined,
