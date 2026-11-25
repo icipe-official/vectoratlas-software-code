@@ -16,7 +16,11 @@ import { Role } from 'src/auth/user_role/role.enum';
 import { Roles } from 'src/auth/user_role/roles.decorator';
 import { AzureBlobService } from 'src/db/azure-blob/azure-blob.service';
 
-import sharpImage from 'sharp';
+import * as sharpModule from 'sharp';
+
+const sharpImage = sharpModule as unknown as (
+  input: Buffer,
+) => import('sharp').Sharp;
 
 @Controller('organization')
 export class OrganizationController {
@@ -74,9 +78,8 @@ export class OrganizationController {
 
     try {
       metadata = await sharpImage(file.buffer).metadata();
-      console.log('[organization/upload-logo] Sharp metadata:', metadata);
     } catch (error) {
-      console.error('[organization/upload-logo] Sharp error:', error);
+      console.error('[organization/upload-logo] Invalid image:', error);
       throw new BadRequestException('The uploaded file is not a valid image');
     }
 
@@ -89,6 +92,60 @@ export class OrganizationController {
         'The image content does not match its file type',
       );
     }
+
+    const baseName = file.originalname.replace(/\.[^.]+$/, '') || 'logo';
+
+    let normalizedBuffer: Buffer;
+
+    try {
+      const image = sharpImage(file.buffer).rotate().resize({
+        width: 400,
+        height: 200,
+        fit: 'inside',
+        withoutEnlargement: true,
+      });
+
+      switch (metadata.format) {
+        case 'jpeg':
+          normalizedBuffer = await image
+            .jpeg({ quality: 85, mozjpeg: true })
+            .toBuffer();
+          break;
+
+        case 'png':
+          normalizedBuffer = await image
+            .png({ compressionLevel: 9, palette: true })
+            .toBuffer();
+          break;
+
+        case 'webp':
+          normalizedBuffer = await image.webp({ quality: 85 }).toBuffer();
+          break;
+
+        default:
+          throw new Error('Unsupported image format');
+      }
+    } catch (error) {
+      console.error(
+        '[organization/upload-logo] Image processing error:',
+        error,
+      );
+      throw new BadRequestException('The image could not be processed');
+    }
+
+    const extension = metadata.format === 'jpeg' ? 'jpg' : metadata.format;
+
+    // Pass the normalized image to Azure, with matching file details.
+    file.buffer = normalizedBuffer;
+    file.size = normalizedBuffer.length;
+    file.mimetype = allowedFormats[metadata.format];
+    file.originalname = `${baseName}.${extension}`;
+
+    console.log('[organization/upload-logo] Image processed:', {
+      format: metadata.format,
+      size: file.size,
+      filename: file.originalname,
+    });
 
     const result = await this.azureBlobService.uploadOrganizationLogo(file);
 
