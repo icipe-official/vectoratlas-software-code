@@ -17,16 +17,16 @@ import {
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/router';
 
+// "5-10" -> 5
 const getStartId = (range: string) => {
   return parseInt(range.substring(0, range.indexOf('-')));
 };
+// "5-10" -> 10
 const getEndId = (range: string) => {
   return parseInt(range.substring(range.indexOf('-') + 1, range.length));
 };
 
-// The value each option maps to must match a real column name that
-// reference.service.ts's findReferences can filter against.
-
+// Values must match real column names that findReferences can filter on.
 const FILTER_FIELD_OPTIONS = [
   { value: 'article_title', labelKey: 'filters.fieldTitle' },
   { value: 'author', labelKey: 'filters.fieldAuthor' },
@@ -95,52 +95,68 @@ export default function SourceFilters(): JSX.Element {
   };
 
   return (
+    // Outer row: full width, pushes the filter to the right
     <Box
       sx={{
         display: hasNumIds ? 'none' : 'flex',
-        width: '60%',
-        alignItems: 'stretch',
+        justifyContent: 'flex-end',
+        width: '100%',
+        boxSizing: 'border-box',
         paddingBottom: '10px',
-        float: 'right',
-        gap: 0,
       }}
     >
-      <Select
-        value={filterField}
-        onChange={handleFieldChange}
-        disabled={hasNumIds}
-        size="small"
+      {/* Inner bar: fills the row, capped on large screens */}
+      <Box
         sx={{
-          minWidth: 160,
-          borderTopRightRadius: 0,
-          borderBottomRightRadius: 0,
-          '.MuiOutlinedInput-notchedOutline': {
-            borderRight: 'none',
-          },
+          display: 'flex',
+          alignItems: 'stretch',
+          width: '100%',
+          maxWidth: 600,
+          minWidth: 0,
+          gap: 0,
         }}
       >
-        {FILTER_FIELD_OPTIONS.map((option) => (
-          <MenuItem key={option.value} value={option.value}>
-            {t(option.labelKey)}
-          </MenuItem>
-        ))}
-      </Select>
-      <TextField
-        id="title-filter"
-        data-testid="title-filter"
-        sx={{
-          width: '100%',
-          '.MuiOutlinedInput-root': {
-            borderTopLeftRadius: 0,
-            borderBottomLeftRadius: 0,
-          },
-        }}
-        size="small"
-        placeholder={t('filters.searchPlaceholder')}
-        variant="outlined"
-        onChange={handleTitleChange}
-        disabled={hasNumIds}
-      />
+        <Select
+          value={filterField}
+          onChange={handleFieldChange}
+          disabled={hasNumIds}
+          size="small"
+          sx={{
+            // Fluid: ~30% of the bar, clamped between 110px and 180px
+            width: 'clamp(110px, 30%, 180px)',
+            flexShrink: 0,
+            borderTopRightRadius: 0,
+            borderBottomRightRadius: 0,
+            '.MuiOutlinedInput-notchedOutline': {
+              borderRight: 'none',
+            },
+          }}
+        >
+          {FILTER_FIELD_OPTIONS.map((option) => (
+            <MenuItem key={option.value} value={option.value}>
+              {t(option.labelKey)}
+            </MenuItem>
+          ))}
+        </Select>
+        <TextField
+          id="title-filter"
+          data-testid="title-filter"
+          sx={{
+            // Takes the remaining space; minWidth 0 lets it shrink
+            flex: 1,
+            minWidth: 0,
+            '.MuiOutlinedInput-root': {
+              borderTopLeftRadius: 0,
+              borderBottomLeftRadius: 0,
+            },
+          }}
+          size="small"
+          placeholder={t('filters.searchPlaceholder')}
+          variant="outlined"
+          onChange={handleTitleChange}
+          disabled={hasNumIds}
+        />
+      </Box>
     </Box>
   );
 }

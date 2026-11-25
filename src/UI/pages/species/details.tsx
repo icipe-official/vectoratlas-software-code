@@ -20,6 +20,17 @@ import { getSourceInfo } from '../../state/source/actions/getSourceInfo';
 import { getOccurrenceData } from '../../state/map/actions/getOccurrenceData';
 import SpeciesImageViewer from '../../components/species/SpeciesImageViewer';
 
+// Shared style for the two action buttons. Width follows the label, not the screen.
+const actionButtonSx = {
+  minHeight: 32,
+  py: 0.25,
+  px: 1.5,
+  minWidth: 120,
+  fontSize: '0.8rem',
+  whiteSpace: 'nowrap',
+  textTransform: 'none',
+};
+
 export default function SpeciesDetails() {
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -48,68 +59,64 @@ export default function SpeciesDetails() {
     borderRadius: 2,
     padding: 2,
   };
-  const speciesDetailsSection = {
-    display: 'flex',
-    padding: 5,
-    justifyContent: 'space-around',
-  };
   const speciesDescriptionSection = {
     padding: 5,
     justifyContent: 'space-around',
   };
   return (
     <div>
-      <Grid
-        container
-        direction="row"
-        spacing={2}
-        sx={{ width: '40%', marginLeft: 20, marginTop: 5 }}
+      {/* Action row: buttons sit side by side at their natural width */}
+      <Box
+        sx={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'flex-start',
+          gap: 1,
+          ml: { xs: 1.5, sm: 20 },
+          mt: { xs: 3, sm: 5 },
+        }}
       >
-        <Grid item xs={6}>
+        {/* Outlined green, matching the "Back to Models" button */}
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={handleBack}
+          sx={actionButtonSx}
+        >
+          <ArrowBackIcon sx={{ mr: 0.75, fontSize: 16 }} />
+          Back to Species List
+        </Button>
+
+        {speciesDetails?.link ? (
+          // Solid green, matching the DOWNLOAD button
           <Button
-            fullWidth
             variant="contained"
-            color="inherit"
-            onClick={handleBack}
-            sx={{ height: '100%' }}
+            color="primary"
+            onClick={() => router.push(`/map?species=${speciesDetails.link}`)}
+            sx={actionButtonSx}
           >
-            <ArrowBackIcon sx={{ marginRight: 1 }} />
-            <Typography fontSize="medium">Back to Species List</Typography>
+            Show on Map
           </Button>
-        </Grid>
-        <Grid item xs={6}>
-          {speciesDetails?.link ? (
+        ) : (
+          <Box display="flex" flexDirection="column" alignItems="flex-start">
             <Button
-              fullWidth
               variant="contained"
               color="primary"
-              onClick={() => router.push(`/map?species=${speciesDetails.link}`)}
-              sx={{ height: '100%' }}
+              disabled
+              sx={actionButtonSx}
             >
               Show on Map
             </Button>
-          ) : (
-            <Box display="flex" flexDirection="column" alignItems="center">
-              <Button
-                fullWidth
-                variant="contained"
-                color="primary"
-                disabled
-                sx={{ height: '100%' }}
-              >
-                Show on Map
-              </Button>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ mt: 1, textAlign: 'center' }}
-              >
-                No species data on map
-              </Typography>
-            </Box>
-          )}
-        </Grid>
-      </Grid>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ mt: 0.75 }}
+            >
+              No species data on map
+            </Typography>
+          </Box>
+        )}
+      </Box>
       <main>
         <Container
           maxWidth={false}
@@ -121,8 +128,8 @@ export default function SpeciesDetails() {
           <SectionPanel title={`${speciesDetails?.name}`}>
             <Box
               sx={{
-                marginX: 5,
-                paddingX: 5,
+                marginX: { xs: 1.5, sm: 5 },
+                paddingX: { xs: 1.5, sm: 5 },
                 paddingY: 2,
               }}
             >
@@ -133,8 +140,26 @@ export default function SpeciesDetails() {
               >
                 Details
               </Typography>
-              <Box sx={speciesDetailsSection}>
-                <div style={{ width: '300px' }}>
+
+              {/* Phones: image above the text, full width.
+                  Larger screens: image and text side by side. */}
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: { xs: 'column', sm: 'row' },
+                  alignItems: { xs: 'stretch', sm: 'center' },
+                  justifyContent: { xs: 'flex-start', sm: 'space-around' },
+                  gap: { xs: 2, sm: 0 },
+                  py: { xs: 2, sm: 5 },
+                  px: { xs: 0, sm: 5 },
+                }}
+              >
+                <Box
+                  sx={{
+                    width: { xs: '100%', sm: 300 },
+                    flexShrink: 0,
+                  }}
+                >
                   <SpeciesImageViewer
                     previewRef={speciesDetails?.previewImage}
                     downloadRef={speciesDetails?.speciesImage}
@@ -142,23 +167,24 @@ export default function SpeciesDetails() {
                     speciesName={speciesDetails?.name}
                     thumbnailWidth="100%"
                   />
-                </div>
-                <Grid
-                  container
-                  direction={'column'}
-                  spacing={1}
+                </Box>
+
+                <Box
                   sx={{
-                    width: '60%',
-                    padding: 2,
+                    width: { xs: '100%', sm: '60%' },
+                    minWidth: 0,
+                    px: { xs: 0, sm: 2 },
+                    py: { xs: 0, sm: 2 },
+                    lineHeight: 1.6,
+                    overflowWrap: 'anywhere',
                   }}
                 >
-                  <Grid container item>
-                    <ReactMarkdown>
-                      {speciesDetails?.shortDescription}
-                    </ReactMarkdown>
-                  </Grid>
-                </Grid>
+                  <ReactMarkdown>
+                    {speciesDetails?.shortDescription}
+                  </ReactMarkdown>
+                </Box>
               </Box>
+
               <Typography
                 color="primary"
                 variant="h6"
@@ -166,7 +192,13 @@ export default function SpeciesDetails() {
               >
                 Description
               </Typography>
-              <Box sx={speciesDescriptionSection}>
+              <Box
+                sx={{
+                  ...speciesDescriptionSection,
+                  px: { xs: 0, sm: 5 },
+                  py: { xs: 2, sm: 5 },
+                }}
+              >
                 {(() => {
                   let sections = [];
                   try {
@@ -188,7 +220,7 @@ export default function SpeciesDetails() {
                         <Typography variant="h6" sx={{ color: 'green', mb: 1 }}>
                           {section.title}
                         </Typography>
-                        <Box sx={{ color: 'black' }}>
+                        <Box sx={{ color: 'black', overflowWrap: 'anywhere' }}>
                           <ReactMarkdown>{section.content}</ReactMarkdown>
                         </Box>
                       </Box>

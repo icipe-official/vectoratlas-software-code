@@ -37,7 +37,7 @@ interface Subscriber {
 }
 
 export const SubscriptionList = () => {
-  const t = useTranslations('ManageSubscription');
+  const t = useTranslations('AdminPage');
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
   const [loading, setLoading] = useState(false);
   const token = useAppSelector((state) => state.auth.token);
@@ -50,7 +50,7 @@ export const SubscriptionList = () => {
       await exportSubscriber(token.toString());
     } catch (error) {
       console.error('Failed to export subscribers', error);
-      alert(t('exportError'));
+      alert('Failed to Download excel file. Please try again');
     } finally {
       setExporting(false);
     }
@@ -87,7 +87,9 @@ export const SubscriptionList = () => {
 
   const handleUnsubscribe = async (subscriberRow: Subscriber) => {
     if (
-      !window.confirm(t('unsubscribeConfirm', { email: subscriberRow.email }))
+      !window.confirm(
+        `Are you sure you want to unsubscribe ${subscriberRow.email}?`
+      )
     ) {
       return;
     }
@@ -105,13 +107,13 @@ export const SubscriptionList = () => {
       fetchSubscribers();
     } catch (error) {
       console.error('Failed to unsubscribe user:', error);
-      alert(t('unsubscribeError'));
+      alert('Failed to process unsubscription.');
     }
   };
 
   const handleAddSubscriber = async () => {
     if (!newSub.email.trim()) {
-      setModalError(t('emailRequired'));
+      setModalError('Email is required');
       return;
     }
 
@@ -126,7 +128,9 @@ export const SubscriptionList = () => {
       setOpenModal(false);
       fetchSubscribers(); // Refresh the grid
     } catch (error: any) {
-      setModalError(error.response?.data?.message || t('addSubscriberError'));
+      setModalError(
+        error.response?.data?.message || 'Failed to add subscriber'
+      );
     } finally {
       setSubmitting(false);
     }
@@ -135,16 +139,16 @@ export const SubscriptionList = () => {
   const columns: GridColDef[] = [
     {
       field: 'name',
-      headerName: t('columns.name'),
+      headerName: 'Name',
       width: 200,
       valueGetter: (params: any) =>
         `${params.row.first_name || ''} ${params.row.last_name || ''}`.trim() ||
         'N/A',
     },
-    { field: 'email', headerName: t('columns.email'), width: 250 },
+    { field: 'email', headerName: 'Email Address', width: 250 },
     {
       field: 'account_status',
-      headerName: t('columns.status'),
+      headerName: 'Status',
       width: 180,
       renderCell: (params: GridRenderCellParams) => {
         let color: 'default' | 'success' | 'error' | 'warning' = 'default';
@@ -168,13 +172,13 @@ export const SubscriptionList = () => {
     },
     {
       field: 'notifications_enabled',
-      headerName: t('columns.notifications'),
+      headerName: 'Notifications',
       width: 150,
       type: 'boolean',
     },
     {
       field: 'token_expires_at',
-      headerName: t('columns.tokenExpiry'),
+      headerName: 'Token Expiry',
       type: 'dateTime',
       width: 180,
       valueGetter: (params: any) =>
@@ -190,7 +194,7 @@ export const SubscriptionList = () => {
     },
     {
       field: 'actions',
-      headerName: t('columns.actions'),
+      headerName: 'Actions',
       width: 100,
       sortable: false,
       filterable: false,
@@ -203,11 +207,7 @@ export const SubscriptionList = () => {
             size="small"
             disabled={isUnsubscribed}
             onClick={() => handleUnsubscribe(params.row as Subscriber)}
-            title={
-              isUnsubscribed
-                ? t('tooltips.alreadyUnsubscribed')
-                : t('tooltips.unsubscribeUser')
-            }
+            title={isUnsubscribed ? 'Already unsubscribed' : 'Unsubscribe user'}
           >
             <DeleteIcon />
           </IconButton>
@@ -227,7 +227,7 @@ export const SubscriptionList = () => {
         }}
       >
         <Typography variant="h5" color="primary">
-          {t('subscriberListTitle')}
+          Subscriber List
         </Typography>
         <Button
           variant="outlined"
@@ -235,7 +235,7 @@ export const SubscriptionList = () => {
           disabled={exporting}
           sx={{ mr: 2 }}
         >
-          {exporting ? t('exportingBtn') : t('exportBtn')}
+          {exporting ? 'Exporting...' : 'Export to Excel'}
         </Button>
 
         <Button
@@ -243,7 +243,7 @@ export const SubscriptionList = () => {
           startIcon={<AddIcon />}
           onClick={() => setOpenModal(true)}
         >
-          {t('addSubscriberBtn')}
+          Add Subscriber
         </Button>
       </Box>
 
@@ -268,7 +268,7 @@ export const SubscriptionList = () => {
         <DialogContent>
           <TextField
             margin="dense"
-            label={t('dialog.firstName')}
+            label="First Name"
             fullWidth
             value={newSub.first_name}
             onChange={(e) =>
@@ -278,7 +278,7 @@ export const SubscriptionList = () => {
           />
           <TextField
             margin="dense"
-            label={t('dialog.lastName')}
+            label="Last Name"
             fullWidth
             value={newSub.last_name}
             onChange={(e) =>
@@ -288,7 +288,7 @@ export const SubscriptionList = () => {
           />
           <TextField
             margin="dense"
-            label={t('dialog.emailLabel')}
+            label="Email Address *"
             type="email"
             fullWidth
             required
@@ -301,14 +301,14 @@ export const SubscriptionList = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenModal(false)} disabled={submitting}>
-            {t('dialog.cancel')}
+            Cancel
           </Button>
           <Button
             onClick={handleAddSubscriber}
             variant="contained"
             disabled={submitting || !newSub.email.trim()}
           >
-            {submitting ? <CircularProgress size={24} /> : t('dialog.addUser')}
+            {submitting ? <CircularProgress size={24} /> : 'Add User'}
           </Button>
         </DialogActions>
       </Dialog>

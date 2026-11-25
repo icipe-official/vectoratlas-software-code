@@ -20,6 +20,15 @@ function EditSource(): JSX.Element {
 
   const idParam = router.query.id as string | undefined;
 
+  useEffect(() => {
+    if (idParam) {
+      const num_id = parseInt(idParam, 10);
+      if (!isNaN(num_id)) {
+        dispatch(getSourceById(num_id));
+      }
+    }
+  }, [idParam, dispatch]);
+
   const source_edit = useAppSelector((state) => state.source.source_edit);
   const source_edit_status = useAppSelector(
     (state) => state.source.source_edit_status
@@ -33,6 +42,7 @@ function EditSource(): JSX.Element {
       }
     }
 
+    // Clear the previous record when leaving, so the next edit starts empty
     return () => {
       dispatch(clearSourceEdit());
     };
@@ -53,8 +63,10 @@ function EditSource(): JSX.Element {
           <Container
             maxWidth={false}
             sx={{
-              padding: '10px',
-              maxWidth: '75%',
+              // Small edge padding on phones, original 10px from sm up
+              padding: { xs: '4px', sm: '10px' },
+              // Full width on phones and tablets, original 75% from md up
+              maxWidth: { xs: '100%', md: '75%' },
             }}
           >
             <Box sx={{ mb: 2 }}>
@@ -67,13 +79,13 @@ function EditSource(): JSX.Element {
               </Button>
             </Box>
             <div>
-              <AuthWrapper role={['uploader', 'editor']}>
+              <AuthWrapper role={['uploader', 'editor', 'admin']}>
                 {source_edit_status === 'success' && source_edit ? (
                   <SourceForm existingSource={source_edit as NewSource} />
                 ) : source_edit_status === 'error' ? (
                   <div>
-                    Could not load this source. It may have been deleted, or the
-                    link is invalid.
+                    <p></p>Could not load this source. It may have been deleted,
+                    or the link is invalid.
                   </div>
                 ) : (
                   <div>Loading....</div>

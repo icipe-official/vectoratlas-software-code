@@ -12,7 +12,6 @@ import {
   Tabs,
   TextField,
   Toolbar,
-  Typography,
   useTheme,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
@@ -38,6 +37,8 @@ interface TabPanelProps {
   value: number;
 }
 
+// Phones: no padding, so content uses the full screen width.
+// Larger screens: keep the original padding.
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
   return (
@@ -49,9 +50,7 @@ function TabPanel(props: TabPanelProps) {
       {...other}
     >
       {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
+        <Box sx={{ p: { xs: 0, sm: 3 }, minWidth: 0 }}>{children}</Box>
       )}
     </div>
   );
@@ -115,12 +114,15 @@ export const UploadedModelDetailView = () => {
       sx={{
         bgcolor: 'background.paper',
         flexGrow: 1,
-        border: '1px solid #eee',
-        marginTop: 10,
+        // Phones: no border; top gap clears the Back to Models button
+        border: { xs: 'none', sm: '1px solid #eee' },
+        marginTop: { xs: 10, sm: 10 },
+        minWidth: 0,
       }}
     >
       <AppBar position="static" color="inherit" sx={{ border: 'none' }}>
-        <Toolbar>
+        {/* disableGutters on phones so the tabs use the full width */}
+        <Toolbar disableGutters sx={{ px: { xs: 0, sm: 2 } }}>
           <Tabs
             value={value}
             onChange={handleChange}
@@ -128,7 +130,7 @@ export const UploadedModelDetailView = () => {
             indicatorColor="secondary"
             variant="fullWidth"
             aria-label="Model details"
-            sx={{ width: '95%', border: 'none' }}
+            sx={{ flex: 1, minWidth: 0, border: 'none' }}
           >
             <Tab label={<DetailTitle />}></Tab>
             {isInternalUser && <Tab label={t('toolbar.changeLog')}></Tab>}

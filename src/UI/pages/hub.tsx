@@ -12,10 +12,11 @@ function DataHub() {
   return (
     <div>
       <main>
+        {/* Full width on phones, 75% from md up; small gutter from sm up */}
         <Container
           sx={{
-            padding: '10px',
-            maxWidth: '75%',
+            px: { xs: 0, sm: 1 },
+            maxWidth: { xs: '100%', md: '75%' },
           }}
         >
           <SectionPanel title={t('title')}>

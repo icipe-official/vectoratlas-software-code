@@ -26,8 +26,10 @@ export default function SourcesPage(): JSX.Element {
       <main>
         <Container
           sx={{
-            padding: '10px',
-            maxWidth: '75%',
+            // Small edge padding on phones, original 10px from sm up
+            padding: { xs: '4px', sm: '10px' },
+            // Full width on phones and tablets, original 75% from md up
+            maxWidth: { xs: '100%', md: '75%' },
           }}
         >
           <SectionPanel title={t('title')}>

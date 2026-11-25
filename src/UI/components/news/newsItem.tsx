@@ -116,15 +116,20 @@ export const NewsItem = ({
               {getLocalizedTitle()}
             </Typography>
 
+            {/* Summary: 3 lines on every screen, then an ellipsis.
+                The "& p" rule keeps the markdown paragraph inline so the
+                line clamp can cut it cleanly. Read more via the button. */}
             <Box
               sx={{
                 color: 'text.secondary',
                 textAlign: { xs: 'left', md: 'justify' },
+                lineHeight: 1.5,
                 display: '-webkit-box',
                 WebkitLineClamp: 3,
                 WebkitBoxOrient: 'vertical',
                 overflow: 'hidden',
                 mb: 2,
+                '& p': { display: 'inline', m: 0 },
               }}
             >
               <ReactMarkdown>{getLocalizedSummary()}</ReactMarkdown>

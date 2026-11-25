@@ -9,11 +9,17 @@ const NewsPage = (): JSX.Element => {
     <>
       <div>
         <main>
+          {/* Phones: full width, no extra padding. Larger screens: original 75% layout. */}
           <Container
             maxWidth={false}
+            disableGutters
             sx={{
-              padding: '10px',
-              maxWidth: '75%',
+              width: { xs: '100%', sm: '75%' },
+              maxWidth: { xs: '100%', sm: '75%' },
+              px: { xs: 0, sm: '10px' },
+              py: { xs: 0, sm: '10px' },
+              mx: 'auto',
+              minWidth: 0,
             }}
           >
             <NewsList />

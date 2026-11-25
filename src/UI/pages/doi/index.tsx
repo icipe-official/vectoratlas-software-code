@@ -9,11 +9,13 @@ const DoiListPage = (): JSX.Element => {
     <>
       <div>
         <main>
+          {/* Full width on phones with a small gutter; 75% from md up */}
           <Container
             maxWidth={false}
             sx={{
-              padding: '10px',
-              maxWidth: '75%',
+              px: { xs: 0.5, sm: 1.25 },
+              py: 1.25,
+              maxWidth: { xs: '100%', md: '75%' },
             }}
           >
             <AuthWrapper role="admin">

@@ -21,7 +21,6 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import SendIcon from '@mui/icons-material/Send';
 import { TextEditor } from '../shared/textEditor/RichTextEditor';
 import { useUser } from '@auth0/nextjs-auth0/client';
-import { useTranslations } from 'next-intl';
 
 export interface UnifiedRecipient {
   id: string;
@@ -54,7 +53,6 @@ export const ComposeMessageForm: React.FC<ComposeMessageFormProps> = ({
 }) => {
   const { user } = useUser();
   const [subject, setSubject] = useState('');
-  const t = useTranslations('Email_Compose');
   const [audienceMode, setAudienceMode] = useState<
     'all' | 'subscribers' | 'users' | 'custom'
   >('custom');
@@ -143,35 +141,33 @@ export const ComposeMessageForm: React.FC<ComposeMessageFormProps> = ({
           color="primary"
           sx={{ mb: 3, fontWeight: 600 }}
         >
-          {t('title')}
+          Compose Message
         </Typography>
 
         <Box component="form" onSubmit={handleSubmit} noValidate>
           <Stack spacing={3}>
             <FormControl fullWidth disabled={loading}>
-              <InputLabel id="audience-mode-label">
-                {t('recipientGroup')}
-              </InputLabel>
+              <InputLabel id="audience-mode-label">Recipient Group</InputLabel>
               <Select
                 labelId="audience-mode-label"
-                label={t('recipientGroup')}
+                label="Recipient Group"
                 value={audienceMode}
                 onChange={(e) => {
                   setAudienceMode(e.target.value as any);
                   setTouched((prev) => ({ ...prev, recipients: true }));
                 }}
               >
-                <MenuItem value="custom">{t('groupCustom')}</MenuItem>
-                <MenuItem value="all">{t('groupAll')}</MenuItem>
-                <MenuItem value="subscribers">{t('groupSubscribers')}</MenuItem>
-                <MenuItem value="users">{t('groupUsers')}</MenuItem>
+                <MenuItem value="custom">Custom(Users / Subscribers)</MenuItem>
+                <MenuItem value="all">Users & Subscribers</MenuItem>
+                <MenuItem value="subscribers">All Subscribers Only</MenuItem>
+                <MenuItem value="users">All Users Only</MenuItem>
               </Select>
             </FormControl>
 
             {audienceMode === 'custom' ? (
               <Autocomplete
                 multiple
-                fullWidth
+                fullWidth // <--- Forces horizontal reach to 100%
                 limitTags={5}
                 disableCloseOnSelect
                 options={recipientsList}
@@ -230,14 +226,14 @@ export const ComposeMessageForm: React.FC<ComposeMessageFormProps> = ({
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    fullWidth
-                    label={t('selectRecipients')}
-                    placeholder={t('searchPlaceholder')}
+                    fullWidth // <--- Forces the inner input's horizontal reach
+                    label="Select Recipients *"
+                    placeholder="Search by name, email, or role..."
                     error={recipientsError}
                     helperText={
                       recipientsError
-                        ? t('recipientsError')
-                        : t('customRecipientsHelper')
+                        ? 'Please select at least one valid recipient'
+                        : 'Unsubscribed accounts and users with disabled notifications are grayed out.'
                     }
                   />
                 )}
@@ -259,7 +255,7 @@ export const ComposeMessageForm: React.FC<ComposeMessageFormProps> = ({
             )}
 
             <TextField
-              label={t('subject')}
+              label="Subject"
               fullWidth
               required
               disabled={loading}
@@ -267,7 +263,7 @@ export const ComposeMessageForm: React.FC<ComposeMessageFormProps> = ({
               onChange={(e) => setSubject(e.target.value)}
               onBlur={() => setTouched((prev) => ({ ...prev, subject: true }))}
               error={subjectError}
-              helperText={subjectError ? t('subjectError') : ''}
+              helperText={subjectError ? 'Subject cannot be empty' : ''}
             />
 
             <Box>
@@ -283,7 +279,7 @@ export const ComposeMessageForm: React.FC<ComposeMessageFormProps> = ({
                   }
                 }}
                 error={messageError}
-                helperText={messageError ? t('messageError') : ''}
+                helperText={messageError ? 'Message cannot be empty' : ''}
               />
             </Box>
             {/*<Box sx={{ mt: 2 }}>
@@ -327,7 +323,7 @@ export const ComposeMessageForm: React.FC<ComposeMessageFormProps> = ({
                 startIcon={<SendIcon />}
                 disabled={!isFormValid || loading}
               >
-                {t('sendBtn', { count: activeRecipientEmails.length })}
+                Send ({activeRecipientEmails.length})
               </Button>
             </Box>
           </Stack>

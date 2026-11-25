@@ -21,6 +21,9 @@ import { RolesEnum } from '../../state/state.types';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { useCountryDb } from '../shared/useCountryDb';
 
+// One line color for every border, so the grid looks the same on all screens
+const LINE_COLOR = '#d9d9d9';
+
 interface CountryItem {
   id: string;
   name: string;
@@ -47,7 +50,7 @@ export default function CountryTable(): JSX.Element {
   const [orderBy, setOrderBy] = useState<keyof CountryItem>('name');
   const [loading, setLoading] = useState(true);
 
-  // 1. Clean data formatting inside useMemo to avoid unnecessary re-mapping
+  // Clean data formatting inside useMemo to avoid unnecessary re-mapping
   const countryList = useMemo(() => {
     if (!records || records.length === 0) return [];
     return records.map((c: any) => ({
@@ -102,21 +105,41 @@ export default function CountryTable(): JSX.Element {
   };
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+    <Box sx={{ width: '100%', maxWidth: '100%', minWidth: 0 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', mb: { xs: 2, sm: 3 } }}>
         <Typography
           variant="h4"
           color="primary"
-          sx={{ fontWeight: 600, flexGrow: 1 }}
+          sx={{
+            fontWeight: 600,
+            flexGrow: 1,
+            fontSize: { xs: '1.5rem', sm: '2.125rem' },
+          }}
         >
           {t('title') || 'Country Registry Catalog'}
         </Typography>
       </Box>
 
-      <Paper sx={{ boxShadow: 3, borderRadius: 2, overflow: 'hidden' }}>
+      <Paper
+        elevation={0}
+        sx={{
+          width: '100%',
+          maxWidth: '100%',
+          minWidth: 0,
+          boxSizing: 'border-box',
+          overflow: 'hidden', // clips content to the rounded corners
+          borderRadius: 3,
+          border: `1px solid ${LINE_COLOR}`,
+          boxShadow: 'none',
+        }}
+      >
         {/* Search Toolbar */}
         <Box
-          sx={{ p: 3, borderBottom: '1px solid #e0e0e0', bgcolor: '#fafafa' }}
+          sx={{
+            p: { xs: 1.5, sm: 2.5 },
+            borderBottom: `1px solid ${LINE_COLOR}`,
+            bgcolor: '#ffffff',
+          }}
         >
           <TextField
             fullWidth
@@ -132,15 +155,29 @@ export default function CountryTable(): JSX.Element {
           />
         </Box>
 
-        <TableContainer>
-          <Table stickyHeader>
+        <TableContainer sx={{ overflowX: 'auto' }}>
+          <Table
+            stickyHeader
+            sx={{
+              tableLayout: 'fixed',
+              '& .MuiTableCell-root': {
+                borderBottom: `1px solid ${LINE_COLOR}`,
+              },
+            }}
+          >
             <TableHead>
               <TableRow>
                 {headers.map((header) => (
                   <TableCell
                     key={header.id}
                     sortDirection={orderBy === header.id ? order : false}
-                    sx={{ backgroundColor: '#ffffff', fontWeight: 'bold' }}
+                    sx={{
+                      backgroundColor: '#ffffff',
+                      fontWeight: 'bold',
+                      width: '50%',
+                      px: { xs: 1.5, sm: 2 },
+                      borderBottom: `1px solid ${LINE_COLOR}`,
+                    }}
                   >
                     <TableSortLabel
                       active={orderBy === header.id}
@@ -192,10 +229,23 @@ export default function CountryTable(): JSX.Element {
                       }
                       style={{ cursor: isEditor ? 'pointer' : 'default' }}
                     >
-                      <TableCell style={{ fontWeight: 600 }}>
+                      <TableCell
+                        sx={{
+                          fontWeight: 600,
+                          px: { xs: 1.5, sm: 2 },
+                          wordBreak: 'break-word',
+                        }}
+                      >
                         {row.name}
                       </TableCell>
-                      <TableCell>{row.alternativeNames}</TableCell>
+                      <TableCell
+                        sx={{
+                          px: { xs: 1.5, sm: 2 },
+                          wordBreak: 'break-word',
+                        }}
+                      >
+                        {row.alternativeNames}
+                      </TableCell>
                     </TableRow>
                   ))
               )}
@@ -213,6 +263,30 @@ export default function CountryTable(): JSX.Element {
           onRowsPerPageChange={(e) => {
             setRowsPerPage(parseInt(e.target.value, 10));
             setPage(0);
+          }}
+          labelRowsPerPage={
+            <Box
+              component="span"
+              sx={{ display: { xs: 'none', sm: 'inline' } }}
+            >
+              Rows per page:
+            </Box>
+          }
+          sx={{
+            borderTop: `1px solid ${LINE_COLOR}`,
+            '& .MuiTablePagination-toolbar': {
+              px: { xs: 1, sm: 2 },
+              minHeight: 52,
+              flexWrap: 'nowrap',
+              gap: 0.5,
+            },
+            '& .MuiTablePagination-spacer': { display: 'none' },
+            '& .MuiTablePagination-selectLabel': { m: 0 },
+            '& .MuiTablePagination-displayedRows': {
+              m: 0,
+              whiteSpace: 'nowrap',
+            },
+            '& .MuiTablePagination-actions': { ml: 0, flexShrink: 0 },
           }}
         />
       </Paper>

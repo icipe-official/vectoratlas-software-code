@@ -30,6 +30,13 @@ interface SpeciesItem {
   category: string;
 }
 
+// Phone column widths (must add up to 100%)
+const colWidths: Record<string, string> = {
+  scientificName: '38%',
+  displayName: '34%',
+  category: '28%',
+};
+
 export default function CatalogueTable(): JSX.Element {
   const t = useTranslations('cataloguePage');
   const router = useRouter();
@@ -119,7 +126,12 @@ export default function CatalogueTable(): JSX.Element {
         <Typography
           variant="h4"
           color="primary"
-          sx={{ fontWeight: 600, flexGrow: 1 }}
+          sx={{
+            fontWeight: 600,
+            flexGrow: 1,
+            // Smaller title on phones
+            fontSize: { xs: '1.6rem', sm: '2.125rem' },
+          }}
         >
           {t('title') || 'Species Registry Catalog'}
         </Typography>
@@ -127,7 +139,11 @@ export default function CatalogueTable(): JSX.Element {
 
       <Paper sx={{ boxShadow: 3, borderRadius: 2, overflow: 'hidden' }}>
         <Box
-          sx={{ p: 3, borderBottom: '1px solid #e0e0e0', bgcolor: '#fafafa' }}
+          sx={{
+            p: { xs: 1.5, sm: 3 },
+            borderBottom: '1px solid #e0e0e0',
+            bgcolor: '#fafafa',
+          }}
         >
           <CatalogueFIlter
             onSearchChange={(query) => setSearchQuery(query)}
@@ -135,22 +151,61 @@ export default function CatalogueTable(): JSX.Element {
           />
         </Box>
 
-        <TableContainer>
-          <Table stickyHeader>
+        <TableContainer sx={{ width: '100%', overflowX: 'auto' }}>
+          <Table
+            stickyHeader
+            sx={{
+              width: '100%',
+              // Fixed columns on phones, automatic sizing from sm up
+              tableLayout: { xs: 'fixed', sm: 'auto' },
+              // Compact cells on phones, original spacing from sm up
+              '& .MuiTableCell-root': {
+                padding: { xs: '8px 6px', sm: '16px' },
+                fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                verticalAlign: 'top',
+                overflowWrap: 'break-word',
+                wordBreak: 'break-word',
+                hyphens: 'auto',
+              },
+              // Headers wrap at spaces only, never mid-word
+              '& .MuiTableCell-head': {
+                overflowWrap: 'normal',
+                wordBreak: 'normal',
+                hyphens: 'manual',
+              },
+              // Smaller sort arrow on phones
+              '& .MuiTableSortLabel-icon': {
+                fontSize: { xs: '1rem', sm: '1.5rem' },
+                marginLeft: { xs: 0, sm: '4px' },
+                marginRight: { xs: 0, sm: '4px' },
+              },
+            }}
+          >
             <TableHead>
               <TableRow>
                 {headers.map((header) => (
                   <TableCell
                     key={header.id}
                     sortDirection={orderBy === header.id ? order : false}
-                    sx={{ backgroundColor: '#ffffff', fontWeight: 'bold' }}
+                    sx={{
+                      backgroundColor: '#ffffff',
+                      fontWeight: 'bold',
+                      width: { xs: colWidths[header.id], sm: 'auto' },
+                    }}
                   >
                     <TableSortLabel
                       active={orderBy === header.id}
                       direction={orderBy === header.id ? order : 'asc'}
                       onClick={() => handleSort(header.id as keyof SpeciesItem)}
                     >
-                      <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                      <Typography
+                        variant="subtitle2"
+                        sx={{
+                          fontWeight: 700,
+                          fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                          lineHeight: 1.2,
+                        }}
+                      >
                         {header.text}
                       </Typography>
                       {orderBy === header.id ? (
@@ -239,6 +294,41 @@ export default function CatalogueTable(): JSX.Element {
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
+          sx={{
+            // Keep select, range text and arrows on one line
+            '.MuiTablePagination-toolbar': {
+              flexWrap: 'nowrap',
+              justifyContent: { xs: 'center', sm: 'flex-end' },
+              paddingLeft: { xs: 0, sm: 2 },
+              paddingRight: { xs: 0, sm: 2 },
+              minHeight: { xs: 48, sm: 52 },
+            },
+            // Hide label and spacer on phones to save width
+            '.MuiTablePagination-selectLabel': {
+              display: { xs: 'none', sm: 'block' },
+            },
+            '.MuiTablePagination-spacer': {
+              display: { xs: 'none', sm: 'block' },
+            },
+            // Tighter margins around the select, range text and arrows
+            '.MuiTablePagination-input': {
+              marginLeft: { xs: 0, sm: '8px' },
+              marginRight: { xs: '8px', sm: '32px' },
+            },
+            '.MuiTablePagination-displayedRows': {
+              margin: 0,
+              fontSize: { xs: '0.75rem', sm: '0.875rem' },
+              whiteSpace: 'nowrap',
+            },
+            '.MuiTablePagination-actions': {
+              marginLeft: { xs: '4px', sm: '20px' },
+              flexShrink: 0,
+              whiteSpace: 'nowrap',
+            },
+            '.MuiTablePagination-actions .MuiIconButton-root': {
+              padding: { xs: '4px', sm: '8px' },
+            },
+          }}
         />
       </Paper>
     </Box>
