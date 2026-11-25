@@ -89,9 +89,9 @@ export class DatasetService {
       where: { id: id },
     });
     dataset.uploaded_dataset = uploadedDataset;
+    dataset.organization = uploadedDataset.organization;
     dataset.status = 'Approved';
-    this.datasetRepository.save(dataset);
-    return dataset;
+    return await this.datasetRepository.save(dataset);
   }
 
   async getDatasetByUploadedDatasetId(

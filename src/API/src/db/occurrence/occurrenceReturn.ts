@@ -43,4 +43,7 @@ export class OccurrenceReturn {
 
   @Field({ nullable: true })
   bio_data: string;
+
+  @Field(() => String, { nullable: true })
+  organization_id?: string;
 }

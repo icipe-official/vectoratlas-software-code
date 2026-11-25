@@ -66,6 +66,13 @@ export default function NavMenu({
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
+        MenuListProps={{
+          sx: {
+            maxHeight: 'calc(100vh - 100px)',
+            overflowY: 'auto',
+            py: 0.5,
+          },
+        }}
         // Customizing the "Paper" (the actual container)
         PaperProps={{
           elevation: 0,
@@ -99,9 +106,14 @@ export default function NavMenu({
             key={option.text}
             onClick={handleClose}
             sx={{
-              py: 1.5,
+              py: 1,
               px: 2,
-              '&:hover': { backgroundColor: '#f9fafb' },
+              borderRadius: '6px',
+              mx: 0.5,
+              width: 'calc(100% - 8px)',
+              '&:hover': {
+                backgroundColor: 'rgba(0, 133, 63, 0.08)',
+              },
             }}
           >
             {/* NavLink wrap usually handles the click/navigation */}

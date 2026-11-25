@@ -6,7 +6,14 @@ import {
   BlockBlobClient,
   StorageSharedKeyCredential,
 } from '@azure/storage-blob';
-import { HttpCode, Inject, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpCode,
+  Inject,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { HttpStatusCode } from 'axios';
 import config from 'src/config/config';
 import { formatDate, makeFileNameTimestamped } from 'src/utils';
@@ -79,15 +86,9 @@ export class AzureBlobService {
     const blobServiceClient = this.createConnectionClient();
     let i = 1;
     const containers = blobServiceClient.listContainers();
+
     for await (const container of containers) {
       this.logger.log(`Container ${i++}: ${container.name}`);
-      if (
-        ['raw', 'primary-reviewed', 'tertiary-reviewed'].includes(
-          container.name,
-        )
-      ) {
-        await blobServiceClient.deleteContainer(container.name);
-      }
     }
   }
 
@@ -122,7 +123,6 @@ export class AzureBlobService {
     fileName?: string,
   ): Promise<AzureBlobUploadResponse> {
     try {
-      await this.listContainers();
       this.containerName = this.getContainerName();
       await this.createContainer(this.containerName);
       let fileUrl = null;
@@ -140,6 +140,89 @@ export class AzureBlobService {
       this.logger.error('Error uploading file:', error);
       throw new Error('Failed to upload file');
     }
+  }
+
+  /**
+   * Safely upload an organization logo without listing or deleting containers.
+   */
+  async uploadOrganizationLogo(
+    file: Express.Multer.File,
+  ): Promise<AzureBlobUploadResponse> {
+    try {
+      const containerName = this.getContainerName();
+      const containerClient =
+        this.createConnectionClient().getContainerClient(containerName);
+
+      await containerClient.createIfNotExists();
+
+      const filePath = makeFileNameTimestamped(
+        file.originalname,
+        'organization-logos',
+      );
+      const blobClient = containerClient.getBlockBlobClient(filePath);
+
+      const response = await blobClient.uploadData(file.buffer, {
+        blobHTTPHeaders: {
+          blobContentType: file.mimetype,
+        },
+      });
+
+      return {
+        response,
+        uploadedFileUrl: blobClient.url,
+        container: containerName,
+        filePath,
+      };
+    } catch (error) {
+      console.error('Error uploading organization logo:', error);
+      throw new Error('Failed to upload organization logo');
+    }
+  }
+
+  /**
+   * Read an organization logo without exposing the storage container.
+   * Only a filename is accepted; the folder is always fixed here.
+   */
+  async downloadOrganizationLogo(
+    fileName: string,
+  ): Promise<{ stream: Readable; contentType: string }> {
+    if (
+      !/^[A-Za-z0-9_.() -]+\.(?:jpe?g|png|webp)$/i.test(fileName) ||
+      fileName.includes('..') ||
+      fileName.includes('/')
+    ) {
+      throw new BadRequestException('Invalid organization logo filename');
+    }
+
+    const containerClient = this.createConnectionClient().getContainerClient(
+      this.getContainerName(),
+    );
+    const blobClient = containerClient.getBlockBlobClient(
+      `organization-logos/${fileName}`,
+    );
+
+    if (!(await blobClient.exists())) {
+      throw new NotFoundException('Organization logo not found');
+    }
+
+    const response = await blobClient.download();
+
+    if (!response.readableStreamBody) {
+      throw new NotFoundException('Organization logo could not be read');
+    }
+
+    const extension = fileName.split('.').pop()?.toLowerCase();
+    const contentTypes: Record<string, string> = {
+      jpg: 'image/jpeg',
+      jpeg: 'image/jpeg',
+      png: 'image/png',
+      webp: 'image/webp',
+    };
+
+    return {
+      stream: Readable.from(response.readableStreamBody),
+      contentType: contentTypes[extension || ''] || 'application/octet-stream',
+    };
   }
 
   async zipAndUpload(
@@ -188,8 +271,6 @@ export class AzureBlobService {
     fileUrl: string,
   ): Promise<AzureBlobUploadResponse> {
     try {
-      this.logger.debug('About to list containers');
-      await this.listContainers();
       this.containerName = this.getContainerName();
       await this.createContainer(this.containerName);
       const blobClient = await this.getBlobClient(fileUrl);

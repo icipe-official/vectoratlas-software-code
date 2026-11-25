@@ -1,26 +1,50 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { Logger } from '@nestjs/common';
 import { UploadedDatasetController } from './uploaded-dataset.controller';
 import { UploadedDatasetService } from './uploaded-dataset.service';
 import { UploadedDataset } from './entities/uploaded-dataset.entity';
+import { OrganizationService } from '../organization/organization.service';
 
 describe('UploadedDatasetController', () => {
   let controller: UploadedDatasetController;
 
   const mockUploadedDataService = {
-    create: jest.fn(),
-    findAll: jest.fn(),
-    findOne: jest.fn(),
+    getUploadedDatasets: jest.fn(),
+    getUploadedDataset: jest.fn(),
     update: jest.fn(),
     remove: jest.fn(),
+    firstUpload: jest.fn(),
+  };
+
+  const mockOrganizationService = {
+    findOne: jest.fn(),
+  };
+
+  const mockLogger = {
+    log: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn(),
+    debug: jest.fn(),
+    verbose: jest.fn(),
   };
 
   beforeEach(async () => {
+    jest.clearAllMocks();
+
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UploadedDatasetController],
       providers: [
         {
           provide: UploadedDatasetService,
           useValue: mockUploadedDataService,
+        },
+        {
+          provide: OrganizationService,
+          useValue: mockOrganizationService,
+        },
+        {
+          provide: Logger,
+          useValue: mockLogger,
         },
       ],
     }).compile();
@@ -49,79 +73,55 @@ describe('UploadedDatasetController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('create => Should create a new Uploaded Dataset', async () => {
-    // arrange
-    const dataset: UploadedDataset = makeDataset();
+  it('findAll should return uploaded datasets', async () => {
+    const datasets = [makeDataset()];
+    mockUploadedDataService.getUploadedDatasets.mockResolvedValue(datasets);
 
-    jest.spyOn(mockUploadedDataService, 'create').mockReturnValue(dataset);
-
-    // act
-    const newUpload = { id: null, ...dataset } as UploadedDataset; // remove the id value
-    const result = await controller.create(newUpload);
-
-    // assert
-    expect(mockUploadedDataService.create).toBeCalledWith(newUpload);
-    expect(result).toEqual(dataset);
-  });
-
-  /*
-  it('findAll => Should return an array of uploaded datasets', async () => {
-    // arrange
-    const dataset: UploadedDataset = makeDataset();
-    const datasets = [dataset];
-
-    jest.spyOn(mockUploadedDataService, 'findAll').mockReturnValue(datasets);
-
-    // act
     const result = await controller.findAll();
 
-    // assert
+    expect(mockUploadedDataService.getUploadedDatasets).toHaveBeenCalled();
     expect(result).toEqual(datasets);
-    expect(mockUploadedDataService.findAll).toBeCalled();
   });
 
-  it('findOne => Should find an uploaded dataset given an id', async () => {
-    // arrange
-    const dataset: UploadedDataset = makeDataset();
+  it('findOne should return an uploaded dataset', async () => {
+    const dataset = makeDataset();
+    mockUploadedDataService.getUploadedDataset.mockResolvedValue(dataset);
 
-    jest.spyOn(mockUploadedDataService, 'findOne').mockReturnValue(dataset);
-
-    // act
     const result = await controller.findOne(dataset.id);
 
-    // assert
-    expect(mockUploadedDataService.findOne).toBeCalledWith(dataset.id);
+    expect(mockUploadedDataService.getUploadedDataset).toHaveBeenCalledWith(
+      dataset.id,
+    );
     expect(result).toEqual(dataset);
-  });*/
+  });
 
-  it('update => Should find a dataset given id and update', async () => {
-    // arrange
-    const dataset: UploadedDataset = makeDataset();
+  it('update should update an uploaded dataset', async () => {
+    const dataset = makeDataset();
+    const userId = 'test-user-id';
+    mockUploadedDataService.update.mockResolvedValue(dataset);
 
-    jest.spyOn(mockUploadedDataService, 'update').mockReturnValue(dataset);
-
-    // act
-    const result = await controller.update(dataset.id, dataset);
-
-    // expect
-    expect(result).toEqual(dataset);
-    expect(mockUploadedDataService.update).toHaveBeenCalledWith(
+    const result = await controller.update(
+      { sub: userId },
       dataset.id,
       dataset,
     );
+
+    expect(mockUploadedDataService.update).toHaveBeenCalledWith(
+      dataset.id,
+      dataset,
+      userId,
+      undefined,
+    );
+    expect(result).toEqual(dataset);
   });
 
-  it('remove => Should find a dataset given id and remove the dataset', async () => {
-    // arrange
-    const dataset: UploadedDataset = makeDataset();
+  it('remove should delete an uploaded dataset', async () => {
+    const dataset = makeDataset();
+    mockUploadedDataService.remove.mockResolvedValue(dataset);
 
-    jest.spyOn(mockUploadedDataService, 'remove').mockReturnValue(dataset);
-
-    // act
     const result = await controller.remove(dataset.id);
 
-    // assert
-    expect(result).toEqual(dataset);
     expect(mockUploadedDataService.remove).toHaveBeenCalledWith(dataset.id);
+    expect(result).toEqual(dataset);
   });
 });

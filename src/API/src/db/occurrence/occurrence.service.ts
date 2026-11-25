@@ -414,6 +414,7 @@ export class OccurrenceService {
       .createQueryBuilder('occurrence')
       .orderBy('occurrence.id')
       .leftJoinAndSelect('occurrence.dataset', 'dataset')
+      .leftJoinAndSelect('dataset.organization', 'organization')
       .leftJoinAndSelect('occurrence.site', 'site')
       .leftJoinAndSelect('occurrence.recordedSpecies', 'recordedSpecies')
       .addSelect('occurrence.binary_presence');

@@ -1,4 +1,6 @@
 import { Container, Typography } from '@mui/material';
+import { GetServerSidePropsContext } from 'next';
+import { getMessages } from '../utils/localization';
 import AuthWrapper from '../components/shared/AuthWrapper';
 import ApprovalPage from '../components/admin/approval';
 
@@ -15,4 +17,8 @@ export default function DatasetsPage(): JSX.Element {
       </AuthWrapper>
     </Container>
   );
+}
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return await getMessages(context);
 }

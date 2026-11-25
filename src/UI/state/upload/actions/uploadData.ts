@@ -25,6 +25,7 @@ export const uploadData = createAsyncThunk(
       generateDoi,
       dataFile,
       isValidated,
+      organizationId,
     }: {
       datasetId?: String;
       dataType?: String;
@@ -39,6 +40,7 @@ export const uploadData = createAsyncThunk(
       generateDoi: Boolean;
       dataFile: File;
       isValidated: Boolean;
+      organizationId?: string;
     },
     { getState, dispatch }
   ) => {
@@ -82,7 +84,8 @@ export const uploadData = createAsyncThunk(
         '',
         doi,
         generateDoi,
-        isValidated
+        isValidated,
+        organizationId
       );
 
       // Handle the API response

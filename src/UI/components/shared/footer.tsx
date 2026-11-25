@@ -100,7 +100,7 @@ function Footer() {
           }}
         >
           <Typography variant="caption" color="text.secondary">
-            © {new Date().getFullYear()} Vector Atlas. All rights reserved.
+            © {new Date().getFullYear()} Vector Atlas. {t('rightsReserved')}
           </Typography>
         </Box>
       </Container>

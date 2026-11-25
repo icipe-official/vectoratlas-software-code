@@ -21,12 +21,17 @@ import { getApiVersion } from '../state/config/actions/getApiVersion';
 import { getFeatureFlags } from '../state/config/actions/getFeatureFlags';
 import { getUiVersion } from '../state/config/actions/getUiVersion';
 import { NextIntlProvider } from 'next-intl';
+import enMessages from '../public/messages/en.json';
 // import LanguageSwitcher from '../components/shared/LanguageSwitcher';
 import { useRouter } from 'next/router';
 import { Stack } from '@mui/material';
 import { getOccurrenceData } from '../state/map/actions/getOccurrenceData';
 
-function MyApp({ Component, pageProps }: AppProps) {
+type MyAppPageProps = {
+  messages?: Record<string, any>;
+};
+
+function MyApp({ Component, pageProps }: AppProps<MyAppPageProps>) {
   useEffect(() => {
     store.dispatch(getFeatureFlags());
     store.dispatch(getMapStyles());
@@ -38,6 +43,14 @@ function MyApp({ Component, pageProps }: AppProps) {
   //const messages = {}; //await getMessages();
   const { locale, pathname } = useRouter();
 
+  // Some pages, such as the generated 404 page, do not provide messages.
+  // Use English as a safe fallback so global components like Footer can render.
+  const pageMessages = pageProps.messages ?? {};
+  const hasPageMessages = Object.keys(pageMessages).length > 0;
+
+  const messages = hasPageMessages ? pageMessages : enMessages;
+  const activeLocale = hasPageMessages ? locale || 'en' : 'en';
+
   const noMarginTopPaths = ['/map', '/'];
   return (
     <>
@@ -48,7 +61,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         src={process.env.NEXT_PUBLIC_ANALYTICS_URL}
       />
       {/* @ts-ignore */}
-      <NextIntlProvider messages={pageProps?.messages} locale={locale || 'en'}>
+      <NextIntlProvider messages={messages} locale={activeLocale}>
         <Provider store={store}>
           <ThemeProvider theme={theme}>
             <UserProvider>

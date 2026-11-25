@@ -22,7 +22,8 @@
     "doi": "Doi",
     "admin": "Administrer",
     "translations": "Traductions",
-    "Data": "Données"
+    "Data": "Données",
+    "organizations": "Organisations"
   },
   "HomePage": {
     "list1": "Commencez par l'édition",
@@ -842,8 +843,8 @@
     "contactTitle": "Contactez-nous",
     "resourcesTitle": "Ressources",
     "map": "Accéder à la carte",
-    "subscribe": "S'abonner / Désabonné"
-
+    "subscribe": "S'abonner aux mises à jour",
+    "rightsReserved": "Tous droits réservés."
   },
   "EmailSubscription": {
     "title": "S'abonner / Désabonné",
@@ -1224,5 +1225,55 @@
       }
     }
   },
-  "EditPointData": {}
+  "EditPointData": {},
+  "OrganizationPage": {
+    "title": "Organisations",
+    "add": "Ajouter une organisation",
+    "edit": "Modifier l’organisation",
+    "back": "Retour à la liste des organisations",
+    "search": "Rechercher par nom ou site web",
+    "tryAgain": "Réessayer",
+    "empty": "Aucune organisation pour le moment",
+    "noMatch": "Aucune organisation ne correspond à votre recherche",
+    "emptyHelp": "Ajoutez la première organisation pour lui attribuer une mention sur la carte.",
+    "noMatchHelp": "Essayez un autre nom ou effacez la recherche.",
+    "logo": "Logo",
+    "organization": "Organisation",
+    "actions": "Actions",
+    "editAction": "Modifier",
+    "delete": "Supprimer",
+    "deleteTitle": "Supprimer {name} ?",
+    "deleteMessage": "Cette action supprime définitivement l’organisation et son logo. Une organisation associée à des jeux de données contenant des occurrences ne peut pas être supprimée.",
+    "cancel": "Annuler",
+    "deleteOrganization": "Supprimer l’organisation",
+    "deleting": "Suppression…",
+    "created": "L’organisation {name} a été créée avec succès",
+    "deleted": "L’organisation {name} a été supprimée avec succès",
+    "updated": "L’organisation {name} a été mise à jour avec succès",
+    "loadFailed": "Impossible de charger les organisations.",
+    "createFailed": "Impossible de créer l’organisation.",
+    "updateFailed": "Impossible de mettre à jour l’organisation.",
+    "deleteFailed": "Impossible de supprimer l’organisation.",
+    "notSelected": "Aucune organisation n’a été sélectionnée.",
+    "organizationLoadFailed": "Impossible de charger l’organisation.",
+    "name": "Nom",
+    "website": "Site web",
+    "acknowledgement": "Remerciements",
+    "terms": "Conditions générales",
+    "create": "Créer l’organisation",
+    "update": "Mettre à jour l’organisation",
+    "saving": "Enregistrement…",
+    "reset": "Réinitialiser",
+    "enterName": "Saisissez le nom de l’organisation.",
+    "nameLength": "Le nom doit comporter moins de 120 caractères.",
+    "invalidWebsite": "Saisissez une adresse web complète, par exemple https://example.org.",
+    "replaceLogo": "Remplacer le logo",
+    "chooseImage": "Choisir une image",
+    "removeLogo": "Supprimer le logo",
+    "logoHelp": "JPEG, PNG ou WebP. Les grandes images sont automatiquement redimensionnées pour tenir dans {width} × {height} px.",
+    "resized": "Redimensionnée de {original} à {resized} ({width} × {height} px).",
+    "readyUpload": "Prête à être envoyée ({size}, {width} × {height} px).",
+    "imageProcessFailed": "Impossible de traiter l’image.",
+    "close": "Fermer"
+  }
 }

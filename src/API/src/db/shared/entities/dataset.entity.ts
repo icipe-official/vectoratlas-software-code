@@ -1,10 +1,18 @@
-import { Entity, Column, OneToMany, OneToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  OneToMany,
+  OneToOne,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { ObjectType, Field } from '@nestjs/graphql';
 import { BaseEntity } from '../../base.entity';
 import { Bionomics } from '../../bionomics/entities/bionomics.entity';
 import { Occurrence } from '../../occurrence/entities/occurrence.entity';
 import { UploadedDataset } from '../../uploaded-dataset/entities/uploaded-dataset.entity';
 import { DOI } from '../../doi/entities/doi.entity';
+import { Organization } from '../../organization/entities/organization.entity';
 
 @Entity('dataset')
 @ObjectType({ description: 'Dataset metadata and associations' })
@@ -83,6 +91,17 @@ export class Dataset extends BaseEntity {
 
   @OneToMany(() => Occurrence, (occurrence) => occurrence.dataset)
   occurrence: Occurrence[];
+
+  /**
+   * Organization credited for this dataset.
+   */
+  @ManyToOne(() => Organization, (organization) => organization.datasets, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn({ name: 'organization_id' })
+  @Field(() => Organization, { nullable: true })
+  organization?: Organization;
 
   /**
    * DOI that is linked to this dataset
