@@ -16,20 +16,17 @@ import { Role } from 'src/auth/user_role/role.enum';
 import { Roles } from 'src/auth/user_role/roles.decorator';
 import { AzureBlobService } from 'src/db/azure-blob/azure-blob.service';
 
-// Follow the existing project convention for loading Sharp.
-const sharp = require('sharp');
+import sharpImage from 'sharp';
 
 @Controller('organization')
 export class OrganizationController {
   constructor(private readonly azureBlobService: AzureBlobService) {}
 
-
   @Get('logo/:fileName')
-  async getLogo(
-    @Param('fileName') fileName: string,
-  ): Promise<StreamableFile> {
-    const result =
-      await this.azureBlobService.downloadOrganizationLogo(fileName);
+  async getLogo(@Param('fileName') fileName: string): Promise<StreamableFile> {
+    const result = await this.azureBlobService.downloadOrganizationLogo(
+      fileName,
+    );
 
     return new StreamableFile(result.stream, {
       type: result.contentType,
@@ -64,11 +61,22 @@ export class OrganizationController {
       );
     }
 
+    console.log('[organization/upload-logo] Received file:', {
+      originalname: file.originalname,
+      mimetype: file.mimetype,
+      size: file.size,
+      bufferIsBuffer: Buffer.isBuffer(file.buffer),
+      bufferLength: file.buffer?.length,
+      bufferHeader: file.buffer?.subarray(0, 16).toString('hex'),
+    });
+
     let metadata;
 
     try {
-      metadata = await sharp(file.buffer).metadata();
-    } catch {
+      metadata = await sharpImage(file.buffer).metadata();
+      console.log('[organization/upload-logo] Sharp metadata:', metadata);
+    } catch (error) {
+      console.error('[organization/upload-logo] Sharp error:', error);
       throw new BadRequestException('The uploaded file is not a valid image');
     }
 

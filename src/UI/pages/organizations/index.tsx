@@ -67,9 +67,7 @@ function OrganizationsContent() {
     try {
       setOrganizations(await listOrganizations(token));
     } catch (e) {
-      setLoadError(
-        e instanceof Error ? e.message : t('loadFailed')
-      );
+      setLoadError(e instanceof Error ? e.message : t('loadFailed'));
     } finally {
       setLoading(false);
     }
@@ -120,10 +118,7 @@ function OrganizationsContent() {
       setToast({
         open: true,
         severity: 'error',
-        message:
-          e instanceof Error
-            ? e.message
-            : t('deleteFailed'),
+        message: e instanceof Error ? e.message : t('deleteFailed'),
       });
     } finally {
       setDeleting(false);
@@ -176,7 +171,7 @@ function OrganizationsContent() {
         <Box sx={{ p: 2, borderBottom: `1px solid ${brand.border}` }}>
           <TextField
             size="small"
-            placeholder={t("search")}
+            placeholder={t('search')}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             sx={{ width: { xs: '100%', sm: 340 } }}
@@ -210,14 +205,10 @@ function OrganizationsContent() {
         ) : visible.length === 0 ? (
           <Box sx={{ py: 8, textAlign: 'center' }}>
             <Typography sx={{ fontWeight: 600, color: brand.text }}>
-              {organizations.length === 0
-                ? t('empty')
-                : t('noMatch')}
+              {organizations.length === 0 ? t('empty') : t('noMatch')}
             </Typography>
             <Typography variant="body2" sx={{ color: brand.muted, mt: 0.5 }}>
-              {organizations.length === 0
-                ? t('emptyHelp')
-                : t('noMatchHelp')}
+              {organizations.length === 0 ? t('emptyHelp') : t('noMatchHelp')}
             </Typography>
           </Box>
         ) : (
@@ -228,7 +219,9 @@ function OrganizationsContent() {
                   <TableCell sx={{ fontWeight: 600, width: 140 }}>
                     {t('logo')}
                   </TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>{t('organization')}</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>
+                    {t('organization')}
+                  </TableCell>
                   <TableCell sx={{ fontWeight: 600 }} align="right">
                     {t('actions')}
                   </TableCell>
@@ -238,7 +231,10 @@ function OrganizationsContent() {
                 {visible.map((org) => (
                   <TableRow key={org.id} hover>
                     <TableCell>
-                      <LogoThumb src={getOrganizationLogoUrl(org.logoUrl) ?? null} name={org.name} />
+                      <LogoThumb
+                        src={getOrganizationLogoUrl(org.logoUrl) ?? null}
+                        name={org.name}
+                      />
                     </TableCell>
                     <TableCell>
                       <Typography sx={{ fontWeight: 600, color: brand.text }}>
@@ -314,9 +310,7 @@ function OrganizationsContent() {
           {t('deleteTitle', { name: toDelete?.name ?? '' })}
         </DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            {t('deleteMessage')}
-          </DialogContentText>
+          <DialogContentText>{t('deleteMessage')}</DialogContentText>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
           <Button

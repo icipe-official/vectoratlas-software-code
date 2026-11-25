@@ -107,8 +107,7 @@ export default function OrganizationForm({
     }
 
     if (website && !URL_PATTERN.test(website)) {
-      next.website =
-        t('invalidWebsite');
+      next.website = t('invalidWebsite');
     }
 
     return next;
@@ -160,7 +159,7 @@ export default function OrganizationForm({
 
         <Stack spacing={3}>
           <TextField
-            label={t("name")}
+            label={t('name')}
             required
             value={fields.name}
             onChange={set('name')}
@@ -170,7 +169,7 @@ export default function OrganizationForm({
           />
 
           <TextField
-            label={t("website")}
+            label={t('website')}
             placeholder="https://"
             value={fields.website}
             onChange={set('website')}
@@ -196,7 +195,7 @@ export default function OrganizationForm({
 
         <Stack spacing={3}>
           <TextField
-            label={t("acknowledgement")}
+            label={t('acknowledgement')}
             value={fields.acknowledgement}
             onChange={set('acknowledgement')}
             multiline
@@ -205,7 +204,7 @@ export default function OrganizationForm({
           />
 
           <TextField
-            label={t("terms")}
+            label={t('terms')}
             value={fields.termsAndConditions}
             onChange={set('termsAndConditions')}
             multiline

@@ -58,7 +58,7 @@ export class OrganizationService {
   async update(input: UpdateOrganizationInput): Promise<Organization> {
     const organization = await this.findOne(input.id);
 
-        if (input.name !== undefined && input.name !== null) {
+    if (input.name !== undefined && input.name !== null) {
       const name = input.name.trim();
       if (name !== organization.name) {
         await this.assertNameAvailable(name);

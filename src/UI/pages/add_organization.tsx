@@ -46,10 +46,7 @@ function AddOrganizationContent() {
       setToast({
         open: true,
         severity: 'error',
-        message:
-          e instanceof Error
-            ? e.message
-            : t('createFailed'),
+        message: e instanceof Error ? e.message : t('createFailed'),
       });
       setSaving(false);
     }
@@ -76,7 +73,7 @@ function AddOrganizationContent() {
       <OrganizationForm
         isEdit={false}
         saving={saving}
-        submitLabel={t("create")}
+        submitLabel={t('create')}
         initial={EMPTY}
         initialLogoUrl={null}
         onSubmit={handleSubmit}

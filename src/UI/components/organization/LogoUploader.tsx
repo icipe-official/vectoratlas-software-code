@@ -56,9 +56,7 @@ export default function LogoUploader({ name, currentUrl, onChange }: Props) {
       setRemoved(false);
       onChange({ type: 'replace', file: result.file });
     } catch (e) {
-      setError(
-        e instanceof Error ? e.message : t('imageProcessFailed')
-      );
+      setError(e instanceof Error ? e.message : t('imageProcessFailed'));
     } finally {
       setProcessing(false);
     }

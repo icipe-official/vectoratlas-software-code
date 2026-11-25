@@ -59,9 +59,7 @@ function EditOrganizationContent() {
       } catch (e) {
         if (!cancelled)
           setLoadError(
-            e instanceof Error
-              ? e.message
-              : t('organizationLoadFailed')
+            e instanceof Error ? e.message : t('organizationLoadFailed')
           );
       } finally {
         if (!cancelled) setLoading(false);
@@ -95,10 +93,7 @@ function EditOrganizationContent() {
       setToast({
         open: true,
         severity: 'error',
-        message:
-          e instanceof Error
-            ? e.message
-            : t('updateFailed'),
+        message: e instanceof Error ? e.message : t('updateFailed'),
       });
     } finally {
       setSaving(false);
@@ -128,7 +123,7 @@ function EditOrganizationContent() {
           key={`${organization.id}-${formVersion}`}
           isEdit
           saving={saving}
-          submitLabel={t("update")}
+          submitLabel={t('update')}
           initial={{
             name: organization.name,
             website: organization.website,

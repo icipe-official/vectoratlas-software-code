@@ -239,7 +239,11 @@ export default function OrganizationManager({ getToken }: Props) {
           {filtered.map((o) => (
             <TableRow key={o.id}>
               <TableCell>
-                <Avatar variant="square" src={getOrganizationLogoUrl(o.logo)} alt={o.name}>
+                <Avatar
+                  variant="square"
+                  src={getOrganizationLogoUrl(o.logo)}
+                  alt={o.name}
+                >
                   {o.name[0]}
                 </Avatar>
               </TableCell>

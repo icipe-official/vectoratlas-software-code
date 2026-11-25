@@ -44,7 +44,8 @@ const TOKEN_TTL_MS = 50 * 60 * 1000;
 async function resolveToken(token?: string): Promise<string | undefined> {
   if (token) return token;
   if (typeof window === 'undefined') return undefined;
-  if (cachedToken && Date.now() - cachedToken.fetchedAt < TOKEN_TTL_MS) return cachedToken.value;
+  if (cachedToken && Date.now() - cachedToken.fetchedAt < TOKEN_TTL_MS)
+    return cachedToken.value;
   try {
     const res = await fetch('/api/protected/auth');
     if (!res.ok) return undefined;
@@ -122,9 +123,12 @@ async function gql<T>(query: string, token?: string): Promise<T> {
   try {
     json = await res.json();
   } catch {
-    throw new Error(`The server returned an unexpected response (${res.status}).`);
+    throw new Error(
+      `The server returned an unexpected response (${res.status}).`
+    );
   }
-  if (json.errors?.length) throw new Error(friendlyMessage(json.errors[0].message));
+  if (json.errors?.length)
+    throw new Error(friendlyMessage(json.errors[0].message));
   return json.data as T;
 }
 
@@ -137,7 +141,8 @@ let mockStore: Organization[] = [
     website: 'https://vectoratlas.icipe.org',
     logoUrl: null,
     acknowledgement: 'Data provided by Vector Atlas.',
-    termsAndConditions: 'Data may be used for non-commercial research with citation.',
+    termsAndConditions:
+      'Data may be used for non-commercial research with citation.',
     occurrenceCount: 0,
   },
   {
@@ -163,19 +168,24 @@ const fileToDataUrl = (file: File): Promise<string> =>
 
 /* ---------------------------------------------------------------- public */
 
-export async function listOrganizations(token?: string): Promise<Organization[]> {
+export async function listOrganizations(
+  token?: string
+): Promise<Organization[]> {
   if (USE_MOCK) {
     await wait();
     return [...mockStore];
   }
   const data = await gql<{ allOrganizations: ApiOrganization[] }>(
     `query { allOrganizations { ${FIELDS} } }`,
-    token,
+    token
   );
   return (data.allOrganizations ?? []).map(toOrganization);
 }
 
-export async function getOrganization(id: string, token?: string): Promise<Organization> {
+export async function getOrganization(
+  id: string,
+  token?: string
+): Promise<Organization> {
   if (USE_MOCK) {
     await wait();
     const found = mockStore.find((o) => o.id === id);
@@ -184,22 +194,31 @@ export async function getOrganization(id: string, token?: string): Promise<Organ
   }
   const data = await gql<{ organization: ApiOrganization | null }>(
     `query { organization(id: ${JSON.stringify(id)}) { ${FIELDS} } }`,
-    token,
+    token
   );
   if (!data.organization) throw new Error('Organization not found.');
   return toOrganization(data.organization);
 }
 
-export async function createOrganization(input: OrganizationInput, token?: string): Promise<Organization> {
+export async function createOrganization(
+  input: OrganizationInput,
+  token?: string
+): Promise<Organization> {
   if (USE_MOCK) {
     await wait();
-    const created: Organization = { ...input, id: String(Date.now()), occurrenceCount: 0 };
+    const created: Organization = {
+      ...input,
+      id: String(Date.now()),
+      occurrenceCount: 0,
+    };
     mockStore = [...mockStore, created];
     return { ...created };
   }
   const data = await gql<{ createOrganization: ApiOrganization }>(
-    `mutation { createOrganization(input: ${literal(toApiInput(input))}) { ${FIELDS} } }`,
-    token,
+    `mutation { createOrganization(input: ${literal(
+      toApiInput(input)
+    )}) { ${FIELDS} } }`,
+    token
   );
   return toOrganization(data.createOrganization);
 }
@@ -207,7 +226,7 @@ export async function createOrganization(input: OrganizationInput, token?: strin
 export async function updateOrganization(
   id: string,
   input: OrganizationInput,
-  token?: string,
+  token?: string
 ): Promise<Organization> {
   if (USE_MOCK) {
     await wait();
@@ -217,28 +236,36 @@ export async function updateOrganization(
     return { ...mockStore[index] };
   }
   const data = await gql<{ updateOrganization: ApiOrganization }>(
-    `mutation { updateOrganization(input: ${literal({ id, ...toApiInput(input) })}) { ${FIELDS} } }`,
-    token,
+    `mutation { updateOrganization(input: ${literal({
+      id,
+      ...toApiInput(input),
+    })}) { ${FIELDS} } }`,
+    token
   );
   return toOrganization(data.updateOrganization);
 }
 
 // The API refuses to delete an organization that still has datasets with occurrence records.
 // Its message is passed straight through, so the list page shows it in the error toast.
-export async function deleteOrganization(id: string, token?: string): Promise<void> {
+export async function deleteOrganization(
+  id: string,
+  token?: string
+): Promise<void> {
   if (USE_MOCK) {
     await wait();
     const found = mockStore.find((o) => o.id === id);
     if (!found) throw new Error('Organization not found.');
     if ((found.occurrenceCount ?? 0) > 0) {
-      throw new Error(`${found.name} cannot be deleted because records are linked to it.`);
+      throw new Error(
+        `${found.name} cannot be deleted because records are linked to it.`
+      );
     }
     mockStore = mockStore.filter((o) => o.id !== id);
     return;
   }
   await gql<{ deleteOrganization: { id: string } }>(
     `mutation { deleteOrganization(id: ${JSON.stringify(id)}) { id name } }`,
-    token,
+    token
   );
 }
 
@@ -277,18 +304,26 @@ export async function uploadLogo(file: File, token?: string): Promise<string> {
     location =
       typeof parsed === 'string'
         ? parsed
-        : parsed?.logoUrl ?? parsed?.url ?? parsed?.logo ?? parsed?.filePath ?? parsed?.path ?? '';
+        : parsed?.logoUrl ??
+          parsed?.url ??
+          parsed?.logo ??
+          parsed?.filePath ??
+          parsed?.path ??
+          '';
   } catch {
     location = text.trim().replace(/^"|"$/g, '');
   }
-  if (!location) throw new Error('The logo was uploaded, but the server did not say where it was saved.');
+  if (!location)
+    throw new Error(
+      'The logo was uploaded, but the server did not say where it was saved.'
+    );
   return location;
 }
 
 export async function applyLogoChange(
   change: LogoChange,
   currentUrl: string | null,
-  token?: string,
+  token?: string
 ): Promise<string | null> {
   if (change.type === 'remove') return null;
   if (change.type === 'replace') return uploadLogo(change.file, token);

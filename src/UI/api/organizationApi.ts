@@ -35,12 +35,14 @@ export const getOrganizationLogoUrl = (
 
     const apiBase = process.env.NEXT_PUBLIC_API_URL ?? '/vector-api';
 
-    return `${apiBase.replace(/\/$/, '')}/organization/logo/${encodeURIComponent(fileName)}`;
+    return `${apiBase.replace(
+      /\/$/,
+      ''
+    )}/organization/logo/${encodeURIComponent(fileName)}`;
   } catch {
     return logo;
   }
 };
-
 
 async function gql<T>(
   token: string | undefined,
@@ -133,7 +135,9 @@ export const uploadOrganizationLogo = async (
   formData.append('file', file);
 
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL ?? '/vector-api'}/organization/upload-logo`,
+    `${
+      process.env.NEXT_PUBLIC_API_URL ?? '/vector-api'
+    }/organization/upload-logo`,
     {
       method: 'POST',
       headers: {

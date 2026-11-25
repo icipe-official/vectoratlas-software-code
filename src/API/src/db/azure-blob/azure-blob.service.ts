@@ -150,9 +150,8 @@ export class AzureBlobService {
   ): Promise<AzureBlobUploadResponse> {
     try {
       const containerName = this.getContainerName();
-      const containerClient = this.createConnectionClient().getContainerClient(
-        containerName,
-      );
+      const containerClient =
+        this.createConnectionClient().getContainerClient(containerName);
 
       await containerClient.createIfNotExists();
 
@@ -179,7 +178,6 @@ export class AzureBlobService {
       throw new Error('Failed to upload organization logo');
     }
   }
-
 
   /**
    * Read an organization logo without exposing the storage container.
@@ -273,7 +271,6 @@ export class AzureBlobService {
     fileUrl: string,
   ): Promise<AzureBlobUploadResponse> {
     try {
-
       this.containerName = this.getContainerName();
       await this.createContainer(this.containerName);
       const blobClient = await this.getBlobClient(fileUrl);

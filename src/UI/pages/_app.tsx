@@ -27,7 +27,11 @@ import { useRouter } from 'next/router';
 import { Stack } from '@mui/material';
 import { getOccurrenceData } from '../state/map/actions/getOccurrenceData';
 
-function MyApp({ Component, pageProps }: AppProps) {
+type MyAppPageProps = {
+  messages?: Record<string, any>;
+};
+
+function MyApp({ Component, pageProps }: AppProps<MyAppPageProps>) {
   useEffect(() => {
     store.dispatch(getFeatureFlags());
     store.dispatch(getMapStyles());
@@ -41,10 +45,10 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   // Some pages, such as the generated 404 page, do not provide messages.
   // Use English as a safe fallback so global components like Footer can render.
-  const hasPageMessages =
-    Boolean(pageProps?.messages) && Object.keys(pageProps.messages).length > 0;
+  const pageMessages = pageProps.messages ?? {};
+  const hasPageMessages = Object.keys(pageMessages).length > 0;
 
-  const messages = hasPageMessages ? pageProps.messages : enMessages;
+  const messages = hasPageMessages ? pageMessages : enMessages;
   const activeLocale = hasPageMessages ? locale || 'en' : 'en';
 
   const noMarginTopPaths = ['/map', '/'];

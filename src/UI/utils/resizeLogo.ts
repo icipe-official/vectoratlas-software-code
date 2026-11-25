@@ -39,13 +39,20 @@ const loadImage = (file: File): Promise<HTMLImageElement> =>
     img.src = url;
   });
 
-const canvasToBlob = (canvas: HTMLCanvasElement, type: string, quality: number): Promise<Blob> =>
+const canvasToBlob = (
+  canvas: HTMLCanvasElement,
+  type: string,
+  quality: number
+): Promise<Blob> =>
   new Promise((resolve, reject) =>
     canvas.toBlob(
-      (blob) => (blob ? resolve(blob) : reject(new Error('The image could not be processed.'))),
+      (blob) =>
+        blob
+          ? resolve(blob)
+          : reject(new Error('The image could not be processed.')),
       type,
-      quality,
-    ),
+      quality
+    )
   );
 
 export async function resizeLogo(file: File): Promise<ResizedLogo> {
@@ -53,13 +60,19 @@ export async function resizeLogo(file: File): Promise<ResizedLogo> {
     throw new Error('Choose a JPEG, PNG or WebP image.');
   }
   if (file.size > LOGO_MAX_INPUT_BYTES) {
-    throw new Error('This image is too large to process. Choose one under 25 MB.');
+    throw new Error(
+      'This image is too large to process. Choose one under 25 MB.'
+    );
   }
 
   const img = await loadImage(file);
 
   // Fit inside MAX_WIDTH x MAX_HEIGHT, keep the aspect ratio, never upscale.
-  const scale = Math.min(1, LOGO_MAX_WIDTH / img.naturalWidth, LOGO_MAX_HEIGHT / img.naturalHeight);
+  const scale = Math.min(
+    1,
+    LOGO_MAX_WIDTH / img.naturalWidth,
+    LOGO_MAX_HEIGHT / img.naturalHeight
+  );
   let width = Math.max(1, Math.round(img.naturalWidth * scale));
   let height = Math.max(1, Math.round(img.naturalHeight * scale));
 
@@ -96,7 +109,9 @@ export async function resizeLogo(file: File): Promise<ResizedLogo> {
   if (!blob) throw new Error('The image could not be processed.');
 
   const baseName = file.name.replace(/\.[^.]+$/, '') || 'logo';
-  const resized = new File([blob], `${baseName}.${extension}`, { type: outType });
+  const resized = new File([blob], `${baseName}.${extension}`, {
+    type: outType,
+  });
 
   return {
     file: resized,
@@ -105,6 +120,9 @@ export async function resizeLogo(file: File): Promise<ResizedLogo> {
     height,
     originalBytes: file.size,
     resizedBytes: resized.size,
-    wasResized: width !== img.naturalWidth || height !== img.naturalHeight || resized.size < file.size,
+    wasResized:
+      width !== img.naturalWidth ||
+      height !== img.naturalHeight ||
+      resized.size < file.size,
   };
 }
