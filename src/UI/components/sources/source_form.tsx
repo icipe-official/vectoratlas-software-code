@@ -119,7 +119,8 @@ export default function SourceForm({ existingSource }: SourceFormProps) {
         alignItems: 'center',
       }}
     >
-      <Box p="35px" sx={{ width: 1 }}>
+      {/* Equal left and right padding: tighter on phones, original 35px from md up */}
+      <Box sx={{ width: 1, p: { xs: '16px', md: '35px' } }}>
         <form onSubmit={handleSubmit((d) => onSubmit(d))}>
           <div>
             <Typography variant="h4" color="primary" pb={1}>

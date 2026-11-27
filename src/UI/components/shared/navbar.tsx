@@ -101,7 +101,6 @@ export default function NavBar() {
   );
 
   // Help
-  // Help
   navMenuItems.push(
     <NavLink
       key="Help"
@@ -121,21 +120,35 @@ export default function NavBar() {
 
   // Language switcher
   navMenuItems.push(<LanguageSwitcher key="languageSwitcher" />);
+
   return (
     <AppBar
       id="navbar"
       position="sticky"
       sx={{ bgcolor: 'white', top: 0, margin: 0, zIndex: 2 }}
     >
-      <Toolbar>
+      <Toolbar
+        sx={{
+          // Compact bar on phones, original height on larger screens
+          minHeight: { xs: 56, sm: 64 },
+          px: { xs: 1, sm: 2 },
+        }}
+      >
         <>
-          <Box sx={{ flexGrow: 1, mt: '6px' }}>
+          <Box sx={{ flexGrow: 1, mt: { xs: 0, sm: '6px' } }}>
             <Link href="/">
               <picture>
-                <img
+                <Box
+                  component="img"
                   src="/vector-atlas-logo.svg"
-                  style={{ maxHeight: '80px', cursor: 'pointer' }}
                   alt="Vector Atlas logo"
+                  sx={{
+                    display: 'block',
+                    width: 'auto',
+                    // Smaller logo on phones, original 80px cap on desktop
+                    maxHeight: { xs: 44, sm: 60, md: 80 },
+                    cursor: 'pointer',
+                  }}
                 />
               </picture>
             </Link>

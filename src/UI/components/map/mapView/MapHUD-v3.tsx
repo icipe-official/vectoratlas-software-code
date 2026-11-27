@@ -88,6 +88,11 @@ const MapHUD: React.FC<MapHUDProps> = ({
   // detect mobile breakpoint
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
+  // Donut dimensions: smaller on mobile to save vertical space
+  const donut = isMobile
+    ? { width: 120, height: 96, inner: 28, outer: 42 }
+    : { width: 160, height: 120, inner: 38, outer: 54 };
+
   const dispatch = useAppDispatch();
   const token = useAppSelector((state) => state.auth.token);
   const dbCountryData = useCountryDb(true, token as string | null);
@@ -520,30 +525,21 @@ const MapHUD: React.FC<MapHUDProps> = ({
   };
 
   // ─── Responsive positioning ───────────────────────────────────────────────
-  // Desktop: fixed top-right corner (original behaviour)
-  // Mobile:  fixed bottom sheet — full width, sits above the bottom edge
+  // Desktop: floating card in the top-right corner (unchanged).
+  // Mobile: normal flow inside the Vector Panel dock sheet. The dock already
+  // provides the title bar, scrolling and sizing, so the HUD fills its content
+  // instead of floating over the page.
   const panelStyle: React.CSSProperties = isMobile
     ? {
-        position: 'fixed',
-        left: 0,
-        right: 0,
-        bottom: 0,
-        top: 'auto',
+        position: 'relative',
         width: '100%',
-        // When collapsed show only the header; when expanded show up to 60 vh
-        maxHeight: isExpanded ? '60vh' : 66,
-        borderRadius: '20px 20px 0 0',
-        overflowY: isExpanded ? 'auto' : 'hidden',
-        padding: 14,
-        backdropFilter: 'blur(18px)',
-        background: 'rgba(10,15,20,0.92)',
-        border: '1px solid rgba(126,239,168,0.18)',
-        borderBottom: 'none',
-        boxShadow:
-          '0 -4px 40px rgba(126,239,168,0.15), inset 0 0 20px rgba(0,0,0,0.6)',
+        boxSizing: 'border-box',
+        padding: '10px 12px',
+        borderRadius: 12,
+        overflow: 'hidden',
+        background: 'rgba(10,15,20,0.94)',
         color: 'white',
-        transition: 'max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
-        zIndex: 20,
+        zIndex: 1,
       }
     : {
         position: 'absolute',
@@ -566,33 +562,23 @@ const MapHUD: React.FC<MapHUDProps> = ({
 
   return (
     <div style={panelStyle}>
-      {/* Drag handle shown only on mobile to hint that the sheet is swipeable */}
-      {isMobile && (
-        <Box
-          sx={{
-            width: 36,
-            height: 4,
-            borderRadius: 2,
-            background: 'rgba(126,239,168,0.45)',
-            mx: 'auto',
-            mb: 1,
-          }}
-        />
-      )}
-
       <div className="radar" />
       <div ref={pingRef} className="sonar" />
 
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Typography fontWeight={800} fontSize={13} letterSpacing={1}>
-          VECTOR PANEL
-        </Typography>
+        {/* On phones the dock already shows the "Vector Panel" title bar */}
+        {!isMobile && (
+          <Typography fontWeight={800} fontSize={13} letterSpacing={1}>
+            VECTOR PANEL
+          </Typography>
+        )}
 
         <IconButton
           onClick={() => setPanelOpen((v) => !v)}
           size="small"
           sx={{
             color: '#7EEFA8',
+            ml: isMobile ? 'auto' : 0,
             transform: isExpanded ? 'rotate(0deg)' : 'rotate(180deg)',
           }}
         >
@@ -618,15 +604,15 @@ const MapHUD: React.FC<MapHUDProps> = ({
       )}
 
       {isExpanded && (
-        <Box display="flex" justifyContent="center" mt={1}>
+        <Box display="flex" justifyContent="center" mt={isMobile ? 0.5 : 1}>
           <Box sx={{ position: 'relative' }}>
-            <PieChart width={160} height={120}>
+            <PieChart width={donut.width} height={donut.height}>
               <Tooltip content={<CustomDonutTooltip />} />
               <Pie
                 data={donutData}
                 dataKey="value"
-                innerRadius={38}
-                outerRadius={54}
+                innerRadius={donut.inner}
+                outerRadius={donut.outer}
                 paddingAngle={3}
               >
                 {donutData.map((d, i) => (
@@ -690,11 +676,15 @@ const MapHUD: React.FC<MapHUDProps> = ({
       )}
 
       {totalLoadedPoints > 0 && (
-        <Box textAlign="center" mt={-1}>
+        <Box textAlign="center" mt={isMobile ? -0.5 : -1}>
           <Typography fontSize={10} sx={{ opacity: 0.6 }}>
             👁️ Total Loaded Occurrence Records
           </Typography>
-          <Typography fontSize={22} fontWeight={900} color="#7EEFA8">
+          <Typography
+            fontSize={isMobile ? 16 : 22}
+            fontWeight={900}
+            color="#7EEFA8"
+          >
             {animatedLoadedCount.toLocaleString()} /{' '}
             {occurrenceData.length.toLocaleString()}
           </Typography>
@@ -705,7 +695,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
         <>
           <Typography
             fontSize={9}
-            sx={{ opacity: 0.6, textAlign: 'center', mt: 1, mb: 0.5 }}
+            sx={{ opacity: 0.6, textAlign: 'center', mt: 0.5, mb: 0.5 }}
           >
             Click a card to toggle map visibility
           </Typography>
@@ -726,7 +716,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
               }
               sx={{
                 px: 1.2,
-                py: 0.8,
+                py: 0.6,
                 borderRadius: 2,
                 background: showDetected
                   ? 'rgba(126,239,168,0.16)'
@@ -813,7 +803,7 @@ const MapHUD: React.FC<MapHUDProps> = ({
               }
               sx={{
                 px: 1.2,
-                py: 0.8,
+                py: 0.6,
                 borderRadius: 2,
                 background: showNotDetected
                   ? 'rgba(255,204,128,0.16)'
@@ -896,14 +886,16 @@ const MapHUD: React.FC<MapHUDProps> = ({
           <Typography
             fontSize={11}
             fontWeight={800}
-            sx={{ opacity: 0.7, mb: 1 }}
+            sx={{ opacity: 0.7, mb: 0.5 }}
           >
             Vectors on Map
           </Typography>
 
           <Box
-            mt={2}
-            maxHeight={220}
+            mt={isMobile ? 1 : 2}
+            // On phones the dock scrolls the whole panel, so the list
+            // only needs a modest cap of its own
+            maxHeight={isMobile ? 200 : 220}
             overflow="auto"
             sx={{ position: 'relative' }}
           >
@@ -946,8 +938,8 @@ const MapHUD: React.FC<MapHUDProps> = ({
                         normalizedSp === OTHER_LABEL ? 'sticky' : 'relative',
                       top: 0,
                       zIndex: normalizedSp === OTHER_LABEL ? 15 : 1,
-                      mb: 1,
-                      p: 1,
+                      mb: 0.75,
+                      p: isMobile ? 0.75 : 1,
                       borderRadius: 2,
                       overflow: 'hidden',
                       background: isHovered

@@ -1,4 +1,4 @@
-import { Container } from '@mui/material';
+import { Box, Button, Container } from '@mui/material';
 import React from 'react';
 import { UploadedDatasetDetailView } from '../../components/dataset/uploadedDatasetDetailView';
 import { useRouter } from 'next/router';
@@ -20,7 +20,18 @@ const UploadedDatasetDetailsPage = () => {
           RolesEnum.ADMIN,
         ]}
       >
-        <UploadedDatasetDetailView />
+        <>
+          <Box sx={{ mt: 3, mb: -8 }}>
+            {/* Returns to the Datasets list */}
+            <Button
+              variant="outlined"
+              onClick={() => router.push('/uploaded-dataset/list')}
+            >
+              Back to Datasets
+            </Button>
+          </Box>
+          <UploadedDatasetDetailView />
+        </>
       </AuthWrapper>
     </Container>
   );

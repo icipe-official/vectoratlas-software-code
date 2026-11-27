@@ -1,9 +1,18 @@
-import { DataGrid, GridColDef, GridToolbar } from '@mui/x-data-grid';
-import React, { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../state/hooks';
-import { Box, Chip, FormLabel, styled, Typography } from '@mui/material';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import React from 'react';
+import { useAppSelector } from '../../state/hooks';
+import {
+  Box,
+  Card,
+  CardContent,
+  Chip,
+  Stack,
+  Typography,
+  styled,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import UploadIcon from '@mui/icons-material/Upload';
-import CircleIcon from '@mui/icons-material/Circle';
 import DoneIcon from '@mui/icons-material/Done';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import ReportProblemIcon from '@mui/icons-material/ReportProblem';
@@ -11,9 +20,7 @@ import DraftsIcon from '@mui/icons-material/Drafts';
 import MessageIcon from '@mui/icons-material/Message';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
-// import ModelActionTypeRenderer from '../shared/modelActionTypeRenderer';
 import { UploadedModelActionTypeEnum } from '../../state/state.types';
-import { formatDate } from '../../utils/utils';
 import DateRenderer from '../shared/dateRenderer';
 import { useTranslations } from 'next-intl';
 
@@ -35,19 +42,12 @@ const StyledChip = styled(Chip)(({ theme }) => ({
     color: 'inherit',
   },
   border: `1px solid ${theme.palette.error.main}`,
-  // '&.Communication': {
-  //   color: (theme.vars || theme).pallette.info.dark,
-  //   border: `1px solid`
-  // }
 }));
 
-const ActionTypeRenderer = ({ action_type }: { action_type: string }) => {
+// Icon shown beside each action type
+const getActionIcon = (actionType: string) => {
   const size = { width: 20, height: 20 };
-  // 'primary' | 'secondary' | 'default' | 'error' | 'info' | 'success' | 'warning',
-
-  let icon: any = null;
-
-  const map: Record<string, any> = {
+  const map: Record<string, React.ReactElement> = {
     [UploadedModelActionTypeEnum.NEW_UPLOAD.toString()]: (
       <DraftsIcon sx={size} color={'warning'} />
     ),
@@ -73,44 +73,96 @@ const ActionTypeRenderer = ({ action_type }: { action_type: string }) => {
       <MessageIcon sx={size} color={'info'} />
     ),
   };
+  return map[actionType] ?? null;
+};
+
+// One card per log entry, used on phones
+const LogCard = ({ log }: { log: IUploadedModelLog }) => {
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      {/* <UploadIcon sx={{ width: 10, height: 10 }} color={'red'} /> */}
-      {/* {map[action_type]}
-      <FormLabel sx={{ marginLeft: 1 }}>{action_type}</FormLabel> */}
-      <StyledChip
-        icon={map[action_type]}
-        size="small"
-        label={action_type}
-        variant="outlined"
-      />
-    </Box>
-  ); //<UploadIcon>{action_type}</UploadIcon>;
+    <Card variant="outlined" sx={{ width: '100%' }}>
+      <CardContent sx={{ p: 1.5, '&:last-child': { pb: 1.5 } }}>
+        <Stack spacing={1}>
+          <Box>
+            <StyledChip
+              icon={getActionIcon(log.action_type)}
+              size="small"
+              label={log.action_type}
+              variant="outlined"
+            />
+          </Box>
+
+          <Box>
+            <Typography
+              component="div"
+              sx={{
+                fontSize: '0.7rem',
+                color: 'text.secondary',
+                lineHeight: 1.2,
+              }}
+            >
+              Date
+            </Typography>
+            <Typography component="div" sx={{ fontSize: '0.85rem' }}>
+              <DateRenderer value={log.action_date} />
+            </Typography>
+          </Box>
+
+          <Box>
+            <Typography
+              component="div"
+              sx={{
+                fontSize: '0.7rem',
+                color: 'text.secondary',
+                lineHeight: 1.2,
+              }}
+            >
+              Details
+            </Typography>
+            <Typography
+              component="div"
+              sx={{
+                fontSize: '0.85rem',
+                lineHeight: 1.35,
+                overflowWrap: 'anywhere',
+              }}
+            >
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: log.action_details?.toString() || '',
+                }}
+              />
+            </Typography>
+          </Box>
+        </Stack>
+      </CardContent>
+    </Card>
+  );
 };
 
 export const UploadedModelLogList = (props: IModelLogListProps) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   const logs = useAppSelector(
     (state) => state.uploadedModel.currentUploadedModel?.uploaded_model_log
-  );
+  ) as IUploadedModelLog[] | undefined;
 
   const t = useTranslations('UploadedModelDetailPage');
 
   const columns: GridColDef[] = [
-    // const columns: GridColDef<IUploadedModelLog>[] = [
-    // {
-    //   field: 'id',
-    //   headerName: 'ID',
-    //   width: 40,
-    // },
     {
       field: 'action_type',
       headerName: t('grid.actionType'),
       width: 250,
       editable: false,
-      // renderCell: ({ row }) => (
-      //   // <ActionTypeRenderer action_type={row.action_type} />
-      //   <ModelActionTypeRenderer actionType={row.action_type} />
-      // ),
+      renderCell: ({ row }) => (
+        <StyledChip
+          icon={getActionIcon(row.action_type)}
+          size="small"
+          label={row.action_type}
+          variant="outlined"
+        />
+      ),
     },
     {
       field: 'action_date',
@@ -121,9 +173,6 @@ export const UploadedModelLogList = (props: IModelLogListProps) => {
       valueGetter: (params) => {
         return new Date(params.row.action_date);
       },
-      // valueFormatter: (params) => {
-      //   return formatDate(params.value, false, false); // new Date(params.value).toLocaleDateString();
-      // },
       renderCell: ({ row }) => <DateRenderer value={row.action_date} />,
     },
     {
@@ -140,36 +189,30 @@ export const UploadedModelLogList = (props: IModelLogListProps) => {
         />
       ),
     },
-    // {
-    //   field: 'action_taker',
-    //   headerName: 'Performed by',
-    //   type: 'string',
-    //   width: 200,
-    //   editable: false,
-    // },
   ];
 
+  // Phones: one card per entry, so nothing is squeezed or scrolled sideways
+  if (isMobile) {
+    if (!logs || logs.length === 0) {
+      return null;
+    }
+    return (
+      <Stack spacing={1.5} sx={{ px: 1.5, py: 1.5 }}>
+        {logs.map((log) => (
+          <LogCard key={log.id} log={log} />
+        ))}
+      </Stack>
+    );
+  }
+
+  // Larger screens: the original table
   return (
     <div>
       <DataGrid
         columns={columns}
         rows={logs || []}
-        // slots={{
-        //   toolbar: GridToolbar,
-        // }}
         pageSizeOptions={[25]}
         initialState={{
-          filter: {
-            filterModel: {
-              items: [
-                {
-                  field: 'age',
-                  operator: '>',
-                  value: '20',
-                },
-              ],
-            },
-          },
           pagination: {
             paginationModel: {
               pageSize: 25,

@@ -28,6 +28,7 @@ import {
   rejectDoiById,
 } from '../../state/doi/actions/doi.actions';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { red } from '@mui/material/colors';
 import CircleIcon from '@mui/icons-material/Circle';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -54,34 +55,61 @@ interface DisplayItemProps {
   isComponent?: boolean;
 }
 
+// One label/value row with a faded line underneath (none after the last row)
 const DisplayItem = (props: DisplayItemProps) => {
   return (
-    <Grid2
-      container
-      spacing={2}
-      sx={{ alignItems: 'center', justifyContent: 'flex-start' }}
+    <Box
+      sx={{
+        position: 'relative',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 2,
+        py: 1.5,
+        '&::after': {
+          content: '""',
+          position: 'absolute',
+          left: 0,
+          right: 0,
+          bottom: 0,
+          height: '1px',
+          background:
+            'linear-gradient(to right, transparent, rgba(0, 0, 0, 0.25), transparent)',
+        },
+        '&:last-child::after': {
+          display: 'none',
+        },
+      }}
     >
-      <Grid2 xs={4} sx={{ padding: 2 }}>
-        <FormLabel filled color="error" sx={{ fontWeight: 'bold' }}>
-          {props.label}
-        </FormLabel>
-      </Grid2>
-      {!props.isComponent && (
-        <Grid2 xs={8}>
-          {props.isHtml && (
-            <div
-              dangerouslySetInnerHTML={{
-                __html: props?.value?.toString() || '',
-              }}
-            />
-          )}
-          {!props.isHtml && <FormLabel>{props.value}</FormLabel>}
-        </Grid2>
-      )}
-      {props.isComponent && <Grid2 xs={8}>{props.value}</Grid2>}
-    </Grid2>
+      <FormLabel
+        filled
+        color="error"
+        sx={{
+          flex: '0 0 40%',
+          minWidth: 0,
+          fontWeight: 'bold',
+          overflowWrap: 'anywhere',
+        }}
+      >
+        {props.label}
+      </FormLabel>
+
+      <Box sx={{ flex: 1, minWidth: 0, wordBreak: 'break-word' }}>
+        {props.isComponent ? (
+          props.value
+        ) : props.isHtml ? (
+          <div
+            dangerouslySetInnerHTML={{
+              __html: props?.value?.toString() || '',
+            }}
+          />
+        ) : (
+          <FormLabel>{props.value}</FormLabel>
+        )}
+      </Box>
+    </Box>
   );
 };
+
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
 }
@@ -127,6 +155,16 @@ const DoiDetails = () => {
     setExpanded(!expanded);
   };
 
+  // Go back if there is history to return to; otherwise (e.g. the page was opened
+  // directly from a link) go to the DOI list
+  const handleBack = () => {
+    if (typeof window !== 'undefined' && window.history.length > 1) {
+      router.back();
+    } else {
+      router.push('/doi');
+    }
+  };
+
   const handleAction = async (formValues: ActionAssignees) => {
     if (!id) {
       return;
@@ -160,18 +198,53 @@ const DoiDetails = () => {
       dispatch(getDOI(id));
     }
   }, [id, dispatch]);
+
   return (
     <div>
       <main>
-        <Box style={{ display: 'flex', flexDirection: 'row' }}>
-          <Typography variant="h5" color="primary" style={{ width: '60%' }}>
+        {/* Back button, boxed and coloured to match the other buttons */}
+        <Box
+          sx={{
+            display: 'inline-flex',
+            border: '1px solid',
+            borderColor: 'primary.main',
+            borderRadius: 1,
+            mb: 2,
+          }}
+        >
+          <Button
+            size="small"
+            variant="text"
+            color="primary"
+            startIcon={<ArrowBackIcon />}
+            onClick={handleBack}
+            sx={{ px: 1.5, py: 0.5, borderRadius: 0 }}
+          >
+            Back to DOI List
+          </Button>
+        </Box>
+
+        {/* Title and buttons: stacked on phones, side by side from sm up */}
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            alignItems: 'flex-start',
+            gap: 2,
+          }}
+        >
+          <Typography
+            variant="h5"
+            color="primary"
+            sx={{ width: { xs: '100%', sm: '60%' } }}
+          >
             {t('title')}
           </Typography>
 
           <CardHeader
-            style={{ marginTop: -20 }}
+            sx={{ p: 0, mt: { xs: 0, sm: -2.5 } }}
             action={
-              <div>
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.5 }}>
                 {doi?.approval_status == 'Pending' && (
                   <Button
                     variant="contained"
@@ -196,14 +269,18 @@ const DoiDetails = () => {
                     {t('buttons.reject')}
                   </Button>
                 )}
-              </div>
+              </Box>
             }
           />
         </Box>
 
         {/* <AuthWrapper role="admin"> */}
-        <Card variant="outlined" sx={{ padding: 1, margin: 0, border: 'none' }}>
+        <Card
+          variant="outlined"
+          sx={{ p: { xs: 0.5, sm: 1 }, m: 0, border: 'none' }}
+        >
           <CardHeader
+            sx={{ p: { xs: 1, sm: 2 } }}
             avatar={
               <Grid2
                 container
@@ -211,7 +288,9 @@ const DoiDetails = () => {
                 sx={{ alignItems: 'center', justifyContent: 'flex-start' }}
               >
                 <Grid2 sx={{ padding: 1 }}>
-                  <Typography variant="h6">{doi?.title}</Typography>
+                  <Typography variant="h6" sx={{ overflowWrap: 'anywhere' }}>
+                    {doi?.title}
+                  </Typography>
                 </Grid2>
                 <Grid2>
                   <StatusRenderer status={doi?.approval_status || ''} />
@@ -226,15 +305,14 @@ const DoiDetails = () => {
           />
         </Card>
 
-        <Card
-          sx={
-            {
-              /*maxWidth: 345*/
-            }
-          }
-        >
-          <CardContent>
-            <Box sx={{ flexGrow: 1 }}>
+        <Card sx={{ width: '100%', minWidth: 0 }}>
+          <CardContent
+            sx={{
+              p: { xs: 1.5, sm: 2 },
+              '&:last-child': { pb: { xs: 1.5, sm: 2 } },
+            }}
+          >
+            <Box sx={{ flexGrow: 1, minWidth: 0 }}>
               {/* <DisplayItem
                 label="Author Name"
                 value={doi?.creator_name || ''}

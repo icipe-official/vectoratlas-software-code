@@ -1222,5 +1222,37 @@
       }
     }
   },
-  "EditPointData": {}
+    "EditPointData": {
+    "title": "Editar dados de pontos",
+    "modeOccurrence": "Por ID de ocorrência",
+    "modeSource": "Por ID de fonte",
+    "seeLogs": "Ver registros",
+    "tabs": {
+      "occurrence": "Ocorrência",
+      "bionomics": "Bionomia",
+      "insecticideResistance": "Resistência a inseticidas"
+    },
+    "occurrenceIdLabel": "ID de ocorrência",
+    "sourceIdLabel": "ID de fonte",
+    "fetchData": "Buscar dados",
+    "fetchRecords": "Buscar registros",
+    "selectRecord": "Selecione um registro para editar",
+    "recordLabel": "Registro {index} (ID: {id})",
+    "editRecord": "Editar este registro",
+    "saveChanges": "Salvar alterações",
+    "warnOccurrenceId": "Insira um ID de ocorrência",
+    "warnSourceId": "Insira um ID de fonte",
+    "failAutoFetch": "Falha ao buscar os dados automaticamente",
+    "failFetch": "Falha ao buscar os dados",
+    "failSourceRecords": "Falha ao buscar os registros da fonte",
+    "missingData": "Dados ou tipo de entidade ausentes.",
+    "reasonTitle": "Motivo da edição",
+    "reasonPlaceholder": "ex.: coordenadas com rótulo incorreto corrigidas ou dados de campo atualizados",
+    "reasonRequired": "Você deve informar um motivo antes de continuar!",
+    "savedTitle": "Salvo com sucesso",
+    "savedText": "O registro foi atualizado.",
+    "errorTitle": "Erro",
+    "errorText": "Falha ao atualizar os dados. Tente novamente."
+  }
 }
+

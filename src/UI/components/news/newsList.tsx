@@ -42,13 +42,22 @@ export const NewsList = () => {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
+    // Phones: no side padding, so the content uses the full screen width.
+    // Larger screens: the original Container padding.
+    <Container
+      maxWidth="lg"
+      disableGutters
+      sx={{
+        px: { xs: 1, sm: 3 },
+        py: { xs: 1, sm: 4 },
+      }}
+    >
       <Box
         sx={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          mb: 4,
+          mb: { xs: 2, sm: 4 },
           flexDirection: { xs: 'column', sm: 'row' },
           gap: 2,
         }}

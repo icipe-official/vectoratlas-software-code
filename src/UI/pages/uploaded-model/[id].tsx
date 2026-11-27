@@ -1,6 +1,7 @@
-import { Container } from '@mui/material';
+import { Box, Button, Container } from '@mui/material';
 import React from 'react';
 import { UploadedModelDetailView } from '../../components/model/uploadedModelDetailView';
+
 import { useRouter } from 'next/router';
 import AuthWrapper from '../../components/shared/AuthWrapper';
 import { RolesEnum } from '../../state/state.types';
@@ -13,7 +14,18 @@ const UploadedModelDetailsPage = () => {
   return (
     <Container>
       <AuthWrapper role={[RolesEnum.MODEL_MANAGER, RolesEnum.ADMIN]}>
-        <UploadedModelDetailView />
+        <Box>
+          <Box sx={{ mt: 1, mb: -8 }}>
+            {/* Returns to the Datasets list */}
+            <Button
+              variant="outlined"
+              onClick={() => router.push('/uploaded-model/list')}
+            >
+              Back to Models
+            </Button>
+          </Box>
+          <UploadedModelDetailView />
+        </Box>
       </AuthWrapper>
     </Container>
   );

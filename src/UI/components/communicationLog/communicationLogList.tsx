@@ -1,50 +1,35 @@
-import { Button, Link, Typography } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Box, Button, Typography, useMediaQuery } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 import {
   DataGrid,
-  GridActionsCellItem,
   GridCallbackDetails,
   GridColDef,
   GridRenderCellParams,
   GridRowSelectionModel,
   GridToolbarContainer,
   GridToolbarFilterButton,
-  GridValueFormatterParams,
-  GridValueGetterParams,
 } from '@mui/x-data-grid';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
-import { fetchDoiList, fetchUploadedDatasetList } from '../../api/api';
-import AddIcon from '@mui/icons-material/Add';
-import CancelIcon from '@mui/icons-material/Cancel';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import { ApproveRejectDialog } from '../shared/approveRejectDialog';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
-import {
-  getAllCommunicationLogs,
-  getCommunicationLog,
-} from '../../state/communicationLog/actions/communicationLog.actions';
+import { getAllCommunicationLogs } from '../../state/communicationLog/actions/communicationLog.actions';
 import { StatusRenderer } from '../shared/statusRenderer';
 import DateRenderer from '../shared/dateRenderer';
 import { useTranslations } from 'next-intl';
-import { ComposeMessageForm } from '../email/composeForm';
 
-interface IDoiRequest {
-  id: string;
-  creation: Date;
-  creator_name: string;
-  creator_email: string;
-  title: string;
-  approval_status: string;
-}
+// Faded grid line colour, used for rows, cells, headers and the outer border
+const FADED_LINE = 'rgba(0, 0, 0, 0.08)';
 
-const APPROVE: string = 'Approve';
-const REJECT: string = 'Reject';
-
+// Toolbar: filter on the left, Compose on the right
 function CustomToolbar() {
   return (
     <GridToolbarContainer
-      sx={{ display: 'flex', justifyContent: 'space-between' }}
+      sx={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: 1,
+      }}
     >
       <div>
         <GridToolbarFilterButton />
@@ -60,6 +45,16 @@ function CustomToolbar() {
   );
 }
 
+// Full-width wrapper for phones: spans the whole viewport and bypasses the
+// parent container's padding. A small inner gutter keeps content off the edge.
+const mobileWrapperSx = {
+  width: '100vw',
+  marginLeft: 'calc(50% - 50vw)',
+  px: 1,
+  boxSizing: 'border-box',
+  minWidth: 0,
+} as const;
+
 export const CommunicationLogList = () => {
   const t = useTranslations('CommunicationListPage');
 
@@ -71,18 +66,20 @@ export const CommunicationLogList = () => {
     (state) => state.communicationLog.communicationLogs
   );
 
-  // const columns: GridColDef<typeof rows[number]>[] = [
+  // Phone-width check (matches MUI's sm breakpoint)
+  const isMobile = useMediaQuery('(max-width:599.95px)');
+
   const columns: GridColDef[] = [
     {
       field: 'subject',
       headerName: t('grid.subject'),
-      width: 330,
+      // Fixed width on desktop; flexible on phones so it takes the leftover space
+      ...(isMobile ? { flex: 1, minWidth: 110 } : { width: 330 }),
       editable: false,
       valueGetter: (params: any) => params.row.subject || '',
       renderCell: (params: GridRenderCellParams) => (
-        <Link
-          component="button"
-          variant="body2"
+        <Button
+          variant="text"
           onClick={(e) => {
             e.preventDefault();
             router.push({
@@ -90,10 +87,19 @@ export const CommunicationLogList = () => {
               query: { id: params.row.id },
             });
           }}
-          style={{ cursor: 'pointer', textAlign: 'left' }}
+          sx={{
+            textTransform: 'none',
+            justifyContent: 'flex-start',
+            textAlign: 'left',
+            p: 0,
+            minWidth: 0,
+            whiteSpace: 'normal',
+            lineHeight: 1.3,
+            fontSize: isMobile ? '0.8rem' : undefined,
+          }}
         >
           {params.row.subject}
-        </Link>
+        </Button>
       ),
     },
     {
@@ -106,17 +112,27 @@ export const CommunicationLogList = () => {
       field: 'communication_date',
       headerName: t('grid.date'),
       type: 'dateTime',
-      width: 170,
+      width: isMobile ? 105 : 170,
       valueGetter: (params: any) => new Date(params.row.communication_date),
-      renderCell: ({ row }: { row: any }) => (
-        <DateRenderer value={row.communication_date} />
-      ),
+      renderCell: ({ row }: { row: any }) =>
+        isMobile ? (
+          // Phones: date only, so the column stays narrow
+          <Typography variant="body2" sx={{ fontSize: '0.75rem' }}>
+            {new Date(row.communication_date).toLocaleDateString(undefined, {
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric',
+            })}
+          </Typography>
+        ) : (
+          <DateRenderer value={row.communication_date} />
+        ),
     },
     {
       field: 'sent_status',
       headerName: t('grid.status'),
       type: 'string',
-      width: 150,
+      width: isMobile ? 85 : 150,
       editable: false,
       renderCell: (params: GridRenderCellParams) => (
         <StatusRenderer status={params.value} statusTitle={params.value} />
@@ -133,59 +149,86 @@ export const CommunicationLogList = () => {
   }, [token, dispatch]);
 
   return (
-    <>
-      <div>
-        <main>
-          <div>
-            <Typography variant="h5">{t('title')}</Typography>
-            <DataGrid
-              rows={communicationLogList || []}
-              columns={columns}
-              initialState={{
-                pagination: {
-                  paginationModel: {
-                    pageSize: 10,
-                  },
-                },
-                sorting: {
-                  sortModel: [{ field: 'communication_date', sort: 'desc' }],
-                },
-              }}
-              // filter: {
-              //   filterModel: {
-              //     items: [
-              //       {
-              //         id: 1,
-              //         field: 'sent_status',
-              //         operator: 'equals',
-              //         value: 'Pending',
-              //       },
-              //     ],
-              //   },
-              // },
+    <div>
+      <main>
+        {/* On phones this block spans the full screen width.
+            On wider screens it keeps its normal width. */}
+        <Box sx={isMobile ? mobileWrapperSx : undefined}>
+          <Typography
+            variant="h5"
+            sx={{ fontWeight: 700, textAlign: 'left', mt: isMobile ? 1 : 0 }}
+          >
+            {t('title')}
+          </Typography>
 
-              pageSizeOptions={[5, 10, 25]}
-              checkboxSelection
-              disableRowSelectionOnClick
-              onRowSelectionModelChange={(
-                rowSelectionModel: GridRowSelectionModel,
-                details: GridCallbackDetails
-              ) => {
-                if (!rowSelectionModel) {
-                  setSelectedCommunicationLogId('');
-                } else {
-                  setSelectedCommunicationLogId(
-                    rowSelectionModel?.[0]?.toString()
-                  );
-                }
-              }}
-              slots={{
-                toolbar: CustomToolbar,
-              }}
-            />
-          </div>
-        </main>
-      </div>
-    </>
+          <DataGrid
+            rows={communicationLogList || []}
+            columns={columns}
+            // Phones hide the Message Type column to leave room for the rest
+            columnVisibilityModel={{ message_type: !isMobile }}
+            // Phones hide the ⋮ column menus, which take up header space.
+            // Sorting still works by tapping the header.
+            disableColumnMenu={isMobile}
+            // Phones let the grid grow with its rows, so the whole page scrolls
+            autoHeight={isMobile}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 10,
+                },
+              },
+              sorting: {
+                sortModel: [{ field: 'communication_date', sort: 'desc' }],
+              },
+            }}
+            pageSizeOptions={[5, 10, 25]}
+            // Checkboxes take too much width on phones, so they're desktop only
+            checkboxSelection={!isMobile}
+            disableRowSelectionOnClick
+            onRowSelectionModelChange={(
+              rowSelectionModel: GridRowSelectionModel,
+              details: GridCallbackDetails
+            ) => {
+              if (!rowSelectionModel) {
+                setSelectedCommunicationLogId('');
+              } else {
+                setSelectedCommunicationLogId(
+                  rowSelectionModel?.[0]?.toString()
+                );
+              }
+            }}
+            slots={{
+              toolbar: CustomToolbar,
+            }}
+            // Faded grid lines, plus wrapping headers on phones
+            sx={{
+              '--DataGrid-rowBorderColor': FADED_LINE,
+              '--DataGrid-containerBorderColor': FADED_LINE,
+              '& .MuiDataGrid-cell': {
+                borderBottomColor: FADED_LINE,
+              },
+              '& .MuiDataGrid-columnHeaders': {
+                borderBottomColor: FADED_LINE,
+              },
+              '& .MuiDataGrid-columnSeparator': {
+                color: FADED_LINE,
+              },
+              '& .MuiDataGrid-footerContainer': {
+                borderTopColor: FADED_LINE,
+              },
+              // Headers wrap onto two lines instead of being cut off
+              '& .MuiDataGrid-columnHeaderTitle': {
+                whiteSpace: 'normal',
+                lineHeight: 1.2,
+                fontSize: isMobile ? '0.75rem' : undefined,
+              },
+              '& .MuiDataGrid-columnHeader': {
+                px: isMobile ? 0.5 : undefined,
+              },
+            }}
+          />
+        </Box>
+      </main>
+    </div>
   );
 };

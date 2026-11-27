@@ -3,7 +3,6 @@ import {
   GridActionsCellItem,
   GridColDef,
   GridRenderCellParams,
-  GridToolbarContainer,
 } from '@mui/x-data-grid';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
@@ -23,6 +22,8 @@ import {
   FormGroup,
   FormControlLabel,
   Checkbox,
+  Stack,
+  useMediaQuery,
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import { StatusRenderer } from '../shared/statusRenderer';
@@ -59,6 +60,7 @@ import { formatDate } from '../../utils/utils';
 import { getUserInfo } from '../../state/auth/actions/getUserInfo';
 import AuthWrapper from '../shared/AuthWrapper';
 import { useTranslations } from 'next-intl';
+import { UploadedDatasetCard } from './UploadedDatasetCard';
 
 interface FilterState {
   assignedToMe: boolean;
@@ -80,6 +82,9 @@ interface IUser {
 }
 
 export const UploadedDatasetList = () => {
+  // Phone-width check (matches MUI's sm breakpoint)
+  const isMobile = useMediaQuery('(max-width:599.95px)');
+
   function AddToolbar(props: EditToolbarProps) {
     const handleCheckboxChange = (
       event: React.ChangeEvent<HTMLInputElement>
@@ -92,11 +97,19 @@ export const UploadedDatasetList = () => {
 
     const { assignedToMe, pendingAssignment, pendingApproval } = state;
 
+    // Smaller margins on phones so filters fit in fewer rows
+    const filterSx = { m: isMobile ? 1 : 3 };
+
+    // Plain Box instead of GridToolbarContainer so it also renders
+    // outside the DataGrid (in the card view)
     return (
-      <GridToolbarContainer
+      <Box
         sx={{
           display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'center',
           justifyContent: 'space-between',
+          gap: 1,
           backgroundColor: '#fefaf8',
           padding: 0,
         }}
@@ -112,7 +125,7 @@ export const UploadedDatasetList = () => {
           </Button>
         )}
         {user.roles.includes(RolesEnum.REVIEWER) && (
-          <FormControl sx={{ m: 3 }} component="fieldset" variant="standard">
+          <FormControl sx={filterSx} component="fieldset" variant="standard">
             <FormGroup>
               <FormControlLabel
                 control={
@@ -129,7 +142,7 @@ export const UploadedDatasetList = () => {
         )}
         {user.roles.includes(RolesEnum.REVIEWER_MANAGER) && (
           <>
-            <FormControl sx={{ m: 3 }} component="fieldset" variant="standard">
+            <FormControl sx={filterSx} component="fieldset" variant="standard">
               <FormGroup>
                 <FormControlLabel
                   control={
@@ -144,7 +157,7 @@ export const UploadedDatasetList = () => {
               </FormGroup>
             </FormControl>
 
-            <FormControl sx={{ m: 3 }} component="fieldset" variant="standard">
+            <FormControl sx={filterSx} component="fieldset" variant="standard">
               <FormGroup>
                 <FormControlLabel
                   control={
@@ -173,11 +186,19 @@ export const UploadedDatasetList = () => {
         >
           Validate Dataset
         </Button> */}
-      </GridToolbarContainer>
+      </Box>
     );
   }
 
   const t = useTranslations('UploadedDatasetListPage');
+
+  const cardLabels = {
+    datasetType: t('grid.datasetType'),
+    uploaderCountry: t('grid.uploaderCountry'),
+    approvalStatus: t('grid.approvalStatus'),
+    uploadedOn: t('grid.uploadedOn'),
+    pendingReupload: 'Pending re-upload',
+  };
 
   const [actionDialogOpen, setActionDialogOpen] = useState(false);
   const [validateActionDialogOpen, setValidateActionDialogOpen] =
@@ -435,23 +456,49 @@ export const UploadedDatasetList = () => {
       <main>
         <Typography variant="h5">{t('title')}</Typography>
         <>
-          <DataGrid
-            rows={filteredDatasets /*uploadedDatasets*/}
-            columns={columns}
-            pageSizeOptions={[10]}
-            checkboxSelection
-            disableRowSelectionOnClick
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 10,
+          {isMobile ? (
+            // Phone: one card per row, filters rendered above the list
+            <>
+              <AddToolbar />
+              <Stack spacing={1.5} sx={{ mt: 1, pb: 2 }}>
+                {filteredDatasets.map((row) => (
+                  <UploadedDatasetCard
+                    key={row.id}
+                    row={row}
+                    labels={cardLabels}
+                    onMenuOpen={handleMenuClick}
+                  />
+                ))}
+              </Stack>
+              {/* Single shared menu for all cards */}
+              <UploadedDatasetActionMenu
+                inFormView={false}
+                status="Pending"
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleMenuClose}
+              />
+            </>
+          ) : (
+            // Desktop: keep the grid
+            <DataGrid
+              rows={filteredDatasets /*uploadedDatasets*/}
+              columns={columns}
+              pageSizeOptions={[10]}
+              checkboxSelection
+              disableRowSelectionOnClick
+              initialState={{
+                pagination: {
+                  paginationModel: {
+                    pageSize: 10,
+                  },
                 },
-              },
-            }}
-            slots={{
-              toolbar: AddToolbar,
-            }}
-          />
+              }}
+              slots={{
+                toolbar: AddToolbar,
+              }}
+            />
+          )}
           {selectedDataset && (
             <>
               {/* Render AssignReviewerDialog only when actionDialogOpen is true */}

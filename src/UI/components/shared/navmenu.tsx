@@ -71,7 +71,7 @@ export default function NavMenu({
           elevation: 0,
           sx: {
             minWidth: 220,
-            overflow: 'visible',
+            overflow: 'visible', // keeps the arrow below visible; scrolling happens in the list
             filter: 'drop-shadow(0px 4px 20px rgba(0,0,0,0.1))',
             mt: 1.5,
             borderRadius: '12px',
@@ -89,6 +89,15 @@ export default function NavMenu({
               transform: 'translateY(-50%) rotate(45deg)',
               zIndex: 0,
             },
+          },
+        }}
+        // The list is what scrolls: it never grows taller than the screen,
+        // leaving room for the header and the page margins
+        MenuListProps={{
+          sx: {
+            maxHeight: 'calc(100vh - 120px)',
+            overflowY: 'auto',
+            borderRadius: '12px',
           },
         }}
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}

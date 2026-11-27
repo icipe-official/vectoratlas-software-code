@@ -1,6 +1,6 @@
 // import { AddIcon } from '@mui/icons-material/Add';
 //import { Button}
-import { Button, Container, Typography } from '@mui/material';
+import { Box, Button, Container, Typography } from '@mui/material';
 import { DataGrid, GridColDef, GridToolbarContainer } from '@mui/x-data-grid';
 import AddIcon from '@mui/icons-material/Add';
 import { Link } from '@mui/icons-material';
@@ -12,8 +12,10 @@ import { RolesEnum } from '../../state/state.types';
 import { getMessages } from '../../utils/localization';
 import { GetServerSidePropsContext } from 'next';
 import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/router';
 
 const UploadedDatasetSuccessPage = (): JSX.Element => {
+  const router = useRouter();
   const uploadedDatasetId =
     useAppSelector((state) => state.upload.currentUploadedDatasetId) || '';
   const uploadedDatasetTitle =
@@ -31,10 +33,20 @@ const UploadedDatasetSuccessPage = (): JSX.Element => {
             }}
           >
             <AuthWrapper role={RolesEnum.UPLOADER}>
-              <UploadSuccess
-                id={uploadedDatasetId}
-                title={uploadedDatasetTitle}
-              />
+              <>
+                <Box sx={{ mt: 3, mb: 2, textAlign: 'left' }}>
+                  <Button
+                    variant="outlined"
+                    onClick={() => router.push('/hub')}
+                  >
+                    Back to Data Hub
+                  </Button>
+                </Box>
+                <UploadSuccess
+                  id={uploadedDatasetId}
+                  title={uploadedDatasetTitle}
+                />
+              </>
             </AuthWrapper>
           </Container>
         </main>

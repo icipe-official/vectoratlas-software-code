@@ -11,6 +11,8 @@ import View from 'ol/View';
 import { transform } from 'ol/proj';
 import Box from '@mui/material/Box';
 import { Stack, Typography, useMediaQuery } from '@mui/material';
+import InsightsIcon from '@mui/icons-material/Insights';
+import ListAltIcon from '@mui/icons-material/ListAlt';
 import WebGLPointsLayer from 'ol/layer/WebGLPoints';
 import VectorSource from 'ol/source/Vector';
 import { toast } from 'react-toastify';
@@ -68,6 +70,25 @@ import { registerDownloadHandler } from './downloadImageHandler';
 import theme from '../../../styles/theme';
 import { VectorAtlasFilters } from '../../../state/state.types';
 
+import {
+  MobileDockProvider,
+  DOCK_HEIGHT,
+} from '../../../components/mobileDock/MobileDockContext';
+import DockPanel from '../../../components/mobileDock/DockPanel';
+import MobileDock from '../../../components/mobileDock/MobileDock';
+
+// Fallback header height on phones, in CSS pixels. Used only until the real
+// navbar height is measured. The map follows the navbar's live height.
+const MOBILE_HEADER_HEIGHT = 92;
+
+// Optional fixed map height on phones, e.g. '45vh'.
+// null = the map fills all the space between the header and the dock.
+const MOBILE_MAP_HEIGHT: string | null = null;
+
+// Stacking order used when the header and dock are hidden on phones.
+// It must be higher than the app header so the map covers it.
+const MOBILE_FULLSCREEN_Z_INDEX = 1400;
+
 type MapWrapperV3Props = {
   doiResolverId?: string;
 };
@@ -110,6 +131,9 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   const speciesRowRefs = React.useRef<Record<string, HTMLDivElement | null>>(
     {}
   );
+
+  // Mobile: HUD and records move into the dock. Desktop: unchanged.
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   /* ---------------- Redux selectors ---------------- */
   const occurrenceData = useAppSelector((s) => s.map.occurrence_data);
@@ -170,6 +194,33 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
   );
   const [panelOpen, setPanelOpen] = useState(true);
   const [animatedVisibleCount, setAnimatedVisibleCount] = useState(0);
+
+  // Mobile: the Vector Panel stays open until the user removes it from the dock
+  const [vectorPanelOpen] = useState(true);
+
+  // Mobile: the Records panel is open whenever a point is selected
+  const recordsPanelOpen = selectedIds.length > 0;
+
+  // Mobile: header and dock are shown or hidden together. Tapping an empty
+  // spot on the map toggles them, so the map can use the full screen.
+  const [chromeVisible, setChromeVisible] = useState(true);
+
+  // Real height of the app navbar on this screen, measured live.
+  // Falls back to MOBILE_HEADER_HEIGHT until the navbar is found.
+  const [headerHeight, setHeaderHeight] = useState(MOBILE_HEADER_HEIGHT);
+
+  useEffect(() => {
+    const navbar = document.getElementById('navbar');
+    if (!navbar) return;
+
+    const update = () =>
+      setHeaderHeight(Math.round(navbar.getBoundingClientRect().height));
+
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(navbar);
+    return () => observer.disconnect();
+  }, []);
 
   /* ---------------- Map tile loading tracking ---------------- */
   const activeTiles = useRef(0);
@@ -1022,15 +1073,20 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
       });
 
       if (ids.length) {
+        // A point was tapped: select it and show the header and dock
         dispatch(setSelectedIds(ids));
         dispatch(getFullOccurrenceData());
+        if (isMobile) setChromeVisible(true);
+      } else if (isMobile) {
+        // Empty spot tapped: show or hide the header and dock
+        setChromeVisible((v) => !v);
       }
     };
 
     map.on('singleclick', handleClick);
 
     return () => map.un('singleclick', handleClick);
-  }, [map, dispatch]);
+  }, [map, dispatch, isMobile]);
 
   /* ---------------- resize on drawer ---------------- */
 
@@ -1041,6 +1097,25 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
 
     return () => clearTimeout(timer);
   }, [drawerOpen, selectedIds.length, map]);
+
+  /* ---------------- keep map size in sync with its container ---------------- */
+  // On phones the container changes size when the address bar moves, the
+  // orientation changes, or the header and dock show and hide. OpenLayers
+  // doesn't notice on its own, so we tell it whenever the container's size changes.
+  useEffect(() => {
+    const el = mapElement.current;
+    if (!map || !el) return;
+
+    const observer = new ResizeObserver(() => {
+      map.updateSize();
+    });
+    observer.observe(el);
+
+    // Run once now, in case the size was already set when the map was created
+    map.updateSize();
+
+    return () => observer.disconnect();
+  }, [map]);
 
   /* ---------------- DOI filters ---------------- */
 
@@ -1256,118 +1331,174 @@ const MapWrapperV3: React.FC<MapWrapperV3Props> = ({ doiResolverId }) => {
     );
   }, [map, filters, speciesStyles, mapOverlays, wmtsLayers, dbPrimarySpecies]);
 
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
   /* ---------------- render ---------------- */
 
-  return (
-    <Box
-      sx={{
+  // Shared map-side content, used by both the desktop and mobile layouts
+  const hud = (
+    <MapHUD
+      panelOpen={panelOpen}
+      setPanelOpen={setPanelOpen}
+      occurrenceLoading={occurrenceLoading}
+      visiblePointCount={visiblePointCount}
+      speciesCounts={speciesCounts}
+      speciesStyles={speciesStyles}
+      activeSpecies={activeSpecies}
+      hoveredSpecies={hoveredSpecies}
+      setHoveredSpecies={setHoveredSpecies}
+      selectedIdsLength={selectedIds.length}
+      speciesRowRefs={speciesRowRefs}
+      normalize={normalize}
+      showDetected={showDetected}
+      setShowDetected={setShowDetected}
+      showNotDetected={showNotDetected}
+      setShowNotDetected={setShowNotDetected}
+      doiResolved={doiResolved}
+    />
+  );
+
+  // Mobile, header and dock shown: the map sits between the header and the dock.
+  // Mobile, header and dock hidden: the map covers the full screen, above the header.
+  // Desktop: normal flow.
+  const mobilePositionSx = chromeVisible
+    ? {
+        top: headerHeight,
+        ...(MOBILE_MAP_HEIGHT
+          ? { height: MOBILE_MAP_HEIGHT }
+          : { bottom: DOCK_HEIGHT }),
+      }
+    : { top: 0, bottom: 0, zIndex: MOBILE_FULLSCREEN_Z_INDEX };
+
+  const rootSx = isMobile
+    ? {
+        position: 'fixed' as const,
+        left: 0,
+        right: 0,
+        display: 'flex',
+        overflow: 'hidden',
+        ...mobilePositionSx,
+      }
+    : {
         display: 'flex',
         flex: 1,
         height: '100%',
         position: 'relative',
         overflow: 'hidden',
-      }}
-    >
-      <DrawerMap />
+      };
 
-      <Box
-        sx={{ flex: 9.5, flexGrow: 1, display: 'flex', position: 'relative' }}
-      >
-        {/** Floating panels */}
-        <Stack
-          direction="column"
-          spacing={1}
-          sx={{
-            flex: 1,
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-          }}
-        >
-          <Stack
-            direction="row"
-            justifyContent={'space-between'}
-            sx={{ flex: 9, overflow: 'hidden' }}
-          >
-            <OverlayPanel />
-          </Stack>
-          <Stack
-            direction="row"
-            sx={[
-              isMobile
-                ? { paddingBottom: '65px', paddingRight: '20px' }
-                : { maxWidth: '85%' },
-            ]}
-          >
-            <div style={{ zIndex: 2, width: '100%' }}>
-              <TimeSeriesMapSlider />
-            </div>
-          </Stack>
-        </Stack>
+  return (
+    <MobileDockProvider>
+      <Box sx={rootSx}>
+        <DrawerMap />
 
         <Box
-          component="main"
-          sx={{ flex: 1, display: 'flex', position: 'relative' }}
+          sx={{ flex: 9.5, flexGrow: 1, display: 'flex', position: 'relative' }}
         >
-          <div
-            id="mapDiv"
-            ref={mapElement}
-            style={{ flex: 1, overflow: 'hidden' }}
-          />
-
-          {/* Inject the Top-Tier UX Loader Here */}
-          <MapLoader
-            isLoading={occurrenceLoading || (!!doiResolverId && !doiResolved)}
-            message={
-              !!doiResolverId && !doiResolved ? t('doiResolving') : undefined
-            }
-          />
-        </Box>
-
-        <MapHUD
-          panelOpen={panelOpen}
-          setPanelOpen={setPanelOpen}
-          occurrenceLoading={occurrenceLoading}
-          visiblePointCount={visiblePointCount}
-          speciesCounts={speciesCounts}
-          speciesStyles={speciesStyles}
-          activeSpecies={activeSpecies}
-          hoveredSpecies={hoveredSpecies}
-          setHoveredSpecies={setHoveredSpecies}
-          selectedIdsLength={selectedIds.length}
-          speciesRowRefs={speciesRowRefs}
-          normalize={normalize}
-          showDetected={showDetected}
-          setShowDetected={setShowDetected}
-          showNotDetected={showNotDetected}
-          setShowNotDetected={setShowNotDetected}
-          doiResolved={doiResolved}
-        />
-
-        {areaModeOn && (
-          <div
-            style={{
+          {/** Floating panels */}
+          <Stack
+            direction="column"
+            spacing={1}
+            sx={{
+              flex: 1,
               position: 'absolute',
-              right: 20,
-              top: 50,
-              zIndex: 10,
-              background: '#EBBD40',
-              boxShadow: '0 0 10px black',
-              padding: '5px 20px',
-              color: 'black',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
             }}
           >
-            <Typography>{t('areaModeOn')}</Typography>
-          </div>
-        )}
-      </Box>
+            <Stack
+              direction="row"
+              justifyContent={'space-between'}
+              sx={{ flex: 9, overflow: 'hidden' }}
+            >
+              <OverlayPanel />
+            </Stack>
+            <Stack
+              direction="row"
+              sx={[
+                isMobile
+                  ? { paddingBottom: '8px', paddingRight: '20px' }
+                  : { maxWidth: '85%' },
+              ]}
+            >
+              <div style={{ zIndex: 2, width: '100%' }}>
+                <TimeSeriesMapSlider />
+              </div>
+            </Stack>
+          </Stack>
 
-      {selectedIds.length > 0 && <DataDrawer />}
-    </Box>
+          <Box
+            component="main"
+            sx={{ flex: 1, display: 'flex', position: 'relative' }}
+          >
+            <div
+              id="mapDiv"
+              ref={mapElement}
+              style={{ flex: 1, overflow: 'hidden' }}
+            />
+
+            {/* Inject the Top-Tier UX Loader Here */}
+            <MapLoader
+              isLoading={occurrenceLoading || (!!doiResolverId && !doiResolved)}
+              message={
+                !!doiResolverId && !doiResolved ? t('doiResolving') : undefined
+              }
+            />
+          </Box>
+
+          {/* Mobile: HUD lives in the dock. Desktop: floating, as before. */}
+          {isMobile ? (
+            <DockPanel
+              id="vector-panel"
+              title="Vector Panel"
+              icon={InsightsIcon}
+              open={vectorPanelOpen}
+              maxHeight="55%"
+              width="min(88vw, 340px)"
+            >
+              {hud}
+            </DockPanel>
+          ) : (
+            hud
+          )}
+
+          {areaModeOn && (
+            <div
+              style={{
+                position: 'absolute',
+                right: 20,
+                top: 50,
+                zIndex: 10,
+                background: '#EBBD40',
+                boxShadow: '0 0 10px black',
+                padding: '5px 20px',
+                color: 'black',
+              }}
+            >
+              <Typography>{t('areaModeOn')}</Typography>
+            </div>
+          )}
+        </Box>
+
+        {/* Mobile: records become a dock panel. Desktop: unchanged. */}
+        {isMobile ? (
+          <DockPanel
+            id="records"
+            title="Records"
+            icon={ListAltIcon}
+            open={recordsPanelOpen}
+            onClose={() => dispatch(setSelectedIds([]))}
+          >
+            <DataDrawer />
+          </DockPanel>
+        ) : (
+          selectedIds.length > 0 && <DataDrawer />
+        )}
+
+        {/* The dock bar goes with the header when the chrome is hidden */}
+        {isMobile && chromeVisible && <MobileDock />}
+      </Box>
+    </MobileDockProvider>
   );
 };
 

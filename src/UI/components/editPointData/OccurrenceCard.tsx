@@ -19,6 +19,25 @@ const isPrimitive = (val: unknown): val is string | number | boolean | null =>
 
 const isBoolean = (val: unknown): val is boolean => typeof val === 'boolean';
 
+// Shared sizing so each record box and field stays inside its container
+const recordBoxSx = {
+  width: '100%',
+  minWidth: 0,
+  boxSizing: 'border-box',
+  border: '1px solid #e0e0e0',
+  borderRadius: 2,
+  p: { xs: 2, sm: 3 },
+  mb: 3,
+  bgcolor: '#fafafa',
+  overflow: 'hidden',
+};
+
+const fieldSx = {
+  bgcolor: 'white',
+  minWidth: 0,
+  width: '100%',
+};
+
 interface OccurrenceCardProps {
   data: any;
   onChange: (e: any, index?: number) => void;
@@ -49,6 +68,7 @@ const OccurrenceCard: React.FC<OccurrenceCardProps> = ({
       return (
         <Autocomplete
           key={key}
+          sx={{ minWidth: 0, width: '100%' }}
           options={speciesList}
           getOptionLabel={(option) =>
             option.display_name || option.name || 'Unknown'
@@ -73,7 +93,7 @@ const OccurrenceCard: React.FC<OccurrenceCardProps> = ({
               label="Recorded Species"
               margin="normal"
               fullWidth
-              sx={{ bgcolor: 'white' }}
+              sx={fieldSx}
             />
           )}
         />
@@ -92,6 +112,7 @@ const OccurrenceCard: React.FC<OccurrenceCardProps> = ({
       return (
         <Autocomplete
           key={key}
+          sx={{ minWidth: 0, width: '100%' }}
           options={referenceList || []}
           getOptionLabel={(option) =>
             option.article_title ||
@@ -123,7 +144,7 @@ const OccurrenceCard: React.FC<OccurrenceCardProps> = ({
               label="Reference"
               margin="normal"
               fullWidth
-              sx={{ bgcolor: 'white' }}
+              sx={fieldSx}
             />
           )}
         />
@@ -145,7 +166,7 @@ const OccurrenceCard: React.FC<OccurrenceCardProps> = ({
           margin="normal"
           disabled
           helperText="Relational mapping. Locked to prevent database constraint errors."
-          sx={{ bgcolor: '#f5f5f5' }}
+          sx={{ ...fieldSx, bgcolor: '#f5f5f5' }}
         />
       );
     }
@@ -157,7 +178,7 @@ const OccurrenceCard: React.FC<OccurrenceCardProps> = ({
           fullWidth
           margin="normal"
           key={key}
-          sx={{ bgcolor: 'white' }}
+          sx={{ ...fieldSx, minWidth: 0 }}
         >
           <InputLabel id={`${key}-label`}>
             Insecticide Resistance Data Type
@@ -191,7 +212,7 @@ const OccurrenceCard: React.FC<OccurrenceCardProps> = ({
           fullWidth
           margin="normal"
           key={key}
-          sx={{ bgcolor: 'white' }}
+          sx={{ ...fieldSx, minWidth: 0 }}
         >
           <InputLabel id={`${key}-label`}>{key}</InputLabel>
           <Select
@@ -216,25 +237,16 @@ const OccurrenceCard: React.FC<OccurrenceCardProps> = ({
         fullWidth
         margin="normal"
         onChange={(e: any) => onChange(e, index)}
-        sx={{ bgcolor: 'white' }}
+        sx={fieldSx}
       />
     );
   };
 
   return (
-    <Box sx={{ mt: 2 }}>
+    <Box sx={{ mt: 2, width: '100%', minWidth: 0 }}>
       {Array.isArray(data) ? (
         data.map((record, index) => (
-          <Box
-            key={String(record.id) || index}
-            sx={{
-              border: '1px solid #e0e0e0',
-              borderRadius: 2,
-              p: 3,
-              mb: 3,
-              bgcolor: '#fafafa',
-            }}
-          >
+          <Box key={String(record.id) || index} sx={recordBoxSx}>
             <Typography variant="h6" color="primary" gutterBottom>
               Occurrence Record {index + 1}
             </Typography>
@@ -244,15 +256,7 @@ const OccurrenceCard: React.FC<OccurrenceCardProps> = ({
           </Box>
         ))
       ) : (
-        <Box
-          sx={{
-            border: '1px solid #e0e0e0',
-            borderRadius: 2,
-            p: 3,
-            mb: 3,
-            bgcolor: '#fafafa',
-          }}
-        >
+        <Box sx={recordBoxSx}>
           <Typography variant="h6" color="primary" gutterBottom>
             Occurrence Record
           </Typography>

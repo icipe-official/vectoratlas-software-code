@@ -1,9 +1,15 @@
 import {
   Backdrop,
+  Box,
   Button,
+  Card,
+  CardContent,
   CircularProgress,
   Link,
+  Stack,
+  TablePagination,
   Typography,
+  useMediaQuery,
 } from '@mui/material';
 import {
   DataGrid,
@@ -11,28 +17,24 @@ import {
   GridCallbackDetails,
   GridRenderCellParams,
   GridRowSelectionModel,
-  GridToolbarContainer,
   GridToolbarFilterButton,
-  GridValueFormatterParams,
 } from '@mui/x-data-grid';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useState } from 'react';
-import { fetchDoiList, fetchUploadedDatasetList } from '../../api/api';
 import AddIcon from '@mui/icons-material/Add';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import {
-  ActionAssignees,
   ApproveRejectDialog,
+  ActionAssignees,
 } from '../shared/approveRejectDialog';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import {
   approveDoiById,
   rejectDoiById,
 } from '../../state/doi/actions/doi.actions';
-import { toast } from 'react-toastify';
-import { getDOI, getAllDois } from '../../state/doi/actions/doi.actions';
+import { getAllDois } from '../../state/doi/actions/doi.actions';
 import { StatusRenderer } from '../shared/statusRenderer';
 import { StatusEnum } from '../../state/state.types';
 import DateRenderer from '../shared/dateRenderer';
@@ -50,25 +52,16 @@ interface IDoiRequest {
 const APPROVE: string = 'Approve';
 const REJECT: string = 'Reject';
 
-function AddToolbar() {
-  return (
-    <GridToolbarContainer
-      sx={{ display: 'flex', justifyContent: 'space-between' }}
-    >
-      {/* <Button color="primary" startIcon={<AddIcon />} onClick={() => {}}>
-        Approve
-      </Button>
-      <Button
-        color="primary"
-        startIcon={<AddIcon />}
-        // onClick={handleUploadDataset}
-        href="/upload"
-      >
-        Reject
-      </Button> */}
-    </GridToolbarContainer>
-  );
-}
+// Same page size as the desktop grid footer, so both layouts match
+const PAGE_SIZE = 10;
+
+// Phone action buttons: share the card width equally, no wrapping
+const mobileButtonSx = {
+  flex: 1,
+  minWidth: 0,
+  px: 1,
+  whiteSpace: 'nowrap',
+};
 
 function FilterToolbar() {
   return (
@@ -78,15 +71,57 @@ function FilterToolbar() {
   );
 }
 
+// One labelled value inside a card
+const CardField = ({
+  label,
+  children,
+  fullWidth = false,
+}: {
+  label: string;
+  children: React.ReactNode;
+  fullWidth?: boolean;
+}) => (
+  <Box sx={{ minWidth: 0, gridColumn: fullWidth ? '1 / -1' : 'auto' }}>
+    <Typography variant="caption" color="text.secondary" display="block">
+      {label}
+    </Typography>
+    <Box sx={{ wordBreak: 'break-word' }}>{children}</Box>
+  </Box>
+);
+
 export const DoiList = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [actionDialogOpen, setActionDialogOpen] = useState(false);
   const [actionType, setActionType] = useState('');
   const [selectedDoi, setSelectedDoi] = useState('');
+  const [page, setPage] = useState(0);
   const doiList = useAppSelector((state) => state.doi.dois);
   const loading = useAppSelector((state) => state.doi.loading);
   const t = useTranslations('DoiListPage');
+
+  // Phone-width check (matches MUI's sm breakpoint)
+  const isMobile = useMediaQuery('(max-width:599.95px)');
+
+  // Card-view paging
+  const allRows: any[] = doiList || [];
+  const pageCount = Math.max(1, Math.ceil(allRows.length / PAGE_SIZE));
+  const pagedRows = allRows.slice(
+    page * PAGE_SIZE,
+    page * PAGE_SIZE + PAGE_SIZE
+  );
+
+  // Go back to page 1 when the list changes (e.g. after a filter or reload)
+  useEffect(() => {
+    setPage(0);
+  }, [doiList]);
+
+  // If approving or rejecting empties the last page, step back one page
+  useEffect(() => {
+    if (page > pageCount - 1) {
+      setPage(Math.max(0, pageCount - 1));
+    }
+  }, [page, pageCount]);
 
   const getActionButtons = (params: any) => {
     let actions = [
@@ -142,7 +177,13 @@ export const DoiList = () => {
     return actions;
   };
 
-  // const columns: GridColDef<typeof rows[number]>[] = [
+  // Card-view actions: open the approve/reject dialog for one DOI
+  const openDecision = (id: string, type: string) => {
+    setSelectedDoi(id);
+    setActionType(type);
+    setActionDialogOpen(true);
+  };
+
   const columns = [
     {
       field: 'title',
@@ -151,20 +192,8 @@ export const DoiList = () => {
       editable: false,
       renderCell: (params: GridRenderCellParams<any, any>) => (
         <div>{params.value}</div>
-        // <Link
-        //   // href={`/uploaded-dataset/details/${params.value}`}
-        //   onClick={() => {
-        //     router.push({
-        //       pathname: '/doi/details',
-        //       query: { id: params.value },
-        //     });
-        //   }}
-        // >
-        //   {params.value}
-        // </Link>
       ),
       valueGetter: (params: any) => {
-        //return params.row.title;
         return <Link href={`/doi/${params.row.id}`}>{params.row.title}</Link>;
       },
     },
@@ -208,8 +237,6 @@ export const DoiList = () => {
     },
   ];
 
-  // const [data, setData] = useState(new Array<IDoiRequest>());
-
   const loadDOIs = useCallback(async () => {
     await dispatch(getAllDois());
   }, [dispatch]);
@@ -250,71 +277,181 @@ export const DoiList = () => {
         <main>
           <div>
             <Typography variant="h5">{t('title')}</Typography>
-            {/* <AuthWrapper role="admin">
-                    <NewsEditor />
-                  </AuthWrapper> */}
-            <DataGrid
-              rows={doiList}
-              columns={columns}
-              initialState={{
-                pagination: {
-                  paginationModel: {
-                    pageSize: 10,
+
+            {isMobile ? (
+              // PHONE: one card per DOI, 10 per page, with pagination below
+              <>
+                <Stack spacing={1} sx={{ mt: 2, minWidth: 0 }}>
+                  {pagedRows.map((row: any) => {
+                    const isPending = row.approval_status == StatusEnum.PENDING;
+                    return (
+                      <Card
+                        key={row.id}
+                        variant="outlined"
+                        sx={{ width: '100%', minWidth: 0 }}
+                      >
+                        <CardContent
+                          sx={{
+                            p: 1.5,
+                            '&:last-child': { pb: 1.5 },
+                          }}
+                        >
+                          <Link
+                            href={`/doi/${row.id}`}
+                            underline="hover"
+                            sx={{
+                              fontWeight: 600,
+                              display: 'block',
+                              overflowWrap: 'anywhere',
+                            }}
+                          >
+                            {row.title}
+                          </Link>
+
+                          <Box sx={{ mt: 0.5 }}>
+                            <StatusRenderer
+                              status={row.approval_status}
+                              statusTitle={row.approval_status}
+                            />
+                          </Box>
+
+                          <Box
+                            sx={{
+                              display: 'grid',
+                              gridTemplateColumns: '1fr 1fr',
+                              gap: 1,
+                              mt: 1,
+                            }}
+                          >
+                            <CardField label={t('grid.source')}>
+                              {row.source_type}
+                            </CardField>
+                            <CardField label={t('grid.createdOn')}>
+                              <DateRenderer value={row.creation} />
+                            </CardField>
+                            {row.doi_link && (
+                              <CardField label={t('grid.doiLink')} fullWidth>
+                                {row.doi_link}
+                              </CardField>
+                            )}
+                          </Box>
+
+                          {/* One row of buttons; icons are dropped on phones to fit the text */}
+                          <Stack
+                            direction="row"
+                            spacing={0.75}
+                            sx={{ mt: 1.5, flexWrap: 'nowrap' }}
+                          >
+                            <Button
+                              size="small"
+                              variant="outlined"
+                              sx={mobileButtonSx}
+                              onClick={() =>
+                                router.push({
+                                  pathname: '/doi/details',
+                                  query: { id: row.id },
+                                })
+                              }
+                            >
+                              {t('actions.title')}
+                            </Button>
+                            {isPending && (
+                              <>
+                                <Button
+                                  size="small"
+                                  variant="contained"
+                                  color="primary"
+                                  sx={mobileButtonSx}
+                                  onClick={() => openDecision(row.id, APPROVE)}
+                                >
+                                  {t('actions.approve')}
+                                </Button>
+                                <Button
+                                  size="small"
+                                  variant="contained"
+                                  color="error"
+                                  sx={mobileButtonSx}
+                                  onClick={() => openDecision(row.id, REJECT)}
+                                >
+                                  {t('actions.reject')}
+                                </Button>
+                              </>
+                            )}
+                          </Stack>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </Stack>
+
+                <TablePagination
+                  component="div"
+                  count={allRows.length}
+                  page={page}
+                  onPageChange={(_, newPage) => setPage(newPage)}
+                  rowsPerPage={PAGE_SIZE}
+                  rowsPerPageOptions={[PAGE_SIZE]}
+                  labelRowsPerPage=""
+                  sx={{ mt: 1, minWidth: 0, overflow: 'hidden' }}
+                />
+              </>
+            ) : (
+              // WIDER SCREENS: the grid, with its own footer pagination
+              <DataGrid
+                rows={doiList}
+                columns={columns}
+                initialState={{
+                  pagination: {
+                    paginationModel: {
+                      pageSize: PAGE_SIZE,
+                    },
                   },
-                },
-                filter: {
-                  filterModel: {
-                    items: [
-                      // {
-                      //   id: 1,
-                      //   field: 'approval_status',
-                      //   operator: 'equals',
-                      //   value: 'Pending',
-                      // },
-                    ],
+                  filter: {
+                    filterModel: {
+                      items: [],
+                    },
                   },
-                },
-              }}
-              pageSizeOptions={[10]}
-              checkboxSelection
-              disableRowSelectionOnClick
-              onRowSelectionModelChange={(
-                rowSelectionModel: GridRowSelectionModel,
-                details: GridCallbackDetails
-              ) => {
-                if (!rowSelectionModel) {
-                  setSelectedDoi('');
-                } else {
-                  setSelectedDoi(rowSelectionModel?.[0]?.toString());
-                }
-              }}
-              slots={{
-                toolbar: FilterToolbar, // AddToolbar,
-              }}
-            />
-            {
-              <ApproveRejectDialog
-                isApprove={actionType == APPROVE}
-                title={actionType}
-                isOpen={actionDialogOpen}
-                onOk={(formValues: ActionAssignees) => {
-                  handleAction(formValues);
-                  setActionType('');
-                  setActionDialogOpen(false);
                 }}
-                onCancel={() => {
-                  setActionType('');
-                  setActionDialogOpen(false);
+                pageSizeOptions={[PAGE_SIZE]}
+                checkboxSelection
+                disableRowSelectionOnClick
+                onRowSelectionModelChange={(
+                  rowSelectionModel: GridRowSelectionModel,
+                  details: GridCallbackDetails
+                ) => {
+                  if (!rowSelectionModel) {
+                    setSelectedDoi('');
+                  } else {
+                    setSelectedDoi(rowSelectionModel?.[0]?.toString());
+                  }
+                }}
+                slots={{
+                  toolbar: FilterToolbar,
                 }}
               />
-            }
+            )}
+
+            <ApproveRejectDialog
+              isApprove={actionType == APPROVE}
+              title={actionType}
+              isOpen={actionDialogOpen}
+              onOk={(formValues: ActionAssignees) => {
+                handleAction(formValues);
+                setActionType('');
+                setActionDialogOpen(false);
+              }}
+              onCancel={() => {
+                setActionType('');
+                setActionDialogOpen(false);
+              }}
+            />
+
             <Backdrop
               sx={(theme) => ({
                 color: '#fff',
                 zIndex: theme.zIndex.drawer + 1,
               })}
               open={loading}
-              // onClick={handleClose}
             >
               <CircularProgress color="inherit" />
             </Backdrop>

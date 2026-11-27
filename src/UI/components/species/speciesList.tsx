@@ -70,12 +70,16 @@ export default function SpeciesList(): JSX.Element {
     setOpenDialog(false);
   };
 
+  // Cards: equal left and right spacing on phones.
+  // Larger screens keep the original look.
   const panelStyle = {
     boxShadow: 3,
-    margin: 3,
+    mx: { xs: 0, sm: 3 },
+    my: { xs: 1.5, sm: 3 },
+    px: { xs: 1.5, sm: 2 },
+    pb: { xs: 2, sm: 4 },
+    pt: { xs: 1.5, sm: 0 },
     borderRadius: 2,
-    paddingBottom: 4,
-    paddingRight: 4,
     border: 3,
     borderColor: 'rgba(0,0,0,0)',
     '&:hover': {
@@ -100,7 +104,7 @@ export default function SpeciesList(): JSX.Element {
           display: 'flex',
           alignItems: 'center',
           marginBottom: 20,
-          marginTop: 20,
+          marginTop: 8,
         }}
       >
         <Typography color="primary" variant="h4" style={{ flexGrow: 1 }}>
@@ -117,12 +121,14 @@ export default function SpeciesList(): JSX.Element {
         ) : null}
       </div>
 
-      <Grid container spacing={4} data-testid="speciesPanelGrid">
+      {/* Phones: smaller gap between cards, no negative margin, so spacing is even */}
+      <Grid container spacing={{ xs: 0, sm: 4 }} data-testid="speciesPanelGrid">
         {speciesList.items.map((row) => (
           <Grid
             container
             item
             key={row.id}
+            xs={12}
             sx={panelStyle}
             data-testid={`speciesPanel${row.id}`}
           >
@@ -147,7 +153,7 @@ export default function SpeciesList(): JSX.Element {
                   />
                 </div>
               </Grid>
-              <Grid lg={9} md={6}>
+              <Grid item xs={12} lg={9} md={6}>
                 <div>
                   <Typography
                     variant="h6"

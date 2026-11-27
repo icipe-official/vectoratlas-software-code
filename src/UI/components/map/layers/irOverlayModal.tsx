@@ -18,7 +18,6 @@ import {
   Divider,
   useTheme,
   useMediaQuery,
-  Slide,
   Fade,
   Button,
   Tooltip,
@@ -27,6 +26,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import LayersIcon from '@mui/icons-material/Layers';
+import BugReportIcon from '@mui/icons-material/BugReport';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import DownloadIcon from '@mui/icons-material/Download';
 import { useAppSelector, useAppDispatch } from '../../../state/hooks';
@@ -38,7 +38,8 @@ import {
 } from '../../../state/map/mapSlice';
 import { getWMTSOverlays } from '../../../state/map/actions/getWmtsoverlays';
 import { WMTSWorkspacesEnum } from '../../../state/state.types';
-
+// Adjust to where DockPanel.tsx lives
+import DockPanel from '../../mobileDock/DockPanel';
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface WMTSLayer {
@@ -58,8 +59,8 @@ interface LayerItemProps {
 interface ParsedGroup {
   groupName: string;
   regularLayers: WMTSLayer[];
-  sortIndex?: number; // only set when the server name actually carries a real index
-  insertionOrder: number; // always set; tie-breaker for groups with no real index
+  sortIndex?: number; // only set when the server name carries a real index
+  insertionOrder: number; // tie-breaker for groups with no real index
   timeSeriesGroup?: TimeSeriesGroup;
 }
 
@@ -93,20 +94,16 @@ const TEXT_MUTED = 'rgba(232,237,233,0.45)';
 // Desktop layout
 const SIDEBAR_OPEN_LEFT = 370;
 const SIDEBAR_CLOSED_LEFT = 80;
-const PANEL_TOP_OFFSET = 60;
 const PANEL_WIDTH_DESKTOP = 320;
 
-// Mobile layout
-const MOBILE_SHEET_MAX_HEIGHT = '72vh';
-const MOBILE_SHEET_MIN_HEIGHT = '80px';
-const VECTOR_PANEL_MIN_HEIGHT = 52;
+// Dock registration
+const DOCK_ID = 'ir';
+const DOCK_TITLE = 'Insecticide';
 
 const EASE = 'cubic-bezier(0.4, 0, 0.2, 1)';
 const TRANSITION = `all 0.32s ${EASE}`;
-// ─── Helpers ──────────────────────────────────────────────────────────────────
 
-const getGroupKey = (name: string): string =>
-  name.includes('_ir_') ? name.split('_ir_')[0] : name.split('_')[0];
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const normalise = (s: string) => s.toLowerCase().replace(/[\s_-]/g, '');
 
@@ -212,11 +209,11 @@ const groupLayers = (layers: WMTSLayer[]): Record<string, ParsedGroup> => {
 
   return groups;
 };
+
 // ─── Custom Hook ──────────────────────────────────────────────────────────────
 
 const useIROverlays = () => {
   const dispatch = useAppDispatch();
-  const [isVisible, setIsVisible] = useState(false);
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
   const [isMinimized, setIsMinimized] = useState(false);
   const [loadingLayer, setLoadingLayer] = useState<string | null>(null);
@@ -227,7 +224,8 @@ const useIROverlays = () => {
   const WMTS_WORKSPACE = WMTSWorkspacesEnum.IR;
 
   const isSidebarOpen = useAppSelector((s) => s.map.map_drawer.open);
-  const drawerRequestOpen = useAppSelector((s) => s.map.map_drawer.ir_overlays);
+  // Visibility comes from Redux; the dock and the X button both toggle it
+  const isVisible = useAppSelector((s) => !!s.map.map_drawer.ir_overlays);
   const wmtsLayers = useAppSelector((s) =>
     s.map.wmtsLayers.filter((layer) => layer.workspace === WMTS_WORKSPACE)
   ) as WMTSLayer[];
@@ -236,6 +234,10 @@ const useIROverlays = () => {
     s.map.wmtsWorkspaces.includes(WMTS_WORKSPACE)
   );
   const dataState = useAppSelector((s) => s.map.timeSeries.dataState);
+
+  const toggleOverlays = useCallback(() => {
+    dispatch(drawerListToggle('ir_overlays'));
+  }, [dispatch]);
 
   useEffect(() => {
     if (loadingLayer) {
@@ -247,12 +249,9 @@ const useIROverlays = () => {
   }, [dataState, loadingLayer]);
 
   useEffect(() => {
-    if (drawerRequestOpen) {
-      setIsVisible(true);
-      if (wmtsStatus !== 'loading' && !wmtsWorkspaceLoaded)
-        dispatch(getWMTSOverlays({ workspace: WMTS_WORKSPACE }));
-    }
-  }, [drawerRequestOpen, wmtsStatus, dispatch]);
+    if (isVisible && wmtsStatus !== 'loading' && !wmtsWorkspaceLoaded)
+      dispatch(getWMTSOverlays({ workspace: WMTS_WORKSPACE }));
+  }, [isVisible, wmtsStatus, wmtsWorkspaceLoaded, dispatch]);
 
   const grouped = useMemo(() => groupLayers(wmtsLayers), [wmtsLayers]);
   const activeTimeSeries = useAppSelector((s) => s.map.timeSeries.groups);
@@ -266,9 +265,8 @@ const useIROverlays = () => {
     []
   );
   const handleClose = useCallback(() => {
-    setIsVisible(false);
-    dispatch(drawerListToggle('ir_overlays'));
-  }, [dispatch]);
+    toggleOverlays();
+  }, [toggleOverlays]);
   const handleToggleLayer = useCallback(
     (name: string) => {
       const layer = wmtsLayers.find((l) => l.name === name);
@@ -302,7 +300,7 @@ const useIROverlays = () => {
   };
 };
 
-// ─── Updated Resistance Legend ────────────────────────────────────────────────
+// ─── Resistance Legend ────────────────────────────────────────────────────────
 
 const LEGEND_STOPS = [
   {
@@ -326,7 +324,7 @@ const ResistanceLegend: React.FC = () => {
   const [hovered, setHovered] = useState<number | null>(null);
 
   return (
-    <Box sx={{ px: 1.5, pt: 1.5, pb: 2, flex: 1 }}>
+    <Box sx={{ px: 1.5, pt: 1.5, pb: 1.5, flexShrink: 0 }}>
       <Box
         sx={{
           display: 'flex',
@@ -349,7 +347,6 @@ const ResistanceLegend: React.FC = () => {
         </Typography>
       </Box>
 
-      {/* Gradient Bar based on image_4e0fb0.png */}
       <Box
         sx={{
           position: 'relative',
@@ -681,7 +678,6 @@ const LayerGroup: React.FC<LayerGroupProps> = React.memo(
             <ExpandMore fontSize="small" sx={{ color: ACCENT }} />
           )}
         </ListItemButton>
-        {/* <Collapse in={isExpanded} timeout={280} unmountOnExit> */}
         <Collapse in={isExpanded} timeout={280}>
           <Box sx={{ position: 'relative', mt: 0.25, pl: 2.5, pb: 0.5 }}>
             <Box
@@ -730,17 +726,17 @@ const LayerGroup: React.FC<LayerGroupProps> = React.memo(
 );
 LayerGroup.displayName = 'LayerGroup';
 
+// Desktop header only. On mobile, DockPanel's title bar takes this role.
 const PanelHeader: React.FC<{
   isMinimized: boolean;
-  isMobile: boolean;
   onToggleMinimized: () => void;
   onClose: () => void;
-}> = ({ isMinimized, isMobile, onToggleMinimized, onClose }) => (
+}> = ({ isMinimized, onToggleMinimized, onClose }) => (
   <Box
     onClick={onToggleMinimized}
     sx={{
       px: 2,
-      py: isMobile ? 1.2 : 1.4,
+      py: 1.4,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
@@ -769,7 +765,7 @@ const PanelHeader: React.FC<{
           variant="subtitle2"
           sx={{
             fontWeight: 600,
-            fontSize: { xs: '0.82rem', sm: '0.78rem' },
+            fontSize: '0.78rem',
             color: TEXT_PRIMARY,
           }}
         >
@@ -859,9 +855,8 @@ const PanelContent: React.FC<{
     };
   }, [checkScroll, isMinimized]);
 
-  // ★ CHANGE: groups with a real server-side sortIndex always come first (in index
-  // order); groups without one are pushed to the end and ordered relative to each
-  // other by insertionOrder, so they don't jump around unpredictably.
+  // Groups with a real sortIndex come first, in index order.
+  // The rest follow, ordered by insertionOrder.
   const sortedGroupEntries = useMemo(
     () =>
       Object.entries(grouped).sort(([, a], [, b]) => {
@@ -906,6 +901,11 @@ const PanelContent: React.FC<{
           minHeight: 0,
         }}
       >
+        <ResistanceLegend />
+        <Box sx={{ px: 1.5 }}>
+          <Divider sx={{ borderColor: 'rgba(255,255,255,0.06)' }} />
+        </Box>
+
         <Box
           sx={{
             overflow: 'hidden',
@@ -923,16 +923,15 @@ const PanelContent: React.FC<{
               minHeight: 0,
               px: 1,
               py: 1,
-              overflowY: 'auto',
-              maxHeight: isMobile
-                ? `calc(${MOBILE_SHEET_MAX_HEIGHT} - 160px)`
-                : '100%',
+              // On mobile, DockPanel is the scroll area, so the list grows freely
+              overflowY: isMobile ? 'visible' : 'auto',
+              maxHeight: isMobile ? 'none' : '100%',
               '&::-webkit-scrollbar': { width: 8 },
               '&::-webkit-scrollbar-thumb': {
                 background: ACCENT,
                 borderRadius: 10,
               },
-              pb: isMobile ? 'max(8px, env(safe-area-inset-bottom))' : 0.5,
+              pb: isMobile ? 1 : 0.5,
             }}
           >
             {wmtsStatus === 'loading' && (
@@ -944,8 +943,6 @@ const PanelContent: React.FC<{
                 />
               </Box>
             )}
-            {/* ★ CHANGE: was Object.entries(grouped).map(...) — now uses the
-                sorted list so Combined Pyrethroid (sortIndex 0) renders first */}
             {sortedGroupEntries.map(([groupName, parsedGroup]) => (
               <LayerGroup
                 key={groupName}
@@ -960,7 +957,7 @@ const PanelContent: React.FC<{
               />
             ))}
           </Box>
-          <ScrollHint visible={showScrollHint} />
+          {!isMobile && <ScrollHint visible={showScrollHint} />}
         </Box>
 
         <Box sx={{ px: 1.5, pb: 1, pt: 0.5, zIndex: 4 }}>
@@ -1000,11 +997,6 @@ const PanelContent: React.FC<{
             </Button>
           </Tooltip>
         </Box>
-
-        <Box sx={{ px: 1.5 }}>
-          <Divider sx={{ borderColor: 'rgba(255,255,255,0.06)' }} />
-        </Box>
-        <ResistanceLegend />
       </Box>
     </Collapse>
   );
@@ -1015,7 +1007,6 @@ const PanelContent: React.FC<{
 export const IROverlaysPanel: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const isVectorPanelVisible = useAppSelector((s) => s.map.map_drawer.open);
 
   const {
     isVisible,
@@ -1034,94 +1025,42 @@ export const IROverlaysPanel: React.FC = () => {
     handleToggleTimeSeries,
   } = useIROverlays();
 
-  if (!isVisible) return null;
-
+  // Mobile: DockPanel handles open/close, minimize and the dock icon.
+  // It must always mount on mobile so it can register when opened.
   if (isMobile) {
     return (
-      <Slide
-        direction="up"
-        in={isVisible}
-        mountOnEnter
-        unmountOnExit
-        timeout={320}
+      <DockPanel
+        id={DOCK_ID}
+        title={DOCK_TITLE}
+        icon={BugReportIcon}
+        open={isVisible}
+        onClose={handleClose}
+        dark
       >
-        <Paper
-          elevation={0}
-          sx={{
-            position: 'fixed',
-            bottom: isVectorPanelVisible ? `${VECTOR_PANEL_MIN_HEIGHT}px` : 0,
-            left: 0,
-            right: 0,
-            zIndex: 1300,
-            flex: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            overflow: 'hidden',
-            maxHeight: isMinimized
-              ? MOBILE_SHEET_MIN_HEIGHT
-              : MOBILE_SHEET_MAX_HEIGHT,
-            transition: `bottom 0.3s ${EASE}, max-height 0.38s ${EASE}`,
-            backdropFilter: 'blur(20px) saturate(140%)',
-            background: PANEL_BG,
-            color: TEXT_PRIMARY,
-            borderRadius: isVectorPanelVisible ? '16px' : '16px 16px 0 0',
-            margin: isVectorPanelVisible ? '0 8px 8px 8px' : '0',
-            width: isVectorPanelVisible ? 'calc(100% - 16px)' : '100%',
-            border: `1px solid ${BORDER_SUBTLE}`,
-            boxShadow: '0 -4px 24px rgba(0,0,0,0.45)',
-          }}
-        >
-          <Box
-            onClick={toggleMinimized}
-            sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              pt: 0.75,
-              pb: 0.25,
-              cursor: 'pointer',
-            }}
-          >
-            <Box
-              sx={{
-                width: 36,
-                height: 4,
-                borderRadius: '2px',
-                background: 'rgba(255,255,255,0.2)',
-              }}
-            />
-          </Box>
-          <PanelHeader
-            isMinimized={isMinimized}
-            isMobile
-            onToggleMinimized={toggleMinimized}
-            onClose={handleClose}
-          />
-          <PanelContent
-            isMinimized={isMinimized}
-            isMobile
-            wmtsStatus={wmtsStatus}
-            grouped={grouped}
-            expandedGroup={expandedGroup}
-            activeTimeSeries={activeTimeSeries}
-            loadingLayer={loadingLayer}
-            repoLink={repoLink}
-            onToggleGroup={toggleGroup}
-            onToggleLayer={handleToggleLayer}
-            onToggleTimeSeries={handleToggleTimeSeries}
-          />
-        </Paper>
-      </Slide>
+        <PanelContent
+          isMinimized={false}
+          isMobile
+          wmtsStatus={wmtsStatus}
+          grouped={grouped}
+          expandedGroup={expandedGroup}
+          activeTimeSeries={activeTimeSeries}
+          loadingLayer={loadingLayer}
+          repoLink={repoLink}
+          onToggleGroup={toggleGroup}
+          onToggleLayer={handleToggleLayer}
+          onToggleTimeSeries={handleToggleTimeSeries}
+        />
+      </DockPanel>
     );
   }
+
+  if (!isVisible) return null;
 
   return (
     <Paper
       elevation={0}
       sx={[
         {
-          // position: 'absolute',
-          // top: PANEL_TOP_OFFSET,
-          // left: panelLeft,
           width: PANEL_WIDTH_DESKTOP,
           maxHeight: isMinimized ? 'fit-content' : 'calc(100vh - 120px)',
           zIndex: 1200,
@@ -1142,7 +1081,6 @@ export const IROverlaysPanel: React.FC = () => {
     >
       <PanelHeader
         isMinimized={isMinimized}
-        isMobile={false}
         onToggleMinimized={toggleMinimized}
         onClose={handleClose}
       />

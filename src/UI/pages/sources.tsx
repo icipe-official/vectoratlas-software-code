@@ -25,9 +25,15 @@ export default function SourcesPage(): JSX.Element {
     <div>
       <main>
         <Container
+          disableGutters
           sx={{
-            padding: '10px',
-            maxWidth: '75%',
+            // No extra padding here: _app.tsx already adds the phone edge
+            // spacing, and SectionPanel adds the inner spacing on both sides
+            padding: 0,
+            boxSizing: 'border-box',
+            width: '100%',
+            // Full width on phones and tablets, original 75% from md up
+            maxWidth: { xs: '100%', md: '75%' },
           }}
         >
           <SectionPanel title={t('title')}>

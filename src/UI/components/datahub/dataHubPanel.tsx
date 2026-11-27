@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Box,
   Button,
   Divider,
   Grid,
@@ -23,6 +24,24 @@ const OCCURRENCE_BIONOMICS = 2;
 const OCCURRENCE_IR = 3;
 const OCCURRENCE_BIONOMICS_IR = 4;
 const GUIDANCE = 5;
+
+// Icons: 80px on phones so two fit side by side with room to spare, 100px from sm up
+const iconBoxSx = {
+  mt: 1,
+  cursor: 'pointer',
+  '& img': {
+    width: { xs: 80, sm: 100 },
+    height: 'auto',
+  },
+};
+
+// Headings: a little more space below, slightly smaller text on phones
+const headingStyle = {
+  textAlign: 'center',
+  margin: 0,
+  marginBottom: 8,
+  fontSize: '1.1rem',
+} as const;
 
 function DataHubPanel() {
   const t = useTranslations('DataHubPage');
@@ -84,149 +103,129 @@ function DataHubPanel() {
   };
 
   return (
-    <Grid container spacing={3}>
+    <Grid container spacing={{ xs: 2, md: 3 }}>
       <Grid item xs={12}>
-        <Grid container>
-          <Grid item xs={12} md={6}>
-            <div>{t('intro')}</div>
-          </Grid>
-        </Grid>
+        <div>{t('intro')}</div>
       </Grid>
-      <Grid item sm={12} md={4}>
-        <h3 color="primary" style={{ textAlign: 'center', marginBottom: 0 }}>
+
+      {/* Upload Model and Upload Data share a row on phones, each taking half the width */}
+      <Grid item xs={6} md={4}>
+        <h3 color="primary" style={headingStyle}>
           {t('uploadModel')}
         </h3>
-        <div
+        <Box
           data-testid="upload_model"
-          style={{
+          sx={{
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
+            ...iconBoxSx,
           }}
         >
-          <div style={{ marginTop: 15 }}>
-            <Link href="/model_upload" passHref>
-              <a>
-                <Image
-                  src="/upload.png"
-                  width={100}
-                  height={100}
-                  style={{ cursor: 'pointer' }}
-                  alt="Upload Model Button"
-                />
-              </a>
-            </Link>
-          </div>
-        </div>
+          <Link href="/model_upload" passHref>
+            <a>
+              <Image
+                src="/upload.png"
+                width={100}
+                height={100}
+                alt="Upload Model Button"
+              />
+            </a>
+          </Link>
+        </Box>
       </Grid>
-      <Grid item sm={12} md={4}>
-        <Grid container>
-          <Grid item xs={12} md={12}>
-            <h3
-              color="primary"
-              style={{ textAlign: 'center', marginBottom: 0 }}
-            >
-              {t('uploadData')}
-            </h3>
-            <div
-              data-testid="upload_data"
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <div style={{ marginTop: 15 }}>
-                <Link href="/upload" passHref>
-                  <a>
-                    <Image
-                      src="/upload2.png"
-                      width={100}
-                      height={100}
-                      style={{ cursor: 'pointer' }}
-                      alt="Upload Data Button"
-                    />
-                  </a>
-                </Link>
-              </div>
-            </div>
-          </Grid>
-        </Grid>
+
+      <Grid item xs={6} md={4}>
+        <h3 color="primary" style={headingStyle}>
+          {t('uploadData')}
+        </h3>
+        <Box
+          data-testid="upload_data"
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            ...iconBoxSx,
+          }}
+        >
+          <Link href="/upload" passHref>
+            <a>
+              <Image
+                src="/upload2.png"
+                width={100}
+                height={100}
+                alt="Upload Data Button"
+              />
+            </a>
+          </Link>
+        </Box>
       </Grid>
-      <Grid item sm={12} md={4}>
-        <Grid container>
-          <Grid
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              // alignItems: 'center',
-              alignContent: 'flex-end',
+
+      {/* On phones, extra top margin separates this section from the icons above */}
+      <Grid item xs={12} md={4} sx={{ mt: { xs: 4, md: 0 } }}>
+        <Grid container direction="column" sx={{ alignItems: 'center' }}>
+          <h3 color="primary" style={headingStyle}>
+            {t('downloadTemplate')}
+          </h3>
+          <List
+            dense
+            sx={{
+              width: '100%',
+              maxWidth: 360,
+              bgcolor: 'background.paper',
+              py: 0,
             }}
-            item
-            xs={12}
-            md={12}
+            aria-label="contacts"
           >
-            <h3
-              color="primary"
-              style={{ textAlign: 'center', marginBottom: 0 }}
-            >
-              {t('downloadTemplate')}
-            </h3>
-            <List
-              sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
-              aria-label="contacts"
-            >
-              <ListItem disablePadding>
-                <ListItemButton onClick={() => handleDownload(OCCURRENCE)}>
-                  <ListItemIcon>
-                    <DownloadIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={t('template.occurrence')} />
-                </ListItemButton>
-              </ListItem>
-              <Divider variant="inset" component="li" />
-              <ListItem disablePadding>
-                <ListItemButton
-                  onClick={() => handleDownload(OCCURRENCE_BIONOMICS)}
-                >
-                  <ListItemIcon>
-                    <DownloadIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={t('template.occurenceBionomics')} />
-                </ListItemButton>
-              </ListItem>
-              <Divider variant="inset" component="li" />
-              <ListItem disablePadding>
-                <ListItemButton onClick={() => handleDownload(OCCURRENCE_IR)}>
-                  <ListItemIcon>
-                    <DownloadIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={t('template.occurrenceIR')} />
-                </ListItemButton>
-              </ListItem>
-              <Divider variant="inset" component="li" />
-              <ListItem disablePadding>
-                <ListItemButton
-                  onClick={() => handleDownload(OCCURRENCE_BIONOMICS_IR)}
-                >
-                  <ListItemIcon>
-                    <DownloadIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={t('template.occurrenceBionomicsIR')} />
-                </ListItemButton>
-              </ListItem>
-              <Divider variant="inset" component="li" />
-              <ListItem disablePadding>
-                <ListItemButton onClick={() => handleDownload(GUIDANCE)}>
-                  <ListItemIcon>
-                    <DownloadIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Guidance" />
-                </ListItemButton>
-              </ListItem>
-            </List>
-          </Grid>
+            <ListItem disablePadding>
+              <ListItemButton onClick={() => handleDownload(OCCURRENCE)}>
+                <ListItemIcon sx={{ minWidth: 40 }}>
+                  <DownloadIcon />
+                </ListItemIcon>
+                <ListItemText primary={t('template.occurrence')} />
+              </ListItemButton>
+            </ListItem>
+            <Divider variant="inset" component="li" />
+            <ListItem disablePadding>
+              <ListItemButton
+                onClick={() => handleDownload(OCCURRENCE_BIONOMICS)}
+              >
+                <ListItemIcon sx={{ minWidth: 40 }}>
+                  <DownloadIcon />
+                </ListItemIcon>
+                <ListItemText primary={t('template.occurenceBionomics')} />
+              </ListItemButton>
+            </ListItem>
+            <Divider variant="inset" component="li" />
+            <ListItem disablePadding>
+              <ListItemButton onClick={() => handleDownload(OCCURRENCE_IR)}>
+                <ListItemIcon sx={{ minWidth: 40 }}>
+                  <DownloadIcon />
+                </ListItemIcon>
+                <ListItemText primary={t('template.occurrenceIR')} />
+              </ListItemButton>
+            </ListItem>
+            <Divider variant="inset" component="li" />
+            <ListItem disablePadding>
+              <ListItemButton
+                onClick={() => handleDownload(OCCURRENCE_BIONOMICS_IR)}
+              >
+                <ListItemIcon sx={{ minWidth: 40 }}>
+                  <DownloadIcon />
+                </ListItemIcon>
+                <ListItemText primary={t('template.occurrenceBionomicsIR')} />
+              </ListItemButton>
+            </ListItem>
+            <Divider variant="inset" component="li" />
+            <ListItem disablePadding>
+              <ListItemButton onClick={() => handleDownload(GUIDANCE)}>
+                <ListItemIcon sx={{ minWidth: 40 }}>
+                  <DownloadIcon />
+                </ListItemIcon>
+                <ListItemText primary="Guidance" />
+              </ListItemButton>
+            </ListItem>
+          </List>
         </Grid>
       </Grid>
     </Grid>

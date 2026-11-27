@@ -17,7 +17,6 @@ import {
   modifyFullPointData,
 } from '../api/api';
 import { toast } from 'react-toastify';
-import { useTranslations } from 'next-intl';
 import { GetServerSidePropsContext } from 'next';
 import { getMessages } from '../utils/localization';
 import { useSelector } from 'react-redux';
@@ -50,8 +49,6 @@ const EditPointData: React.FC = () => {
   const [sourceRecords, setSourceRecords] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
-
-  const t = useTranslations('EditPointData');
 
   const token = useSelector((state: AppState) => state.auth.token);
   const [currentUser, setCurrentUser] = useState<{
@@ -237,35 +234,61 @@ const EditPointData: React.FC = () => {
 
   return (
     <main>
-      <Container sx={{ padding: '20px', maxWidth: '80%' }}>
+      <Container
+        maxWidth={false}
+        sx={{
+          // Phones: 20px sides to match the other pages. sm+: original 20px
+          padding: { xs: '0 20px 8px', sm: '20px' },
+          // Full width on phones, original 80% from md up
+          maxWidth: { xs: '100%', md: '80%' },
+        }}
+      >
         <AuthWrapper role={RolesEnum.EDITOR}>
           <Card elevation={3} sx={{ borderRadius: 3 }}>
-            <CardContent sx={{ padding: 4 }}>
+            <CardContent sx={{ p: { xs: 2, sm: 4 } }}>
               <Box
                 sx={{
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
-                  mb: 1,
+                  mb: 2,
                 }}
               >
                 <Typography
                   variant="h4"
                   color="primary"
-                  sx={{ fontWeight: 600 }}
+                  sx={{
+                    fontWeight: 600,
+                    fontSize: { xs: '1.6rem', sm: '2.125rem' },
+                  }}
                 >
                   Edit Point Data
                 </Typography>
                 {loading && <CircularProgress size={24} />}
               </Box>
 
-              {/* MODE TOGGLES */}
-              <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
+              {/* MODE TOGGLES: equal-width pair on phones, See Logs on its own line */}
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: 1.5,
+                  mb: 3,
+                  alignItems: 'center',
+                }}
+              >
                 <Button
                   variant={mode === 'occurrence' ? 'contained' : 'outlined'}
                   onClick={() => {
                     setMode('occurrence');
                     setData(null);
+                  }}
+                  sx={{
+                    flex: { xs: '1 1 0', sm: '0 0 auto' },
+                    minWidth: 0,
+                    fontSize: { xs: '0.8rem', sm: '0.875rem' },
+                    lineHeight: 1.3,
+                    py: 1,
                   }}
                 >
                   By Occurrence ID
@@ -276,25 +299,42 @@ const EditPointData: React.FC = () => {
                     setMode('source');
                     setData(null);
                   }}
+                  sx={{
+                    flex: { xs: '1 1 0', sm: '0 0 auto' },
+                    minWidth: 0,
+                    fontSize: { xs: '0.8rem', sm: '0.875rem' },
+                    lineHeight: 1.3,
+                    py: 1,
+                  }}
                 >
                   By Source ID
                 </Button>
                 <Button
                   variant="text"
                   onClick={() => router.push('/editLogsViewer')}
+                  sx={{ flexBasis: { xs: '100%', sm: 'auto' } }}
                 >
                   See Logs
                 </Button>
               </Box>
 
-              {/* DOMAIN TABS */}
+              {/* DOMAIN TABS: fixed tab width on phones so labels don't clip */}
               <Box
                 sx={{ borderBottom: 1, borderColor: 'divider', mb: 3, mt: 2 }}
               >
                 <Tabs
                   value={tabIndex}
                   onChange={handleTabChange}
-                  variant="fullWidth"
+                  variant="scrollable"
+                  scrollButtons="auto"
+                  allowScrollButtonsMobile
+                  sx={{
+                    '& .MuiTab-root': {
+                      minWidth: { xs: 110, sm: 160 },
+                      px: { xs: 1, sm: 2 },
+                      fontSize: { xs: '0.8rem', sm: '0.875rem' },
+                    },
+                  }}
                 >
                   <Tab label="Occurrence" />
                   <Tab label="Bionomics" />
@@ -307,9 +347,9 @@ const EditPointData: React.FC = () => {
                 <Box
                   sx={{
                     display: 'flex',
+                    flexDirection: { xs: 'column', sm: 'row' },
                     gap: 2,
-                    flexWrap: 'wrap',
-                    p: 2,
+                    p: { xs: 1.5, sm: 2 },
                     bgcolor: '#f8f9fa',
                     borderRadius: 2,
                   }}
@@ -318,13 +358,15 @@ const EditPointData: React.FC = () => {
                     label="Occurrence ID"
                     value={occurrenceId}
                     onChange={(e) => setOccurrenceId(e.target.value)}
-                    sx={{ flex: 1, minWidth: 250, bgcolor: 'white' }}
+                    fullWidth
+                    sx={{ flex: 1, minWidth: 0, bgcolor: 'white' }}
                   />
                   <Button
                     variant="contained"
                     size="large"
                     onClick={fetchDataByOccurrence}
                     disabled={loading || !occurrenceId}
+                    sx={{ flexShrink: 0 }}
                   >
                     {loading ? (
                       <CircularProgress size={24} color="inherit" />
@@ -340,9 +382,9 @@ const EditPointData: React.FC = () => {
                 <Box
                   sx={{
                     display: 'flex',
+                    flexDirection: { xs: 'column', sm: 'row' },
                     gap: 2,
-                    flexWrap: 'wrap',
-                    p: 2,
+                    p: { xs: 1.5, sm: 2 },
                     bgcolor: '#f8f9fa',
                     borderRadius: 2,
                   }}
@@ -351,13 +393,15 @@ const EditPointData: React.FC = () => {
                     label="Source ID"
                     value={sourceId}
                     onChange={(e) => setSourceId(e.target.value)}
-                    sx={{ flex: 1, minWidth: 250, bgcolor: 'white' }}
+                    fullWidth
+                    sx={{ flex: 1, minWidth: 0, bgcolor: 'white' }}
                   />
                   <Button
                     variant="contained"
                     size="large"
                     onClick={fetchDataBySource}
                     disabled={loading}
+                    sx={{ flexShrink: 0 }}
                   >
                     {loading ? (
                       <CircularProgress size={24} color="inherit" />
@@ -399,8 +443,8 @@ const EditPointData: React.FC = () => {
                 </Box>
               )}
 
-              {/* CARD COMPONENTS RENDERING */}
-              <Box sx={{ mt: 4 }}>
+              {/* CARD COMPONENTS RENDERING: one card at a time, constrained to the card width */}
+              <Box sx={{ mt: 4, width: '100%', minWidth: 0 }}>
                 {data && tabIndex === 0 && (
                   <OccurrenceCard
                     data={Array.isArray(data) ? data[0] || {} : data}
@@ -441,6 +485,8 @@ const EditPointData: React.FC = () => {
                     size="large"
                     onClick={handleSave}
                     disabled={saving || !entityType}
+                    fullWidth
+                    sx={{ maxWidth: { xs: '100%', sm: 220 } }}
                   >
                     {saving ? (
                       <CircularProgress size={24} color="inherit" />
