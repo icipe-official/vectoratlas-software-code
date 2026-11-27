@@ -1,97 +1,98 @@
 import {
-  Avatar,
   Box,
   Button,
-  ButtonGroup,
   Card,
-  CardActions,
   CardContent,
   CardHeader,
-  Collapse,
-  Container,
   FormLabel,
-  TextField,
   Typography,
 } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2';
 import React, { useEffect, useMemo, useState } from 'react';
-import SectionPanel from '../layout/sectionPanel';
-import AuthWrapper from '../shared/AuthWrapper';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { useRouter } from 'next/router';
 import { getCommunicationLog } from '../../state/communicationLog/actions/communicationLog.actions';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { red } from '@mui/material/colors';
-import CircleIcon from '@mui/icons-material/Circle';
-import IconButton, { IconButtonProps } from '@mui/material/IconButton';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { styled } from '@mui/material/styles';
-import { toast } from 'react-toastify';
-import { ApproveRejectDialog } from '../shared/approveRejectDialog';
 import { StatusRenderer } from '../shared/statusRenderer';
 import { fetchAllUsersDetails } from '../../api/api';
 import { useTranslations } from 'next-intl';
-
-const APPROVE: string = 'Approve';
-const REJECT: string = 'Reject';
 
 interface DisplayItemProps {
   label: string;
   value: string;
   isHtml?: boolean;
+  isLast?: boolean;
 }
 
+// One label/value row: faded line underneath (none on the last row) and a
+// faded vertical separator between the label and value columns
 const DisplayItem = (props: DisplayItemProps) => {
   return (
-    <Grid2
-      container
-      spacing={2}
-      sx={{ alignItems: 'center', justifyContent: 'flex-start' }}
+    <Box
+      sx={{
+        position: 'relative',
+        display: 'flex',
+        alignItems: 'stretch',
+        gap: 2,
+        py: 1.5,
+        '&::after': props.isLast
+          ? { display: 'none' }
+          : {
+              content: '""',
+              position: 'absolute',
+              left: 0,
+              right: 0,
+              bottom: 0,
+              height: '1px',
+              background:
+                'linear-gradient(to right, transparent, rgba(0, 0, 0, 0.25), transparent)',
+            },
+      }}
     >
-      <Grid2 xs={4} sx={{ padding: 2 }}>
-        <FormLabel filled color="error" sx={{ fontWeight: 'bold' }}>
-          {props.label}
-        </FormLabel>
-      </Grid2>
-      <Grid2 xs={8}>
-        {props.isHtml && (
+      <FormLabel
+        filled
+        color="error"
+        sx={{
+          flex: '0 0 40%',
+          minWidth: 0,
+          fontWeight: 'bold',
+          overflowWrap: 'anywhere',
+          alignSelf: 'center',
+        }}
+      >
+        {props.label}
+      </FormLabel>
+
+      <Box
+        sx={{
+          position: 'relative',
+          flex: 1,
+          minWidth: 0,
+          wordBreak: 'break-word',
+          display: 'flex',
+          alignItems: 'center',
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            left: '-16px',
+            top: 0,
+            bottom: 0,
+            width: '1px',
+            background:
+              'linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.25), transparent)',
+          },
+        }}
+      >
+        {props.isHtml ? (
           <div
             dangerouslySetInnerHTML={{ __html: props.value?.toString() || '' }}
           />
+        ) : (
+          <FormLabel>{props.value}</FormLabel>
         )}
-        {!props.isHtml && <FormLabel>{props.value}</FormLabel>}
-      </Grid2>
-    </Grid2>
+      </Box>
+    </Box>
   );
 };
-
-interface ExpandMoreProps extends IconButtonProps {
-  expand: boolean;
-}
-
-const ExpandMore = styled((props: ExpandMoreProps) => {
-  const { expand, ...other } = props;
-  return <IconButton {...other} />;
-})(({ theme }) => ({
-  marginLeft: 'auto',
-  transition: theme.transitions.create('transform', {
-    duration: theme.transitions.duration.shortest,
-  }),
-  variants: [
-    {
-      props: ({ expand }: { expand: boolean }) => !expand,
-      style: {
-        transform: 'rotate(0deg)',
-      },
-    },
-    {
-      props: ({ expand }: { expand: boolean }) => !!expand,
-      style: {
-        transform: 'rotate(180deg)',
-      },
-    },
-  ],
-}));
 
 const CommunicationLogDetails = () => {
   const t = useTranslations('CommunicationDetailPage');
@@ -100,23 +101,13 @@ const CommunicationLogDetails = () => {
   const communicationLog = useAppSelector(
     (state) => state.communicationLog.currentCommunicationLog
   );
-  const loading = useAppSelector((state) => state.communicationLog.loading);
-  const isAdmin = useAppSelector((state) => state.auth.roles.includes('admin'));
   const router = useRouter();
-  const id = router.query.id as string;
-  const [expanded, setExpanded] = useState(false);
-  const [comments, setComments] = useState('');
-  const [actionDialogOpen, setActionDialogOpen] = useState(false);
-  const [actionType, setActionType] = useState('');
+  const id = router.query.id as string | undefined;
   const [recipients, setRecipients] = useState<string[]>([]);
   const token = useAppSelector((state) => state.auth.token);
 
   // Memoize the data value
   const memoizedRecipients = useMemo(() => recipients, [recipients]);
-
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
 
   useEffect(() => {
     if (router.isReady && id && token) {
@@ -156,155 +147,126 @@ const CommunicationLogDetails = () => {
   return (
     <div>
       <main>
-        <Typography variant="h5" color="primary">
-          {t('title')}
-        </Typography>
-        {/* <AuthWrapper role="admin"> */}
-        <Card variant="outlined" sx={{ padding: 1, margin: 0, border: 'none' }}>
-          <CardHeader
-            avatar={
-              <Grid2
-                container
-                spacing={2}
-                sx={{ alignItems: 'center', justifyContent: 'flex-start' }}
-              >
-                <Grid2 sx={{ padding: 1 }}>
-                  <Typography variant="h6">
-                    {communicationLog?.subject}
-                  </Typography>
-                </Grid2>
-                <Grid2>
-                  <StatusRenderer
-                    status={communicationLog?.sent_status || ''}
-                  />
-                </Grid2>
-                <Grid2 sx={{ padding: 1 }}>
-                  <Typography variant="caption">
-                    {communicationLog?.sent_status}
-                  </Typography>
-                </Grid2>
-              </Grid2>
-            }
-            // action={
-            //   <div>
-            //     {communicationLog?.sent_status == 'Pending' && (
-            //       <Button
-            //         variant="contained"
-            //         color="primary"
-            //         onClick={() => {
-            //           setActionType(APPROVE);
-            //           setActionDialogOpen(true);
-            //         }}
-            //       >
-            //         Resend
-            //       </Button>
-            //     )}
-            //   </div>
-            // }
-          />
-        </Card>
-
-        <Card
-          sx={
-            {
-              /*maxWidth: 345*/
-            }
-          }
+        {/* Full-bleed wrapper: on phones it spans the whole screen width and is
+            centred by offsetting half the difference from the parent's centre.
+            This ignores the parent's padding. Inner padding keeps content off
+            the screen edges. From sm up it reverts to the normal layout. */}
+        <Box
+          sx={{
+            width: { xs: '100vw', sm: 'auto' },
+            ml: { xs: 'calc(50% - 50vw)', sm: 0 },
+            px: { xs: 1, sm: 0 },
+            boxSizing: 'border-box',
+            minWidth: 0,
+          }}
         >
-          <CardContent>
-            <Box sx={{ flexGrow: 1 }}>
-              <DisplayItem
-                label={t('form.messageType')}
-                value={communicationLog?.message_type || ''}
-              />
-              <DisplayItem
-                label={t('form.channelType')}
-                value={communicationLog?.channel_type || ''}
-              />
-              <DisplayItem
-                label={t('form.sentStatus')}
-                value={communicationLog?.sent_status || ''}
-              />
-              <DisplayItem
-                label={t('form.recipients')}
-                value={memoizedRecipients.join(', ')}
-              />
-              <DisplayItem
-                label={t('form.referenceType')}
-                value={communicationLog?.reference_entity_type || ''}
-              />
-              <DisplayItem
-                label={t('form.referenceName')}
-                value={communicationLog?.reference_entity_name || ''}
-              />
-              <DisplayItem
-                label={t('form.sentDate')}
-                value={communicationLog?.sent_date?.toString() || ''}
-              />
-              <DisplayItem
-                label={t('form.sentResponse')}
-                value={communicationLog?.sent_response || ''}
-              />
-              <DisplayItem
-                label={t('form.message')}
-                isHtml
-                value={communicationLog?.message || ''}
-              />
-            </Box>
-          </CardContent>
-          {/* <CardActions disableSpacing>
-            <ExpandMore
-              expand={expanded}
-              onClick={handleExpandClick}
-              aria-expanded={expanded}
-              aria-label="Show more"
+          {/* Returns to the Communication List */}
+          <Box sx={{ mt: 1, mb: 2 }}>
+            <Button
+              variant="outlined"
+              color="primary"
+              size="small"
+              onClick={() => router.push('/communication-log')}
+              sx={{
+                textTransform: 'none',
+                color: 'primary.main',
+                borderColor: 'primary.main',
+                '&:hover': {
+                  borderColor: 'primary.dark',
+                  backgroundColor: 'rgba(0, 133, 63, 0.08)',
+                },
+              }}
             >
-              <ExpandMoreIcon />
-            </ExpandMore>
-          </CardActions>
-          <Collapse in={expanded} timeout="auto" unmountOnExit>
-            <CardContent>
-              <DisplayItem
-                label="Message"
-                isHtml
-                value={communicationLog?.message || ''}
-              />
-              <DisplayItem
-                label="Reference Entity Type"
-                value={communicationLog?.reference_entity_type || ''}
-              />
-              <DisplayItem
-                label="Reference Entity Name"
-                value={communicationLog?.reference_entity_name || ''}
-              />
-              <DisplayItem
-                label="Sent Date"
-                value={communicationLog?.sent_date?.toString() || ''}
-              />
-              <DisplayItem
-                label="Sent Response"
-                value={communicationLog?.sent_response || ''}
-              />
+              Back to Communication List
+            </Button>
+          </Box>
+
+          <Typography variant="h5" color="primary">
+            {t('title')}
+          </Typography>
+
+          <Card
+            variant="outlined"
+            sx={{ padding: 1, margin: 0, border: 'none' }}
+          >
+            <CardHeader
+              avatar={
+                <Grid2
+                  container
+                  spacing={2}
+                  sx={{ alignItems: 'center', justifyContent: 'flex-start' }}
+                >
+                  <Grid2 sx={{ padding: 1 }}>
+                    <Typography variant="h6">
+                      {communicationLog?.subject}
+                    </Typography>
+                  </Grid2>
+                  <Grid2>
+                    <StatusRenderer
+                      status={communicationLog?.sent_status || ''}
+                    />
+                  </Grid2>
+                  <Grid2 sx={{ padding: 1 }}>
+                    <Typography variant="caption">
+                      {communicationLog?.sent_status}
+                    </Typography>
+                  </Grid2>
+                </Grid2>
+              }
+            />
+          </Card>
+
+          <Card
+            sx={{
+              width: '100%',
+              minWidth: 0,
+              borderRadius: '12px',
+            }}
+          >
+            <CardContent sx={{ px: 1.25, pt: 1.25, pb: '8px !important' }}>
+              <Box>
+                <DisplayItem
+                  label={t('form.messageType')}
+                  value={communicationLog?.message_type || ''}
+                />
+                <DisplayItem
+                  label={t('form.channelType')}
+                  value={communicationLog?.channel_type || ''}
+                />
+                <DisplayItem
+                  label={t('form.sentStatus')}
+                  value={communicationLog?.sent_status || ''}
+                />
+                <DisplayItem
+                  label={t('form.recipients')}
+                  value={memoizedRecipients.join(', ')}
+                />
+                <DisplayItem
+                  label={t('form.referenceType')}
+                  value={communicationLog?.reference_entity_type || ''}
+                />
+                <DisplayItem
+                  label={t('form.referenceName')}
+                  value={communicationLog?.reference_entity_name || ''}
+                />
+                <DisplayItem
+                  label={t('form.sentDate')}
+                  value={communicationLog?.sent_date?.toString() || ''}
+                />
+                <DisplayItem
+                  label={t('form.sentResponse')}
+                  value={communicationLog?.sent_response || ''}
+                />
+                <DisplayItem
+                  label={t('form.message')}
+                  isHtml
+                  isLast
+                  value={communicationLog?.message || ''}
+                />
+              </Box>
             </CardContent>
-          </Collapse> */}
-        </Card>
-        {/* </AuthWrapper> */}
-        {
-          <ApproveRejectDialog
-            isApprove={actionType == APPROVE}
-            title={actionType}
-            isOpen={actionDialogOpen}
-            onOk={(formValues: object) => {
-              // handleAction(formValues);
-              setActionType('');
-              setActionDialogOpen(false);
-            }}
-            onCancel={() => {
-              setActionType('');
-              setActionDialogOpen(false);
-            }}
-          />
-        }
+          </Card>
+        </Box>
       </main>
     </div>
   );

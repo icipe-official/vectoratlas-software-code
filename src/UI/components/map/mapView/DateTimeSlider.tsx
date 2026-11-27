@@ -720,6 +720,19 @@ export const DateTimeSlider = (props: DateTimeSliderProps) => {
     }
   };
 
+  const exactLabel = (() => {
+    const exactDate = computeExactDate(
+      timeline.resolution,
+      timeline.currentContext,
+      timeline.currentStep,
+      props.minDateTime,
+      props.maxDateTime
+    );
+    if (timeline.resolution === 'day') return format(exactDate, 'MMM do');
+    if (timeline.resolution === 'month') return format(exactDate, 'MMMM');
+    return format(exactDate, 'yyyy');
+  })();
+
   return (
     <Paper
       ref={rootRef}
@@ -839,173 +852,126 @@ export const DateTimeSlider = (props: DateTimeSliderProps) => {
           </Stack>
         )}
 
-        {/* 2. Primary Tools: Playback, Slider, and Exact Focus Display */}
+        {/* 2. Primary Tools: Playback, Slider, and Year (one row, all vertically centred) */}
         <Stack
-          direction={isNarrow ? 'column' : 'row'}
+          direction="row"
+          alignItems="center"
           spacing={isNarrow ? 1 : isCompact ? 1.5 : 3}
-          alignItems={isNarrow ? 'stretch' : 'center'}
+          sx={{ minWidth: 0 }}
         >
+          {/* Playback controls */}
           <Stack
             direction="row"
-            justifyContent={isNarrow ? 'center' : 'space-between'}
             alignItems="center"
-            flexWrap="wrap"
-            rowGap={1}
+            flexWrap="nowrap"
+            gap={0.5}
+            sx={{ flexShrink: 0 }}
           >
-            <Stack
-              direction="row"
-              alignItems="center"
-              justifyContent="center"
-              flexWrap="wrap"
-              gap={0.5}
+            {!isCompact && (
+              <IconButton
+                size="small"
+                onClick={() => handleContextShift(-1)}
+                disabled={isLoading || !canShiftPrev}
+                sx={{
+                  color: 'rgba(255,255,255,0.7)',
+                  '&:hover': { color: '#ffffff' },
+                  '&.Mui-disabled': { color: 'rgba(255,255,255,0.3)' },
+                }}
+              >
+                <SkipPrevious />
+              </IconButton>
+            )}
+            <IconButton
+              onClick={togglePlayOrReplay}
+              sx={{
+                bgcolor: isError ? '#ff4d4d' : '#7EEFA8',
+                color: '#0a0f14',
+                width: isCompact ? 28 : 36,
+                height: isCompact ? 28 : 36,
+                '&:hover': { bgcolor: isError ? '#ff3333' : '#5ad887' },
+              }}
             >
-              {!isCompact && (
+              {isLoading ? (
+                <CircularProgress
+                  size={isCompact ? 18 : 24}
+                  sx={{ color: '#0a0f14' }}
+                />
+              ) : isError ? (
+                <ErrorOutline fontSize={isCompact ? 'small' : 'medium'} />
+              ) : isAtEnd && !isPlaying ? (
+                <Replay fontSize={isCompact ? 'small' : 'medium'} />
+              ) : isPlaying ? (
+                <Pause size={isCompact ? 16 : 24} />
+              ) : (
+                <PlayArrow fontSize={isCompact ? 'small' : 'medium'} />
+              )}
+            </IconButton>
+            {!isCompact && (
+              <>
                 <IconButton
                   size="small"
-                  onClick={() => handleContextShift(-1)}
-                  disabled={isLoading || !canShiftPrev}
+                  onClick={() => handleContextShift(1)}
+                  disabled={isLoading || !canShiftNext}
                   sx={{
                     color: 'rgba(255,255,255,0.7)',
                     '&:hover': { color: '#ffffff' },
                     '&.Mui-disabled': { color: 'rgba(255,255,255,0.3)' },
                   }}
                 >
-                  <SkipPrevious />
+                  <SkipNext />
                 </IconButton>
-              )}
-              <IconButton
-                onClick={togglePlayOrReplay}
-                sx={{
-                  bgcolor: isError ? '#ff4d4d' : '#7EEFA8',
-                  color: '#0a0f14',
-                  width: isCompact ? 28 : 36,
-                  height: isCompact ? 28 : 36,
-                  '&:hover': { bgcolor: isError ? '#ff3333' : '#5ad887' },
-                }}
-              >
-                {isLoading ? (
-                  <CircularProgress
-                    size={isCompact ? 18 : 24}
-                    sx={{ color: '#0a0f14' }}
-                  />
-                ) : isError ? (
-                  <ErrorOutline fontSize={isCompact ? 'small' : 'medium'} />
-                ) : isAtEnd && !isPlaying ? (
-                  <Replay fontSize={isCompact ? 'small' : 'medium'} />
-                ) : isPlaying ? (
-                  <Pause size={isCompact ? 16 : 24} />
-                ) : (
-                  <PlayArrow fontSize={isCompact ? 'small' : 'medium'} />
-                )}
-              </IconButton>
-              {!isCompact && (
-                <>
-                  <IconButton
-                    size="small"
-                    onClick={() => handleContextShift(1)}
-                    disabled={isLoading || !canShiftNext}
-                    sx={{
-                      color: 'rgba(255,255,255,0.7)',
-                      '&:hover': { color: '#ffffff' },
-                      '&.Mui-disabled': { color: 'rgba(255,255,255,0.3)' },
-                    }}
-                  >
-                    <SkipNext />
-                  </IconButton>
-                  <Button
-                    onClick={() =>
-                      setPlaybackSpeed((s) =>
-                        s === 1 ? 2 : s === 2 ? 5 : s === 5 ? 10 : 1
-                      )
-                    }
-                    sx={{
-                      minWidth: '40px',
-                      px: 0.5,
-                      color: '#7EEFA8',
-                      fontSize: '0.75rem',
-                    }}
-                  >
-                    {playbackSpeed}x
-                  </Button>
-                  {props.onTogglePreload && (
-                    <Button
-                      onClick={props.onTogglePreload}
-                      sx={{
-                        minWidth: 'auto',
-                        color: props.preloadEnabled
-                          ? '#7EEFA8'
-                          : 'rgba(255,255,255,0.5)',
-                        fontSize: '0.65rem',
-                        textTransform: 'none',
-                        border: `1px solid ${
-                          props.preloadEnabled
-                            ? 'rgba(126,239,168,0.5)'
-                            : 'transparent'
-                        }`,
-                        borderRadius: '6px',
-                        px: 1,
-                        py: 0.25,
-                      }}
-                      title="Preload all time-series tiles for smooth playback"
-                    >
-                      Preload {props.preloadEnabled ? 'ON' : 'OFF'}
-                    </Button>
-                  )}
-                </>
-              )}
-            </Stack>
-
-            {isNarrow && (
-              <Stack
-                direction="row"
-                alignItems="center"
-                justifyContent="center"
-                spacing={0.5}
-              >
-                <Typography
-                  variant="h6"
+                <Button
+                  onClick={() =>
+                    setPlaybackSpeed((s) =>
+                      s === 1 ? 2 : s === 2 ? 5 : s === 5 ? 10 : 1
+                    )
+                  }
                   sx={{
-                    lineHeight: 1,
+                    minWidth: '40px',
+                    px: 0.5,
                     color: '#7EEFA8',
-                    fontWeight: 'bold',
-                    fontSize: isCompact ? '0.9rem' : '1.1rem',
+                    fontSize: '0.75rem',
                   }}
                 >
-                  {(() => {
-                    const exactDate = computeExactDate(
-                      timeline.resolution,
-                      timeline.currentContext,
-                      timeline.currentStep,
-                      props.minDateTime,
-                      props.maxDateTime
-                    );
-                    if (timeline.resolution === 'day')
-                      return format(exactDate, 'MMM do');
-                    if (timeline.resolution === 'month')
-                      return format(exactDate, 'MMMM');
-                    return format(exactDate, 'yyyy');
-                  })()}
-                </Typography>
-                <IconButton
-                  size="small"
-                  onClick={() => setIsCompact(!isCompact)}
-                  sx={{
-                    color: 'rgba(255,255,255,0.5)',
-                    '&:hover': { color: '#ffffff' },
-                    p: 0.5,
-                  }}
-                >
-                  {isCompact ? <ExpandLess /> : <ExpandMore />}
-                </IconButton>
-              </Stack>
+                  {playbackSpeed}x
+                </Button>
+                {props.onTogglePreload && (
+                  <Button
+                    onClick={props.onTogglePreload}
+                    sx={{
+                      minWidth: 'auto',
+                      color: props.preloadEnabled
+                        ? '#7EEFA8'
+                        : 'rgba(255,255,255,0.5)',
+                      fontSize: '0.65rem',
+                      textTransform: 'none',
+                      border: `1px solid ${
+                        props.preloadEnabled
+                          ? 'rgba(126,239,168,0.5)'
+                          : 'transparent'
+                      }`,
+                      borderRadius: '6px',
+                      px: 1,
+                      py: 0.25,
+                    }}
+                    title="Preload all time-series tiles for smooth playback"
+                  >
+                    Preload {props.preloadEnabled ? 'ON' : 'OFF'}
+                  </Button>
+                )}
+              </>
             )}
           </Stack>
 
+          {/* Slider track: fills the remaining width and centres itself on the row */}
           <Box
             sx={{
               flexGrow: 1,
-              px: isNarrow ? 1 : 2,
-              py: isCompact ? 0 : isNarrow ? 1 : 0,
+              flexBasis: 0,
+              minWidth: 0,
+              display: 'flex',
+              alignItems: 'center',
+              px: isNarrow ? 0.5 : 2,
             }}
           >
             <GISSplitSlider
@@ -1013,7 +979,9 @@ export const DateTimeSlider = (props: DateTimeSliderProps) => {
               min={sliderMin}
               max={sliderMax}
               step={1}
-              marks={marks}
+              // On phones the year label already shows the value, so the scale
+              // labels are removed. Otherwise they push the track above the year.
+              marks={isNarrow ? false : marks}
               disabled={isLoading}
               valueLabelDisplay="auto"
               valueLabelFormat={formatValueLabel}
@@ -1040,53 +1008,45 @@ export const DateTimeSlider = (props: DateTimeSliderProps) => {
             />
           </Box>
 
-          {!isNarrow && (
-            <Stack
-              direction="row"
-              alignItems="center"
-              spacing={1}
+          {/* Year: same row as the track, centred on it */}
+          <Stack
+            direction="row"
+            alignItems="center"
+            spacing={0.5}
+            sx={{
+              flexShrink: 0,
+              minWidth: isNarrow ? 'auto' : isCompact ? 100 : 130,
+              justifyContent: 'flex-end',
+            }}
+          >
+            <Typography
+              variant="h6"
               sx={{
-                minWidth: isCompact ? 100 : 130,
-                justifyContent: 'flex-end',
+                lineHeight: 1,
+                color: '#7EEFA8',
+                fontWeight: 'bold',
+                fontSize: isNarrow
+                  ? '0.9rem'
+                  : isCompact
+                  ? '0.95rem'
+                  : '1.25rem',
+                whiteSpace: 'nowrap',
               }}
             >
-              <Typography
-                variant="h6"
-                sx={{
-                  lineHeight: 1,
-                  color: '#7EEFA8',
-                  fontWeight: 'bold',
-                  fontSize: isCompact ? '0.95rem' : '1.25rem',
-                }}
-              >
-                {(() => {
-                  const exactDate = computeExactDate(
-                    timeline.resolution,
-                    timeline.currentContext,
-                    timeline.currentStep,
-                    props.minDateTime,
-                    props.maxDateTime
-                  );
-                  if (timeline.resolution === 'day')
-                    return format(exactDate, 'MMM do');
-                  if (timeline.resolution === 'month')
-                    return format(exactDate, 'MMMM');
-                  return format(exactDate, 'yyyy');
-                })()}
-              </Typography>
-              <IconButton
-                size="small"
-                onClick={() => setIsCompact(!isCompact)}
-                sx={{
-                  color: 'rgba(255,255,255,0.5)',
-                  '&:hover': { color: '#ffffff' },
-                  p: 0.5,
-                }}
-              >
-                {isCompact ? <ExpandLess /> : <ExpandMore />}
-              </IconButton>
-            </Stack>
-          )}
+              {exactLabel}
+            </Typography>
+            <IconButton
+              size="small"
+              onClick={() => setIsCompact(!isCompact)}
+              sx={{
+                color: 'rgba(255,255,255,0.5)',
+                '&:hover': { color: '#ffffff' },
+                p: 0.5,
+              }}
+            >
+              {isCompact ? <ExpandLess /> : <ExpandMore />}
+            </IconButton>
+          </Stack>
         </Stack>
       </Stack>
     </Paper>

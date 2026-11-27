@@ -1,15 +1,8 @@
-import React, {
-  useState,
-  useEffect,
-  useMemo,
-  useCallback,
-  useRef,
-} from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   Paper,
   Box,
   IconButton,
-  List,
   ListItemButton,
   Typography,
   Collapse,
@@ -18,7 +11,6 @@ import {
   Divider,
   useTheme,
   useMediaQuery,
-  Slide,
   Fade,
   Tooltip,
   Button,
@@ -28,6 +20,7 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import LayersIcon from '@mui/icons-material/Layers';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import DownloadIcon from '@mui/icons-material/Download';
 import { useAppSelector, useAppDispatch } from '../../../state/hooks';
 import {
   toggleWMTSLayerVisibility,
@@ -35,7 +28,8 @@ import {
 } from '../../../state/map/mapSlice';
 import { getWMTSOverlays } from '../../../state/map/actions/getWmtsoverlays';
 import { WMTSWorkspacesEnum } from '../../../state/state.types';
-import DownloadIcon from '@mui/icons-material/Download';
+// Adjust to where DockPanel.tsx lives
+import DockPanel from '../../mobileDock/DockPanel';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -49,14 +43,6 @@ interface LayerItemProps {
   layer: WMTSLayer;
   isLoading?: boolean;
   onToggle: (name: string) => void;
-}
-
-interface LayerGroupProps {
-  groupName: string;
-  layers: WMTSLayer[];
-  isExpanded: boolean;
-  onToggleGroup: (name: string) => void;
-  onToggleLayer: (name: string) => void;
 }
 
 // ─── Design Tokens ────────────────────────────────────────────────────────────
@@ -74,16 +60,15 @@ const HEADER_BG = 'rgba(255,255,255,0.025)';
 const BORDER_SUBTLE = 'rgba(255,255,255,0.08)';
 const TEXT_PRIMARY = '#e8ede9';
 const TEXT_MUTED = 'rgba(232,237,233,0.45)';
+
 // Desktop layout
 const SIDEBAR_OPEN_LEFT = 370;
 const SIDEBAR_CLOSED_LEFT = 80;
-const PANEL_TOP_OFFSET = 60;
 const PANEL_WIDTH_DESKTOP = 320;
 
-// Mobile layout
-const MOBILE_SHEET_MAX_HEIGHT = '72vh';
-const MOBILE_SHEET_MIN_HEIGHT = '80px';
-const VECTOR_PANEL_MIN_HEIGHT = 52;
+// Dock registration
+const DOCK_ID = 'species';
+const DOCK_TITLE = 'Species';
 
 const EASE = 'cubic-bezier(0.4, 0, 0.2, 1)';
 const TRANSITION = `all 0.32s ${EASE}`;
@@ -92,7 +77,6 @@ const TRANSITION = `all 0.32s ${EASE}`;
 
 const useSpeciesOverlays = () => {
   const dispatch = useAppDispatch();
-  const [isVisible, setIsVisible] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [loadingLayer, setLoadingLayer] = useState<string | null>(null);
   const [repoLink] = useState('https://doi.org/10.26188/34044441');
@@ -100,7 +84,8 @@ const useSpeciesOverlays = () => {
   const WMTS_WORKSPACE = WMTSWorkspacesEnum.SPECIES;
 
   const isSidebarOpen = useAppSelector((s) => s.map.map_drawer.open);
-  const drawerRequestOpen = useAppSelector((s) => s.map.map_drawer.overlays);
+  // Visibility comes from Redux; the dock and the X button both toggle it
+  const isVisible = useAppSelector((s) => !!s.map.map_drawer.overlays);
   const wmtsLayers = useAppSelector((s) =>
     s.map.wmtsLayers.filter((layer) => layer.workspace === WMTS_WORKSPACE)
   ) as WMTSLayer[];
@@ -110,10 +95,13 @@ const useSpeciesOverlays = () => {
   );
   const dataState = useAppSelector((s) => s.map.timeSeries.dataState);
 
+  const toggleOverlays = useCallback(() => {
+    dispatch(drawerListToggle('overlays'));
+  }, [dispatch]);
+
   useEffect(() => {
     if (loadingLayer) {
       if (dataState === 'ready' || dataState === 'error') {
-        // Small timeout to ensure visual transition is smooth and handle cached layers
         const timer = setTimeout(() => setLoadingLayer(null), 250);
         return () => clearTimeout(timer);
       }
@@ -121,21 +109,17 @@ const useSpeciesOverlays = () => {
   }, [dataState, loadingLayer]);
 
   useEffect(() => {
-    if (drawerRequestOpen) {
-      setIsVisible(true);
-      if (wmtsStatus !== 'loading' && !wmtsWorkspaceLoaded)
-        dispatch(getWMTSOverlays({ workspace: WMTS_WORKSPACE }));
-    }
-  }, [drawerRequestOpen, wmtsStatus, dispatch]);
+    if (isVisible && wmtsStatus !== 'loading' && !wmtsWorkspaceLoaded)
+      dispatch(getWMTSOverlays({ workspace: WMTS_WORKSPACE }));
+  }, [isVisible, wmtsStatus, wmtsWorkspaceLoaded, dispatch]);
 
   const toggleMinimized = useCallback(
     () => setIsMinimized((prev) => !prev),
     []
   );
   const handleClose = useCallback(() => {
-    setIsVisible(false);
-    dispatch(drawerListToggle('overlays'));
-  }, [dispatch]);
+    toggleOverlays();
+  }, [toggleOverlays]);
   const handleToggleLayer = useCallback(
     (name: string) => {
       const layer = wmtsLayers.find((l) => l.name === name);
@@ -164,28 +148,17 @@ const useSpeciesOverlays = () => {
 // ─── Species Legend ────────────────────────────────────────────────────────────
 
 const LEGEND_STOPS = [
-  {
-    label: '0',
-    color: '#9b8d99',
-    description: 'Low values',
-  },
-  {
-    label: '0.5',
-    color: '#6b7fa8',
-    description: 'Medium values',
-  },
-  {
-    label: '1',
-    color: '#5a3fa3',
-    description: 'High values',
-  },
+  { label: '0', color: '#9b8d99', description: 'Low values' },
+  { label: '0.5', color: '#6b7fa8', description: 'Medium values' },
+  { label: '1', color: '#5a3fa3', description: 'High values' },
 ];
 
 const SpeciesLegend: React.FC = () => {
   const [hovered, setHovered] = useState<number | null>(null);
 
+  // No flex grow here: it would absorb leftover height and leave a gap
   return (
-    <Box sx={{ px: 1.5, pt: 1.5, pb: 2, flex: 1 }}>
+    <Box sx={{ px: 1.5, pt: 1.5, pb: 1 }}>
       <Box
         sx={{
           display: 'flex',
@@ -208,7 +181,6 @@ const SpeciesLegend: React.FC = () => {
         </Typography>
       </Box>
 
-      {/* Horizontal Gradient Bar */}
       <Box
         sx={{
           position: 'relative',
@@ -403,17 +375,17 @@ const LayerItem: React.FC<LayerItemProps> = React.memo(
 );
 LayerItem.displayName = 'LayerItem';
 
+// Desktop header only. On mobile, DockPanel's title bar takes this role.
 const PanelHeader: React.FC<{
   isMinimized: boolean;
-  isMobile: boolean;
   onToggleMinimized: () => void;
   onClose: () => void;
-}> = ({ isMinimized, isMobile, onToggleMinimized, onClose }) => (
+}> = ({ isMinimized, onToggleMinimized, onClose }) => (
   <Box
     onClick={onToggleMinimized}
     sx={{
       px: 2,
-      py: isMobile ? 1.2 : 1.4,
+      py: 1.4,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
@@ -442,7 +414,7 @@ const PanelHeader: React.FC<{
           variant="subtitle2"
           sx={{
             fontWeight: 600,
-            fontSize: { xs: '0.82rem', sm: '0.78rem' },
+            fontSize: '0.78rem',
             color: TEXT_PRIMARY,
           }}
         >
@@ -503,6 +475,9 @@ const PanelContent: React.FC<{
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showScrollHint, setShowScrollHint] = useState(false);
 
+  // On mobile, content sizes to its height. On desktop, it fills the panel.
+  const grow = isMobile ? 0 : 1;
+
   const checkScroll = useCallback(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -529,19 +504,19 @@ const PanelContent: React.FC<{
       in={!isMinimized}
       timeout={300}
       sx={{
-        flexGrow: 1,
+        flexGrow: grow,
         overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
         minHeight: 0,
         '&.MuiCollapse-entered .MuiCollapse-wrapper': {
-          flexGrow: 1,
+          flexGrow: grow,
           display: 'flex',
           flexDirection: 'column',
           minHeight: 0,
         },
         '&.MuiCollapse-entered .MuiCollapse-wrapperInner': {
-          flexGrow: 1,
+          flexGrow: grow,
           display: 'flex',
           flexDirection: 'column',
           minHeight: 0,
@@ -550,7 +525,7 @@ const PanelContent: React.FC<{
     >
       <Box
         sx={{
-          flex: 1,
+          flex: grow,
           overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column',
@@ -560,7 +535,7 @@ const PanelContent: React.FC<{
         <Box
           sx={{
             overflow: 'hidden',
-            flex: 9,
+            flex: isMobile ? 'none' : 9,
             position: 'relative',
             display: 'flex',
             flexDirection: 'column',
@@ -572,16 +547,15 @@ const PanelContent: React.FC<{
             sx={{
               px: 1,
               py: 1,
-              overflowY: 'auto',
-              maxHeight: isMobile
-                ? `calc(${MOBILE_SHEET_MAX_HEIGHT} - 160px)`
-                : '42vh',
+              // On mobile, DockPanel is the scroll area, so the list grows freely
+              overflowY: isMobile ? 'visible' : 'auto',
+              maxHeight: isMobile ? 'none' : '42vh',
               '&::-webkit-scrollbar': { width: 8 },
               '&::-webkit-scrollbar-thumb': {
                 background: ACCENT,
                 borderRadius: 10,
               },
-              pb: isMobile ? 'max(8px, env(safe-area-inset-bottom))' : 0.5,
+              pb: isMobile ? 1 : 0.5,
             }}
           >
             {wmtsStatus === 'loading' && (
@@ -593,16 +567,6 @@ const PanelContent: React.FC<{
                 />
               </Box>
             )}
-            {/* {Object.entries(grouped).map(([groupName, layers]) => (
-            <LayerGroup
-              key={groupName}
-              groupName={groupName}
-              layers={layers}
-              isExpanded={expandedGroup === groupName}
-              onToggleGroup={onToggleGroup}
-              onToggleLayer={onToggleLayer}
-            />
-          ))} */}
             {wmtsLayers.map((layer) => (
               <LayerItem
                 key={layer.name}
@@ -612,7 +576,7 @@ const PanelContent: React.FC<{
               />
             ))}
           </Box>
-          <ScrollHint visible={showScrollHint} />
+          {!isMobile && <ScrollHint visible={showScrollHint} />}
         </Box>
         <Box sx={{ px: 1.5, pb: 1, pt: 0.5, zIndex: 4 }}>
           <Tooltip
@@ -654,7 +618,6 @@ const PanelContent: React.FC<{
         <Box sx={{ px: 1.5, pt: 0.5 }}>
           <Divider sx={{ borderColor: 'rgba(255,255,255,0.06)' }} />
         </Box>
-        {/* <ResistanceLegend /> */}
         <SpeciesLegend />
       </Box>
     </Collapse>
@@ -666,7 +629,6 @@ const PanelContent: React.FC<{
 export const SpeciesOverlaysPanel: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const isVectorPanelVisible = useAppSelector((s) => s.map.map_drawer.open);
 
   const {
     isVisible,
@@ -681,81 +643,32 @@ export const SpeciesOverlaysPanel: React.FC = () => {
     handleToggleLayer,
   } = useSpeciesOverlays();
 
-  if (!isVisible) return null;
-
+  // Mobile: DockPanel handles open/close, minimize and the dock icon.
+  // It must always mount on mobile so it can register when opened.
   if (isMobile) {
     return (
-      <Slide
-        direction="up"
-        in={isVisible}
-        mountOnEnter
-        unmountOnExit
-        timeout={320}
+      <DockPanel
+        id={DOCK_ID}
+        title={DOCK_TITLE}
+        icon={LayersIcon}
+        open={isVisible}
+        onClose={handleClose}
+        dark
       >
-        <Paper
-          elevation={0}
-          sx={{
-            position: 'fixed',
-            bottom: isVectorPanelVisible ? `${VECTOR_PANEL_MIN_HEIGHT}px` : 0,
-            left: 0,
-            right: 0,
-            zIndex: 1300,
-            flex: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            overflow: 'hidden',
-            maxHeight: isMinimized
-              ? MOBILE_SHEET_MIN_HEIGHT
-              : MOBILE_SHEET_MAX_HEIGHT,
-            transition: `bottom 0.3s ${EASE}, max-height 0.38s ${EASE}`,
-            backdropFilter: 'blur(20px) saturate(140%)',
-            background: PANEL_BG,
-            color: TEXT_PRIMARY,
-            borderRadius: isVectorPanelVisible ? '16px' : '16px 16px 0 0',
-            margin: isVectorPanelVisible ? '0 8px 8px 8px' : '0',
-            width: isVectorPanelVisible ? 'calc(100% - 16px)' : '100%',
-            border: `1px solid ${BORDER_SUBTLE}`,
-            boxShadow: '0 -4px 24px rgba(0,0,0,0.45)',
-          }}
-        >
-          <Box
-            onClick={toggleMinimized}
-            sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              pt: 0.75,
-              pb: 0.25,
-              cursor: 'pointer',
-            }}
-          >
-            <Box
-              sx={{
-                width: 36,
-                height: 4,
-                borderRadius: '2px',
-                background: 'rgba(255,255,255,0.2)',
-              }}
-            />
-          </Box>
-          <PanelHeader
-            isMinimized={isMinimized}
-            isMobile
-            onToggleMinimized={toggleMinimized}
-            onClose={handleClose}
-          />
-          <PanelContent
-            isMinimized={isMinimized}
-            isMobile
-            wmtsStatus={wmtsStatus}
-            wmtsLayers={wmtsLayers}
-            loadingLayer={loadingLayer}
-            repoLink={repoLink}
-            onToggleLayer={handleToggleLayer}
-          />
-        </Paper>
-      </Slide>
+        <PanelContent
+          isMinimized={false}
+          isMobile
+          wmtsStatus={wmtsStatus}
+          wmtsLayers={wmtsLayers}
+          loadingLayer={loadingLayer}
+          repoLink={repoLink}
+          onToggleLayer={handleToggleLayer}
+        />
+      </DockPanel>
     );
   }
+
+  if (!isVisible) return null;
 
   const panelLeft = isSidebarOpen ? SIDEBAR_OPEN_LEFT : SIDEBAR_CLOSED_LEFT;
 
@@ -765,7 +678,6 @@ export const SpeciesOverlaysPanel: React.FC = () => {
       sx={[
         {
           // position: 'absolute',
-          // top: PANEL_TOP_OFFSET,
           // left: panelLeft,
           width: PANEL_WIDTH_DESKTOP,
           maxHeight: isMinimized ? 'fit-content' : 'calc(100vh - 120px)',
@@ -786,7 +698,6 @@ export const SpeciesOverlaysPanel: React.FC = () => {
     >
       <PanelHeader
         isMinimized={isMinimized}
-        isMobile={false}
         onToggleMinimized={toggleMinimized}
         onClose={handleClose}
       />

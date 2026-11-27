@@ -1,4 +1,4 @@
-import { Container } from '@mui/material';
+import { Box, Container } from '@mui/material';
 import React from 'react';
 import NewsDetails from '../../components/news/newsDetails';
 import { getMessages } from '../../utils/localization';
@@ -9,14 +9,33 @@ const NewsArticlePage = (): JSX.Element => {
     <>
       <div>
         <main>
+          {/* Phones: full width with a small gap. Larger screens: original 75% layout. */}
           <Container
             maxWidth={false}
+            disableGutters
             sx={{
-              padding: '10px',
-              maxWidth: '75%',
+              width: { xs: '100%', sm: '75%' },
+              maxWidth: { xs: '100%', sm: '75%' },
+              px: { xs: 1.5, sm: '10px' },
+              py: { xs: 1.5, sm: '10px' },
+              mx: 'auto',
+              minWidth: 0,
             }}
           >
-            <NewsDetails />
+            {/* Card around the article: white, rounded, lightly outlined */}
+            <Box
+              sx={{
+                backgroundColor: '#fff',
+                borderRadius: { xs: '12px', sm: '16px' },
+                border: '1px solid rgba(15, 23, 42, 0.1)',
+                boxShadow: '0 1px 3px rgba(15, 23, 42, 0.06)',
+                p: { xs: 2, sm: 4 },
+                minWidth: 0,
+                overflow: 'hidden',
+              }}
+            >
+              <NewsDetails />
+            </Box>
           </Container>
         </main>
       </div>

@@ -21,15 +21,20 @@ function Footer() {
         backgroundColor: 'background.paper',
         borderTop: '1px solid',
         borderColor: 'divider',
-        pl: 3,
-        pt: 3,
+        px: { xs: 2, sm: 3 },
+        pt: { xs: 2, md: 3 },
         pb: 1,
         mt: 'auto',
       }}
     >
-      <Container maxWidth="lg">
-        <Grid container spacing={4}>
-          <Grid item xs={12} md={4}>
+      <Container maxWidth="lg" disableGutters={false}>
+        <Grid container spacing={{ xs: 3, md: 4 }}>
+          <Grid
+            item
+            xs={12}
+            md={4}
+            sx={{ textAlign: { xs: 'center', md: 'left' } }}
+          >
             <Typography variant="h6" gutterBottom>
               Vector Atlas
             </Typography>
@@ -46,22 +51,43 @@ function Footer() {
             </Typography>
           </Grid>
 
-          <Grid item xs={12} md={4}>
+          <Grid
+            item
+            xs={12}
+            md={4}
+            sx={{ textAlign: { xs: 'center', md: 'left' } }}
+          >
             <Typography variant="subtitle1" gutterBottom fontWeight={600}>
               {t('contactTitle') || 'Contact Us'}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              <MuiLink href="mailto:vectoratlas@icipe.org" underline="hover">
+              <MuiLink
+                href="mailto:vectoratlas@icipe.org"
+                underline="hover"
+                sx={{ wordBreak: 'break-all' }}
+              >
                 vectoratlas@icipe.org
               </MuiLink>
             </Typography>
           </Grid>
 
-          <Grid item xs={12} md={4}>
+          <Grid
+            item
+            xs={12}
+            md={4}
+            sx={{ textAlign: { xs: 'center', md: 'left' } }}
+          >
             <Typography variant="subtitle1" gutterBottom fontWeight={600}>
               {t('resourcesTitle') || 'Resources'}
             </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: { xs: 'center', md: 'flex-start' },
+                gap: 0.5,
+              }}
+            >
               {/* <Link href="/docs" passHref legacyBehavior>
                 <MuiLink underline="hover">
                   {t('docs') || 'Documentation'}
@@ -93,7 +119,7 @@ function Footer() {
           sx={{
             borderTop: '1px solid',
             borderColor: 'divider',
-            mt: 1,
+            mt: { xs: 2, md: 1 },
             pt: 1,
             pb: 1,
             textAlign: 'center',

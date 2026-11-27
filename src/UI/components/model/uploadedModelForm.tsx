@@ -11,7 +11,6 @@ import {
   Checkbox,
   Typography,
 } from '@mui/material';
-import Grid2 from '@mui/material/Unstable_Grid2';
 import CloudDownload from '@mui/icons-material/CloudDownload';
 import { SaveOutlined } from '@mui/icons-material';
 import { useEffect, useMemo, useState } from 'react';
@@ -75,15 +74,46 @@ const getFileName = (filePath: string) => {
   return res;
 };
 
+// One field per row: label on the left, value on the right.
+// Each row is separated by a soft divider that fades out at both ends.
+// Phones: label takes 40% of the row. Wider screens: 30%.
 const DisplayItem = (props: DisplayItemProps) => {
   return (
-    <Grid2
-      container
-      spacing={2}
-      sx={{ alignItems: 'center', justifyContent: 'flex-start' }}
+    <Box
+      sx={{
+        position: 'relative',
+        display: 'flex',
+        alignItems: 'flex-start',
+        gap: { xs: 1.5, sm: 2 },
+        px: { xs: 2, sm: 2.5 },
+        py: 1.5,
+        transition: 'background-color 0.2s ease',
+        '&:hover': { backgroundColor: 'rgba(107, 170, 117, 0.05)' },
+        // Soft separator: transparent at the ends, faint in the middle
+        '&:not(:last-child)::after': {
+          content: '""',
+          position: 'absolute',
+          left: { xs: 16, sm: 20 },
+          right: { xs: 16, sm: 20 },
+          bottom: 0,
+          height: '1px',
+          background:
+            'linear-gradient(to right, transparent, rgba(15, 23, 42, 0.12) 12%, rgba(15, 23, 42, 0.12) 88%, transparent)',
+        },
+      }}
     >
-      <Grid2 xs={4} sx={{ padding: 2 }}>
-        <FormLabel filled sx={{ fontWeight: 'bold' }}>
+      <Box sx={{ flex: { xs: '0 0 40%', sm: '0 0 30%' }, minWidth: 0 }}>
+        <FormLabel
+          filled
+          sx={{
+            fontWeight: 600,
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignItems: 'flex-start',
+            lineHeight: 1.3,
+            color: 'rgba(15, 23, 42, 0.7)',
+          }}
+        >
           {props.label}
           {props.isRequired && (
             <Typography variant="body1" style={{ color: 'red', marginLeft: 2 }}>
@@ -91,21 +121,24 @@ const DisplayItem = (props: DisplayItemProps) => {
             </Typography>
           )}
         </FormLabel>
-      </Grid2>
-      {!props.isComponent && (
-        <Grid2 xs={8}>
-          {props.isHtml && (
-            <div
-              dangerouslySetInnerHTML={{
-                __html: props?.value?.toString() || '',
-              }}
-            />
-          )}
-          {!props.isHtml && <FormLabel>{props.value}</FormLabel>}
-        </Grid2>
-      )}
-      {props.isComponent && <Grid2 xs={8}>{props.value}</Grid2>}
-    </Grid2>
+      </Box>
+
+      <Box sx={{ flex: 1, minWidth: 0, overflowWrap: 'anywhere' }}>
+        {!props.isComponent && props.isHtml && (
+          <div
+            dangerouslySetInnerHTML={{
+              __html: props?.value?.toString() || '',
+            }}
+          />
+        )}
+        {!props.isComponent && !props.isHtml && (
+          <FormLabel sx={{ display: 'block', overflowWrap: 'anywhere' }}>
+            {props.value}
+          </FormLabel>
+        )}
+        {props.isComponent && props.value}
+      </Box>
+    </Box>
   );
 };
 
@@ -340,7 +373,8 @@ const UploadedModelForm = (props: UploadedModelProps) => {
 
   return (
     <div>
-      <Container>
+      {/* disableGutters removes the side padding on phones so the card reaches the screen edges */}
+      <Container maxWidth="lg" disableGutters sx={{ px: { xs: 0, sm: 3 } }}>
         <Box
           component="form"
           sx={{
@@ -351,11 +385,15 @@ const UploadedModelForm = (props: UploadedModelProps) => {
           noValidate
           autoComplete="off"
         >
-          <div
-            style={{
+          <Box
+            sx={{
               display: 'flex',
-              flexDirection: 'row',
+              flexWrap: 'wrap',
               justifyContent: 'space-between',
+              alignItems: 'center',
+              gap: 1,
+              px: { xs: 2, sm: 0 },
+              py: 1.5,
             }}
           >
             <StatusRenderer
@@ -370,10 +408,17 @@ const UploadedModelForm = (props: UploadedModelProps) => {
                 label={''}
               />
             )}
-          </div>
+          </Box>
 
-          <Card>
-            <CardContent>
+          {/* Full width on phones, square corners so it meets the edges */}
+          <Card
+            variant="outlined"
+            sx={{
+              width: '100%',
+              borderRadius: { xs: 0, sm: 2 },
+            }}
+          >
+            <CardContent sx={{ p: 0, '&:last-child': { pb: 0 } }}>
               <Box sx={{ flexGrow: 1 }}>
                 <DisplayItem
                   label={t('form.displayName')}
@@ -517,7 +562,6 @@ const UploadedModelForm = (props: UploadedModelProps) => {
                 justifyContent: 'center',
               }}
             >
-              m
               <CircularProgress />
             </div>
           )}

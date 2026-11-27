@@ -52,14 +52,19 @@ export default function CatalogueFilters({
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingBottom: '20px',
+        // Less bottom padding on phones
+        paddingBottom: { xs: '8px', sm: '20px' },
         flexWrap: 'wrap',
         gap: 2,
       }}
     >
       <TextField
         id="species-search-filter"
-        sx={{ width: '40%', minWidth: '200px' }}
+        sx={{
+          // Full width on phones, original 40% from sm up
+          width: { xs: '100%', sm: '40%' },
+          minWidth: { xs: 0, sm: '200px' },
+        }}
         // Cleaned up text placeholder binding
         label={t('filters.searchPlaceholder') || 'Search species...'}
         variant="outlined"
@@ -68,7 +73,17 @@ export default function CatalogueFilters({
         onChange={handleTextChange}
       />
 
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          // Wrap instead of overflowing the card
+          flexWrap: 'wrap',
+          gap: 1,
+          width: { xs: '100%', sm: 'auto' },
+          minWidth: 0,
+        }}
+      >
         <Typography
           variant="body2"
           sx={{ color: 'text.secondary', fontWeight: 500 }}
@@ -81,6 +96,14 @@ export default function CatalogueFilters({
           onChange={handleCategoryToggle}
           size="small"
           color="primary"
+          sx={{
+            minWidth: 0,
+            // Compact buttons on phones, original size from sm up
+            '& .MuiToggleButton-root': {
+              padding: { xs: '4px 10px', sm: '7px 11px' },
+              fontSize: { xs: '0.7rem', sm: '0.8125rem' },
+            },
+          }}
         >
           {/* Keep values as standard logical tokens, translate display text labels */}
           <ToggleButton value="All">

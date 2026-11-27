@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import { getAllEditLogs } from '../api/api';
 import { GetServerSidePropsContext } from 'next';
 import { getMessages } from '../utils/localization';
@@ -13,7 +14,23 @@ interface LogData {
   modifiedData: Record<string, any>;
 }
 
+// Tracks whether the screen is phone-width, so the layout can switch
+// between stacked rows (phones) and the full table (wider screens)
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 599.95px)');
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
+  return isMobile;
+};
+
 const EditLogsViewer: React.FC = () => {
+  const router = useRouter();
+  const isMobile = useIsMobile();
   const [logs, setLogs] = useState<LogData[]>([]);
   const [selectedLog, setSelectedLog] = useState<LogData | null>(null);
   const [diffData, setDiffData] = useState<Record<
@@ -61,6 +78,29 @@ const EditLogsViewer: React.FC = () => {
     setDiffData(null);
   };
 
+  // Parses the editor field, which may arrive as a JSON string
+  const getEditor = (log: LogData) => {
+    try {
+      return typeof log.editor === 'string'
+        ? JSON.parse(log.editor)
+        : log.editor;
+    } catch {
+      return { name: 'Unknown', email: '' };
+    }
+  };
+
+  const headers = ['Number', 'Editor', 'Reason', 'Timestamp', 'Action'];
+
+  const viewButtonStyle: React.CSSProperties = {
+    backgroundColor: 'green',
+    color: '#fff',
+    padding: '8px 16px',
+    border: 'none',
+    borderRadius: '6px',
+    cursor: 'pointer',
+    fontWeight: 500,
+  };
+
   return (
     <main>
       <div
@@ -70,43 +110,143 @@ const EditLogsViewer: React.FC = () => {
           justifyContent: 'center',
           alignItems: 'flex-start',
           backgroundColor: '#f3f4f6',
-          padding: '40px',
+          padding: isMobile ? '12px' : '40px',
+          boxSizing: 'border-box',
         }}
       >
+        {/* Single card: everything lives inside this one container */}
         <div
           style={{
             width: '100%',
             maxWidth: '1200px',
+            minWidth: 0,
+            boxSizing: 'border-box',
             backgroundColor: '#fff',
             borderRadius: '12px',
             boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
-            padding: '40px',
+            padding: isMobile ? '16px' : '40px',
+            overflow: 'hidden',
           }}
         >
+          {/* Back to Edit Point Data */}
+          <div style={{ marginBottom: '20px' }}>
+            <button
+              onClick={() => router.push('/editPointData')}
+              style={{ ...viewButtonStyle, padding: '8px 16px' }}
+            >
+              BACK TO EDIT POINT DATA
+            </button>
+          </div>
+
           <h2
             style={{
               textAlign: 'center',
-              fontSize: '28px',
+              fontSize: isMobile ? '24px' : '28px',
               fontWeight: 700,
-              marginBottom: '30px',
+              marginBottom: '24px',
               color: '#1f2937',
             }}
           >
             Edit Logs
           </h2>
 
-          <div style={{ overflowX: 'auto', borderRadius: '8px' }}>
-            <table
-              style={{
-                width: '100%',
-                borderCollapse: 'collapse',
-                textAlign: 'center',
-              }}
-            >
-              <thead>
-                <tr style={{ backgroundColor: '#f9fafb' }}>
-                  {['Number', 'Editor', 'Reason', 'Timestamp', 'Action'].map(
-                    (header) => (
+          {isMobile ? (
+            // PHONE: each log is a stacked block with labelled fields
+            <div>
+              {logs.length === 0 ? (
+                <p style={{ textAlign: 'center', color: '#6b7280' }}>
+                  No logs found.
+                </p>
+              ) : (
+                logs.map((log, index) => {
+                  const editor = getEditor(log);
+                  return (
+                    <div
+                      key={log.id}
+                      style={{
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '8px',
+                        padding: '14px',
+                        marginBottom: '12px',
+                        boxSizing: 'border-box',
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          marginBottom: '8px',
+                        }}
+                      >
+                        <span style={{ color: '#6b7280', fontSize: '13px' }}>
+                          #{index + 1}
+                        </span>
+                        <button
+                          onClick={() => openModal(log)}
+                          style={viewButtonStyle}
+                        >
+                          View
+                        </button>
+                      </div>
+
+                      <p
+                        style={{
+                          fontWeight: 600,
+                          color: '#1f2937',
+                          margin: '0 0 2px',
+                          overflowWrap: 'anywhere',
+                        }}
+                      >
+                        {editor.name}
+                      </p>
+                      <p
+                        style={{
+                          fontSize: '13px',
+                          color: '#6b7280',
+                          margin: '0 0 10px',
+                          overflowWrap: 'anywhere',
+                        }}
+                      >
+                        {editor.email}
+                      </p>
+
+                      <p
+                        style={{
+                          margin: '0 0 6px',
+                          color: '#4b5563',
+                          overflowWrap: 'anywhere',
+                        }}
+                      >
+                        <strong>Reason:</strong> {log.reasonForEdit || '—'}
+                      </p>
+                      <p
+                        style={{
+                          margin: 0,
+                          fontSize: '13px',
+                          color: '#6b7280',
+                        }}
+                      >
+                        {new Date(log.timestamp).toLocaleString()}
+                      </p>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          ) : (
+            // WIDER SCREENS: the original table
+            <div style={{ overflowX: 'auto', borderRadius: '8px' }}>
+              <table
+                style={{
+                  width: '100%',
+                  borderCollapse: 'collapse',
+                  textAlign: 'center',
+                }}
+              >
+                <thead>
+                  <tr style={{ backgroundColor: '#f9fafb' }}>
+                    {headers.map((header) => (
                       <th
                         key={header}
                         style={{
@@ -121,73 +261,62 @@ const EditLogsViewer: React.FC = () => {
                       >
                         {header}
                       </th>
-                    )
-                  )}
-                </tr>
-              </thead>
-
-              <tbody>
-                {logs.length === 0 ? (
-                  <tr>
-                    <td
-                      colSpan={5}
-                      style={{
-                        padding: '30px',
-                        color: '#6b7280',
-                        fontSize: '16px',
-                      }}
-                    >
-                      No logs found.
-                    </td>
+                    ))}
                   </tr>
-                ) : (
-                  logs.map((log, index) => {
-                    let editor: any = {};
-                    try {
-                      editor =
-                        typeof log.editor === 'string'
-                          ? JSON.parse(log.editor)
-                          : log.editor;
-                    } catch {
-                      editor = { name: 'Unknown', email: '' };
-                    }
+                </thead>
 
-                    return (
-                      <tr
-                        key={log.id}
+                <tbody>
+                  {logs.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan={5}
                         style={{
-                          borderBottom: '1px solid #e5e7eb',
-                          transition: 'background-color 0.2s',
-                          cursor: 'pointer',
+                          padding: '30px',
+                          color: '#6b7280',
+                          fontSize: '16px',
                         }}
-                        onMouseEnter={(e) =>
-                          (e.currentTarget.style.backgroundColor = '#f3f4f6')
-                        }
-                        onMouseLeave={(e) =>
-                          (e.currentTarget.style.backgroundColor =
-                            'transparent')
-                        }
                       >
-                        <td
+                        No logs found.
+                      </td>
+                    </tr>
+                  ) : (
+                    logs.map((log, index) => {
+                      const editor = getEditor(log);
+                      return (
+                        <tr
+                          key={log.id}
                           style={{
-                            padding: '12px 18px',
-                            color: '#374151',
-                            verticalAlign: 'top',
+                            borderBottom: '1px solid #e5e7eb',
+                            transition: 'background-color 0.2s',
                           }}
+                          onMouseEnter={(e) =>
+                            (e.currentTarget.style.backgroundColor = '#f3f4f6')
+                          }
+                          onMouseLeave={(e) =>
+                            (e.currentTarget.style.backgroundColor =
+                              'transparent')
+                          }
                         >
-                          {index + 1}
-                        </td>
-                        <td
-                          style={{
-                            padding: '12px 18px',
-                            verticalAlign: 'top',
-                          }}
-                        >
-                          <div>
+                          <td
+                            style={{
+                              padding: '12px 18px',
+                              color: '#374151',
+                              verticalAlign: 'top',
+                            }}
+                          >
+                            {index + 1}
+                          </td>
+                          <td
+                            style={{
+                              padding: '12px 18px',
+                              verticalAlign: 'top',
+                            }}
+                          >
                             <p
                               style={{
                                 fontWeight: 600,
                                 color: '#1f2937',
+                                margin: 0,
                               }}
                             >
                               {editor.name}
@@ -196,58 +325,51 @@ const EditLogsViewer: React.FC = () => {
                               style={{
                                 fontSize: '13px',
                                 color: '#6b7280',
+                                margin: 0,
                               }}
                             >
                               {editor.email}
                             </p>
-                          </div>
-                        </td>
-                        <td
-                          style={{
-                            padding: '12px 18px',
-                            color: '#4b5563',
-                            verticalAlign: 'top',
-                          }}
-                        >
-                          {log.reasonForEdit || '—'}
-                        </td>
-                        <td
-                          style={{
-                            padding: '12px 18px',
-                            color: '#6b7280',
-                            verticalAlign: 'top',
-                          }}
-                        >
-                          {new Date(log.timestamp).toLocaleString()}
-                        </td>
-                        <td
-                          style={{
-                            padding: '12px 18px',
-                            verticalAlign: 'top',
-                          }}
-                        >
-                          <button
-                            onClick={() => openModal(log)}
+                          </td>
+                          <td
                             style={{
-                              backgroundColor: 'green',
-                              color: '#fff',
-                              padding: '8px 16px',
-                              border: 'none',
-                              borderRadius: '6px',
-                              cursor: 'pointer',
-                              fontWeight: 500,
+                              padding: '12px 18px',
+                              color: '#4b5563',
+                              verticalAlign: 'top',
                             }}
                           >
-                            View
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })
-                )}
-              </tbody>
-            </table>
-          </div>
+                            {log.reasonForEdit || '—'}
+                          </td>
+                          <td
+                            style={{
+                              padding: '12px 18px',
+                              color: '#6b7280',
+                              verticalAlign: 'top',
+                            }}
+                          >
+                            {new Date(log.timestamp).toLocaleString()}
+                          </td>
+                          <td
+                            style={{
+                              padding: '12px 18px',
+                              verticalAlign: 'top',
+                            }}
+                          >
+                            <button
+                              onClick={() => openModal(log)}
+                              style={viewButtonStyle}
+                            >
+                              View
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
 
         {/* Modal */}
@@ -264,16 +386,18 @@ const EditLogsViewer: React.FC = () => {
               justifyContent: 'center',
               alignItems: 'center',
               zIndex: 1000,
-              padding: '20px',
+              padding: '12px',
+              boxSizing: 'border-box',
             }}
           >
             <div
               style={{
                 backgroundColor: '#fff',
                 borderRadius: '10px',
-                width: '90%',
+                width: '100%',
                 maxWidth: '900px',
-                padding: '30px',
+                boxSizing: 'border-box',
+                padding: isMobile ? '18px' : '30px',
                 maxHeight: '85vh',
                 overflowY: 'auto',
                 boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
@@ -296,111 +420,98 @@ const EditLogsViewer: React.FC = () => {
                   No differences found.
                 </p>
               ) : (
-                <table
-                  style={{
-                    width: '100%',
-                    borderCollapse: 'collapse',
-                    fontSize: '14px',
-                    marginBottom: '20px',
-                  }}
-                >
-                  <thead>
-                    <tr style={{ backgroundColor: '#f9fafb' }}>
-                      <th
-                        style={{
-                          border: '1px solid #e5e7eb',
-                          padding: '10px',
-                          textAlign: 'left',
-                          fontWeight: 600,
-                          verticalAlign: 'top',
-                        }}
-                      >
-                        Field
-                      </th>
-                      <th
-                        style={{
-                          border: '1px solid #e5e7eb',
-                          padding: '10px',
-                          textAlign: 'left',
-                          color: '#dc2626',
-                          verticalAlign: 'top',
-                        }}
-                      >
-                        Old Value
-                      </th>
-                      <th
-                        style={{
-                          border: '1px solid #e5e7eb',
-                          padding: '10px',
-                          textAlign: 'left',
-                          color: '#16a34a',
-                          verticalAlign: 'top',
-                        }}
-                      >
-                        New Value
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {Object.entries(diffData).map(([key, val]) => (
-                      <tr key={key}>
-                        <td
+                // Scrolls sideways inside the modal instead of widening the screen
+                <div style={{ overflowX: 'auto', marginBottom: '20px' }}>
+                  <table
+                    style={{
+                      width: '100%',
+                      minWidth: '420px',
+                      borderCollapse: 'collapse',
+                      fontSize: '14px',
+                    }}
+                  >
+                    <thead>
+                      <tr style={{ backgroundColor: '#f9fafb' }}>
+                        <th
                           style={{
                             border: '1px solid #e5e7eb',
                             padding: '10px',
-                            fontWeight: 500,
-                            color: '#374151',
+                            textAlign: 'left',
+                            fontWeight: 600,
                             verticalAlign: 'top',
                           }}
                         >
-                          {key}
-                        </td>
-                        <td
+                          Field
+                        </th>
+                        <th
                           style={{
                             border: '1px solid #e5e7eb',
                             padding: '10px',
+                            textAlign: 'left',
                             color: '#dc2626',
-                            wordBreak: 'break-word',
                             verticalAlign: 'top',
                           }}
                         >
-                          {JSON.stringify(val.old, null, 2)}
-                        </td>
-                        <td
+                          Old Value
+                        </th>
+                        <th
                           style={{
                             border: '1px solid #e5e7eb',
                             padding: '10px',
+                            textAlign: 'left',
                             color: '#16a34a',
-                            wordBreak: 'break-word',
                             verticalAlign: 'top',
                           }}
                         >
-                          {JSON.stringify(val.new, null, 2)}
-                        </td>
+                          New Value
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {Object.entries(diffData).map(([key, val]) => (
+                        <tr key={key}>
+                          <td
+                            style={{
+                              border: '1px solid #e5e7eb',
+                              padding: '10px',
+                              fontWeight: 500,
+                              color: '#374151',
+                              verticalAlign: 'top',
+                            }}
+                          >
+                            {key}
+                          </td>
+                          <td
+                            style={{
+                              border: '1px solid #e5e7eb',
+                              padding: '10px',
+                              color: '#dc2626',
+                              wordBreak: 'break-word',
+                              verticalAlign: 'top',
+                            }}
+                          >
+                            {JSON.stringify(val.old, null, 2)}
+                          </td>
+                          <td
+                            style={{
+                              border: '1px solid #e5e7eb',
+                              padding: '10px',
+                              color: '#16a34a',
+                              wordBreak: 'break-word',
+                              verticalAlign: 'top',
+                            }}
+                          >
+                            {JSON.stringify(val.new, null, 2)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               )}
 
               <div style={{ textAlign: 'right' }}>
-                <button
-                  onClick={closeModal}
-                  style={{
-                    backgroundColor: 'green',
-                    color: '#fff',
-                    padding: '8px 16px',
-                    borderRadius: '6px',
-                    border: 'none',
-                    cursor: 'pointer',
-                  }}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.backgroundColor = 'green')
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.backgroundColor = 'green')
-                  }
-                >
+                <button onClick={closeModal} style={viewButtonStyle}>
                   Close
                 </button>
               </div>

@@ -2,15 +2,13 @@ import {
   Box,
   Button,
   Container,
-  FormLabel,
   InputProps,
   CircularProgress,
   Card,
   CardContent,
-  Link,
   Checkbox,
+  Typography,
 } from '@mui/material';
-import Grid2 from '@mui/material/Unstable_Grid2';
 import CloudDownload from '@mui/icons-material/CloudDownload';
 import { SaveOutlined } from '@mui/icons-material';
 import { useEffect, useMemo, useState } from 'react';
@@ -55,9 +53,10 @@ type UploadedDatasetProps = {
 
 interface DisplayItemProps {
   label: string;
-  value: string | React.ReactNode;
+  value: string | number | React.ReactNode;
   isHtml?: boolean;
   isComponent?: boolean;
+  scrollable?: boolean; // caps height and scrolls long values (e.g. error lists)
 }
 
 interface DisplayFileProps {
@@ -66,6 +65,14 @@ interface DisplayFileProps {
   url: string;
   fileType: DatasetFileType;
 }
+
+// Lets long unbroken strings (like "6372,6373,...") wrap inside the card
+const wrapStyles = {
+  minWidth: 0,
+  maxWidth: '100%',
+  overflowWrap: 'anywhere',
+  wordBreak: 'break-word',
+} as const;
 
 const getFileName = (filePath: string) => {
   const res = extractFileNameFromBlobUrl(filePath);
@@ -76,32 +83,95 @@ const getFileName = (filePath: string) => {
   return res;
 };
 
+// One detail row: muted label, value beside it on desktop, stacked on phones
 const DisplayItem = (props: DisplayItemProps) => {
+  const isEmpty =
+    !props.isComponent &&
+    !props.isHtml &&
+    (props.value === '' || props.value === null || props.value === undefined);
+
+  const renderValue = () => {
+    if (props.isComponent) {
+      return props.value;
+    }
+    if (props.isHtml) {
+      return (
+        <Box
+          sx={{
+            '& p': { m: 0 },
+            '& a': { color: 'primary.main', ...wrapStyles },
+          }}
+          dangerouslySetInnerHTML={{
+            __html: props?.value?.toString() || '',
+          }}
+        />
+      );
+    }
+    if (isEmpty) {
+      return (
+        <Typography variant="body1" sx={{ color: 'text.disabled' }}>
+          —
+        </Typography>
+      );
+    }
+    return (
+      <Typography variant="body1" component="div">
+        {props.value as React.ReactNode}
+      </Typography>
+    );
+  };
+
   return (
-    <Grid2
-      container
-      spacing={2}
-      sx={{ alignItems: 'center', justifyContent: 'flex-start' }}
+    <Box
+      sx={{
+        display: 'grid',
+        gridTemplateColumns: {
+          xs: 'minmax(0, 1fr)',
+          sm: 'minmax(150px, 1fr) minmax(0, 2fr)',
+        },
+        columnGap: { sm: 3 },
+        rowGap: 0.5,
+        alignItems: { xs: 'start', sm: 'center' },
+        py: 1.5,
+        minWidth: 0,
+        borderBottom: '1px solid',
+        borderColor: 'divider',
+      }}
     >
-      <Grid2 xs={4} sx={{ padding: 2 }}>
-        <FormLabel filled color="error" sx={{ fontWeight: 'bold' }}>
-          {props.label}
-        </FormLabel>
-      </Grid2>
-      {!props.isComponent && (
-        <Grid2 xs={8}>
-          {props.isHtml && (
-            <div
-              dangerouslySetInnerHTML={{
-                __html: props?.value?.toString() || '',
-              }}
-            />
-          )}
-          {!props.isHtml && <FormLabel>{props.value}</FormLabel>}
-        </Grid2>
-      )}
-      {props.isComponent && <Grid2 xs={8}>{props.value}</Grid2>}
-    </Grid2>
+      <Typography
+        variant="body2"
+        sx={{
+          color: 'text.secondary',
+          fontWeight: 600,
+          letterSpacing: 0.2,
+          ...wrapStyles,
+        }}
+      >
+        {props.label}
+      </Typography>
+
+      <Box
+        sx={{
+          ...wrapStyles,
+          color: 'text.primary',
+          ...(props.scrollable
+            ? {
+                maxHeight: 280,
+                overflowY: 'auto',
+                overflowX: 'hidden',
+                fontFamily: 'monospace',
+                fontSize: '0.85rem',
+                lineHeight: 1.6,
+                bgcolor: 'action.hover',
+                borderRadius: 2,
+                p: 1.5,
+              }
+            : {}),
+        }}
+      >
+        {renderValue()}
+      </Box>
+    </Box>
   );
 };
 
@@ -118,9 +188,26 @@ const DisplayFile = ({ datasetId, fileType, label, url }: DisplayFileProps) => {
         <Button
           component="label"
           role={undefined}
+          variant="outlined"
+          size="small"
           startIcon={<CloudDownload />}
-          sx={{ textTransform: 'none' }}
           onClick={doDownload}
+          sx={{
+            textTransform: 'none',
+            maxWidth: '100%',
+            justifyContent: 'flex-start',
+            textAlign: 'left',
+            whiteSpace: 'normal',
+            wordBreak: 'break-all',
+            lineHeight: 1.4,
+            py: 0.75,
+            px: 1.5,
+            borderRadius: 2,
+            borderColor: 'divider',
+            color: 'primary.main',
+            '& .MuiButton-startIcon': { flexShrink: 0 },
+            '&:hover': { borderColor: 'primary.main', bgcolor: 'action.hover' },
+          }}
         >
           {getFileName(url)}
         </Button>
@@ -405,6 +492,9 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
               display: 'flex',
               flexDirection: 'row',
               justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: 8,
+              marginBottom: 12,
             }}
           >
             <StatusRenderer
@@ -435,9 +525,23 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
             )}
           </div>
 
-          <Card>
-            <CardContent>
-              <Box sx={{ flexGrow: 1 }}>
+          <Card
+            elevation={0}
+            sx={{
+              borderRadius: 3,
+              border: '1px solid',
+              borderColor: 'divider',
+              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.06)',
+            }}
+          >
+            <CardContent
+              sx={{
+                px: { xs: 2, sm: 3 },
+                py: { xs: 1, sm: 2 },
+                '&:last-child': { pb: { xs: 1, sm: 2 } },
+              }}
+            >
+              <Box sx={{ flexGrow: 1, minWidth: 0 }}>
                 <DisplayItem
                   label={t('form.datasetType')}
                   value={uploadedDataset?.dataset_type || ''}
@@ -475,11 +579,11 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
                   <>
                     <DisplayItem
                       label={t('form.primaryReviewer')}
-                      value={memoizedPrimaryReviewers.join(',')}
+                      value={memoizedPrimaryReviewers.join(', ')}
                     />
                     <DisplayItem
                       label={t('form.tertiaryReviewer')}
-                      value={memoizedTertiaryReviewers.join(',')}
+                      value={memoizedTertiaryReviewers.join(', ')}
                     />
                   </>
                 )}
@@ -501,7 +605,7 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
                       />
                       <DisplayItem
                         label={t('form.reassignedTertiaryReviewer')}
-                        value={memoizedReassignedTertiaryReviewers.join(',')}
+                        value={memoizedReassignedTertiaryReviewers.join(', ')}
                       />
                     </>
                   )}
@@ -539,7 +643,7 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
                     isHtml
                     value={`<a href="${
                       uploadedDataset?.doi?.doi_link
-                    }" target="_blank"> ${
+                    }" target="_blank" rel="noopener noreferrer"> ${
                       uploadedDataset?.doi?.doi_link || ''
                     }</a>`}
                   />
@@ -572,11 +676,13 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
                     />
                     <DisplayItem
                       label={t('form.errorRows')}
-                      value={uploadedDataset.invalid_rows.join(',')}
+                      value={(uploadedDataset.invalid_rows || []).join(', ')}
+                      scrollable
                     />
                     <DisplayItem
                       label={t('form.errors')}
                       value={uploadedDataset.validation_errors}
+                      scrollable
                     />
                     <DisplayItem
                       label={t('form.ingestionStatus')}
@@ -585,15 +691,16 @@ const UploadedDatasetForm = (props: UploadedDatasetProps) => {
                     <DisplayItem
                       label={t('form.ingestionErrors')}
                       value={uploadedDataset.ingestion_errors}
+                      scrollable
                     />
                     <DisplayItem
                       label={t('form.totalIngestedRows')}
                       value={uploadedDataset.total_ingested_rows}
                     />
-                    {/* <DisplayItem
+                    <DisplayItem
                       label={t('form.ingestionProgress')}
                       value={uploadedDataset.ingestion_progress}
-                    /> */}
+                    />
                   </>
                 )}
               </Box>

@@ -7,34 +7,34 @@ import {
 } from '../../utils/utils';
 import {
   Backdrop,
+  Box,
   Button,
+  Chip,
   CircularProgress,
-  FormControl,
   FormLabel,
   MenuItem,
   Select,
   SelectChangeEvent,
   Stack,
   Theme,
-  Toolbar,
   Typography,
+  useMediaQuery,
   useTheme,
 } from '@mui/material';
 
-import MessagesEn from '../../public/messages/en.json';
 import MessagesFr from '../../public/messages/fr.json';
 import MessagesPt from '../../public/messages/pt.json';
 import {
   DataGrid,
   GridColDef,
   GridColumnHeaderParams,
+  GridPaginationModel,
   GridRenderCellParams,
   useGridApiRef,
 } from '@mui/x-data-grid';
 import ConfirmationDialog from '../shared/ConfirmationDialog';
 import _ from 'lodash';
 import {
-  LANGUAGE_CODE,
   SUPPORTED_LANGUAGES,
   TranslationMessage,
 } from '../../utils/localization';
@@ -46,105 +46,160 @@ interface Props {
   labels: any;
 }
 
+// English is shown as its own column, placed between French and Portuguese
+const ENGLISH_LANGUAGE = { code: 'en', name: 'English', emoji: '🇬🇧' };
+
+const PAGE_SIZE_OPTIONS = [10, 25, 50];
+
+// Phone-only sizing. Raise the numbers to enlarge, lower them to squeeze.
+const COMPACT = {
+  cellFontSize: '0.875rem',
+  cellPaddingY: 0.75,
+  cellPaddingX: 1,
+  headerFontSize: '0.875rem',
+  chipHeight: 28,
+  chipFontSize: '0.6875rem',
+  chipGap: 1,
+  bannerFontSize: '0.8125rem',
+  pathWidth: 140,
+  languageMinWidth: 160,
+};
+
 export default function TranslationForm({ labels }: Props) {
   const t = useTranslations('TranslationsPage');
 
-  const [labelsObject, setLabelsObject] = useState(labels);
-  const [keys, setKeys] = useState([]);
   const [topLevelParents, setTopLevelParents] = useState<string[]>([]);
   const [parent, setParent] = useState('');
   const [messages, setMessages] = useState<TranslationMessage[]>([]);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [showSaveConfirm, setShowSaveConfirm] = useState(false);
+  const [mobileLang, setMobileLang] = useState('');
+  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
+    page: 0,
+    pageSize: 10,
+  });
+  const [gridWidth, setGridWidth] = useState(0);
+  const gridContainerRef = useRef<HTMLDivElement>(null);
   const theme = useTheme();
-  const gridRef = useGridApiRef(); // useRef()
+  const gridRef = useGridApiRef();
   const [isDirty, setIsDirty] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  const frozenColumns: GridColDef[] = [
-    {
-      field: 'id',
-      headerName: t('grid.sr'),
-      width: 20,
-      editable: false,
-      pinnable: true,
-      sortable: false, // disable sorting to ensure keys are not re-arranged
-      renderCell: (params: GridRenderCellParams<any, any>) => {
-        let idx =
-          params.api.getRowIndexRelativeToVisibleRows(params.row?.id) || 0;
-        return <div>{idx + 1}</div>;
-      },
-      renderHeader: (params: GridColumnHeaderParams) => (
-        <strong>{t('grid.sr')}</strong>
-      ),
-    },
-    {
-      field: 'path',
-      headerName: t('grid.path'),
-      width: 600,
-      // flex: 1,
-      editable: false,
-      pinnable: true,
-      sortable: false, // disable sorting to ensure keys are not re-arranged
-      renderCell: (params: GridRenderCellParams<any, any>) => {
-        // let vals = params.value?.split('.');
-        // let val = vals.slice(1).join(' -> ');
-        const val = formatMessagePath(params.value, false);
-        return <div>{val}</div>;
-      },
-      renderHeader: (params: GridColumnHeaderParams) => (
-        <strong>
-          {t('grid.path')}
-          {'  '}
-          <span role="img" aria-label="enjoy">
-            📂
-          </span>
-        </strong>
-      ),
-    },
+  // Phone-width check (matches MUI's sm breakpoint)
+  const isMobile = useMediaQuery('(max-width:599.95px)');
+
+  // Language order: French, English, then Portuguese
+  const orderedLanguages = [
+    ...SUPPORTED_LANGUAGES.filter((el) => el.code !== 'pt' && el.code !== 'en'),
+    ENGLISH_LANGUAGE,
+    ...SUPPORTED_LANGUAGES.filter((el) => el.code === 'pt'),
   ];
+
+  // On phones, only one language column is shown at a time.
+  // Falls back to the first language if none has been chosen yet.
+  const activeMobileLang = mobileLang || orderedLanguages[0]?.code;
+
+  // Measure the grid's visible width, so on phones the language column fills
+  // exactly the space left after the Path column (a few px reserved for borders)
+  useEffect(() => {
+    const el = gridContainerRef.current;
+    if (!el) return;
+    const update = () => setGridWidth(el.clientWidth);
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [isMobile, parent]);
+
+  const mobileLanguageWidth = Math.max(
+    COMPACT.languageMinWidth,
+    gridWidth - COMPACT.pathWidth - 4
+  );
+
+  const languageColumns = (
+    isMobile
+      ? orderedLanguages.filter((el) => el.code === activeMobileLang)
+      : orderedLanguages
+  ).map((el) => ({
+    field: el.code,
+    headerName: el.name,
+    type: 'string' as const,
+    // Phones: fixed width measured from the screen. Desktop: share the space.
+    ...(isMobile ? { width: mobileLanguageWidth } : { flex: 1, minWidth: 200 }),
+    editable: true,
+    sortable: false,
+    // Own wrapping box, so long translations break onto new lines
+    // inside the cell instead of running past its right edge
+    renderCell: (params: GridRenderCellParams<any, any>) => (
+      <div
+        style={{
+          whiteSpace: 'normal',
+          wordBreak: 'break-word',
+          overflowWrap: 'anywhere',
+          width: '100%',
+          lineHeight: 1.4,
+        }}
+      >
+        {params.value}
+      </div>
+    ),
+    renderHeader: (params: GridColumnHeaderParams) => (
+      <strong>
+        {el.name}{' '}
+        <span role="img" aria-label="flag">
+          {el.emoji}
+        </span>
+      </strong>
+    ),
+  }));
+
+  // Sr column is hidden on phones to leave room for the language
+  const srColumn: GridColDef = {
+    field: 'id',
+    headerName: t('grid.sr'),
+    width: 50,
+    editable: false,
+    sortable: false,
+    renderCell: (params: GridRenderCellParams<any, any>) => {
+      const idx =
+        params.api.getRowIndexRelativeToVisibleRows(params.row?.id) || 0;
+      return <div>{idx + 1}</div>;
+    },
+  };
+
+  const pathColumn: GridColDef = {
+    field: 'path',
+    headerName: t('grid.path'),
+    // Narrow fixed width: labels wrap onto more lines instead of taking space
+    width: isMobile ? COMPACT.pathWidth : 170,
+    editable: false,
+    sortable: false,
+    renderCell: (params: GridRenderCellParams<any, any>) => {
+      const val = formatMessagePath(params.value, false);
+      return (
+        <div
+          style={{
+            whiteSpace: 'normal',
+            wordBreak: 'break-word',
+            overflowWrap: 'anywhere',
+            width: '100%',
+          }}
+        >
+          {val}
+        </div>
+      );
+    },
+  };
 
   const columns: GridColDef[] = [
-    {
-      field: 'id',
-      headerName: '',
-      width: 1,
-      editable: false,
-      hideable: true,
-      sortable: false, // disable sorting to ensure keys are not re-arranged
-      renderCell: (params: GridRenderCellParams<any, any>) => {
-        let vals = params.value?.split('.');
-        let val = vals.slice(1).join(' -> ');
-        // return <div>{val}</div>;
-        return <div></div>;
-      },
-    },
+    ...(isMobile ? [] : [srColumn]),
+    pathColumn,
+    ...languageColumns,
   ];
-
-  SUPPORTED_LANGUAGES.map((el) => {
-    columns.push({
-      field: el.code,
-      headerName: el.name,
-      type: 'string',
-      width: 300,
-      hideable: true,
-      editable: true, //el.code != 'en', // allow even editing of English one
-      sortable: false, // disable sorting to ensure keys are not re-arranged
-      renderHeader: (params: GridColumnHeaderParams) => (
-        <strong>
-          {el.name}{' '}
-          <span role="img" aria-label="enjoy">
-            {el.emoji}
-          </span>
-        </strong>
-      ),
-    });
-  });
 
   const formatMessagePath = (path: string, ignoreTopMostParent = true) => {
     let vals = path?.split('.');
     let tempRes: string[] = [];
-    // for each of the values, split by Capital Letter
     vals.forEach((el, index) => {
       if (ignoreTopMostParent && index == 0) {
         // do nothing since we are skipping the top most parent
@@ -157,8 +212,6 @@ export default function TranslationForm({ labels }: Props) {
   };
 
   useEffect(() => {
-    setLabelsObject(labels);
-    const allKeys = getAllNestedKeys(labels);
     const parents = Object.keys(labels);
     setTopLevelParents(parents || []);
   }, [labels]);
@@ -171,11 +224,15 @@ export default function TranslationForm({ labels }: Props) {
     const res = extractTranslations(parent, labels[parent]);
     setMessages(res);
     setIsDirty(false);
+    // Start each newly chosen page at the first page of results
+    setPaginationModel((prev) => ({ ...prev, page: 0 }));
   };
 
   const saveMessages = async () => {
     setIsSaving(true);
     try {
+      // getAllRowIds returns every row, not just the current page,
+      // so saving includes all translations
       const rowIds = gridRef.current.getAllRowIds();
       const rows: TranslationMessage[] = [];
       rowIds.map((id) => {
@@ -209,9 +266,6 @@ export default function TranslationForm({ labels }: Props) {
   };
 
   const handleChange = (event: SelectChangeEvent) => {
-    const {
-      target: { value },
-    } = event;
     setParent(event.target.value);
   };
 
@@ -247,7 +301,6 @@ export default function TranslationForm({ labels }: Props) {
             items.push({
               id: path,
               path: path,
-              //key: key,
               label: splitByCapitalLetter(key),
               en: data[key],
               fr: getNestedObjectValue(MessagesFr, path),
@@ -256,62 +309,60 @@ export default function TranslationForm({ labels }: Props) {
           }
         }
       }
-    } else {
-      // Handle primitive types (string, number, boolean, null)
     }
     return items;
-  }
-
-  function renderJsonToHtml(data: any, indent = 0) {
-    let html = '';
-    const indentSpace = '  '.repeat(indent); // For visual indentation
-
-    if (Array.isArray(data)) {
-      html += `${indentSpace}<ul>\n`;
-      data.forEach((item) => {
-        html += `${indentSpace}  <li>\n`;
-        html += renderJsonToHtml(item, indent + 1);
-        html += `${indentSpace}  </li>\n`;
-      });
-      html += `${indentSpace}</ul>\n`;
-    } else if (typeof data === 'object' && data !== null) {
-      html += `${indentSpace}<div>\n`;
-      for (const key in data) {
-        if (Object.prototype.hasOwnProperty.call(data, key)) {
-          html += `${indentSpace}  <strong>${key}:</strong>\n`;
-          html += renderJsonToHtml(data[key], indent + 1);
-        }
-      }
-      html += `${indentSpace}</div>\n`;
-    } else {
-      // Handle primitive types (string, number, boolean, null)
-      html += `${indentSpace}<span>${data}</span>\n`;
-    }
-    return html;
   }
 
   const resetMessages = () => {
     loadMessages();
   };
 
+  // Grid styling: wrapping on all sizes, phone-only sizes from COMPACT
+  const gridSx = {
+    '& .MuiDataGrid-cell': {
+      whiteSpace: 'normal',
+      wordBreak: 'break-word',
+      overflowWrap: 'anywhere',
+      lineHeight: 1.4,
+      ...(isMobile
+        ? {
+            fontSize: COMPACT.cellFontSize,
+            py: COMPACT.cellPaddingY,
+            px: COMPACT.cellPaddingX,
+          }
+        : {}),
+    },
+    '& .MuiDataGrid-cellContent': {
+      whiteSpace: 'normal',
+      maxWidth: '100%',
+    },
+    '& .MuiDataGrid-columnHeader': isMobile ? { px: COMPACT.cellPaddingX } : {},
+    '& .MuiDataGrid-columnHeaderTitle, & .MuiDataGrid-columnHeaderTitleContainer strong':
+      isMobile ? { fontSize: COMPACT.headerFontSize } : {},
+  };
+
   return (
     <div>
-      <div
-        style={{
+      {/* TOOLBAR: wraps on phones so the buttons never squeeze together */}
+      <Box
+        sx={{
           display: 'flex',
-          justifyContent: 'flex-end',
+          flexWrap: 'wrap',
+          justifyContent: { xs: 'space-between', sm: 'flex-end' },
           alignItems: 'center',
-          marginBottom: 5,
+          gap: 1.5,
+          mb: 1,
         }}
       >
         {isDirty && (
           <StatusRenderer status="Pending" statusTitle={t('notSaved')} />
         )}
 
-        <Stack spacing={2} direction="row">
+        <Stack spacing={1.5} direction="row" sx={{ flexWrap: 'wrap' }}>
           <Button
             variant="contained"
             color="secondary"
+            size={isMobile ? 'small' : 'medium'}
             onClick={() => {
               if (isDirty) {
                 setShowResetConfirm(true);
@@ -322,34 +373,26 @@ export default function TranslationForm({ labels }: Props) {
           </Button>
           <Button
             variant="contained"
+            size={isMobile ? 'small' : 'medium'}
             onClick={() => {
               setShowSaveConfirm(true);
             }}
-            // disabled={!isDirty}
           >
             {t('buttons.save')}
           </Button>
         </Stack>
-      </div>
+      </Box>
 
-      <div
-        style={{
-          flex: 1,
-          // justifyItems: 'center',
-          // gap: 10,
-          // alignItems: 'center',
-          flexDirection: 'row',
-        }}
-      >
-        <FormLabel key={'2'}>
+      {/* PAGE SELECT: full width on phones */}
+      <Box sx={{ mb: isMobile ? 0.5 : 1 }}>
+        <FormLabel>
           <span style={{ marginRight: 10 }}>{t('selectPage')}</span>
         </FormLabel>
         <Select
-          sx={{ width: '50%' }}
           value={parent}
           onChange={handleChange}
-          style={{ border: 0, marginBottom: 10 }}
-          //MenuProps={MenuProps}
+          size={isMobile ? 'small' : 'medium'}
+          sx={{ width: { xs: '100%', sm: '50%' }, mt: 0.5 }}
         >
           {topLevelParents.map((el) => (
             <MenuItem key={el} value={el} style={getStyles(el, theme)}>
@@ -357,43 +400,90 @@ export default function TranslationForm({ labels }: Props) {
             </MenuItem>
           ))}
         </Select>
-      </div>
+      </Box>
+
       <Typography
         variant="body2"
         color="error"
-        style={{ marginBottom: 10, textAlign: 'center' }}
+        sx={{
+          mb: isMobile ? 1 : 2,
+          textAlign: 'center',
+          fontSize: isMobile ? COMPACT.bannerFontSize : undefined,
+        }}
       >
         {t('bannerMessage')}
       </Typography>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyItems: 'flex-start',
-        }}
-      >
-        <div style={{ width: '30%' }}>
-          <DataGrid
-            editMode="cell"
-            rows={messages}
-            columns={frozenColumns}
-            // apiRef={gridRef}
-            // style={{ width: 1000 }}
-            hideFooter={true}
-          />
-        </div>
-        <div style={{ width: '70%' }}>
+
+      {/* PHONE: language chips on one line. Each chip shares the row width
+          and shrinks its text with an ellipsis if needed */}
+      {isMobile && (
+        <Box
+          sx={{
+            display: 'flex',
+            flexWrap: 'nowrap',
+            gap: 0.5,
+            mb: 1,
+          }}
+        >
+          {orderedLanguages.map((el) => {
+            const selected = el.code === activeMobileLang;
+            return (
+              <Chip
+                key={el.code}
+                size="small"
+                label={`${el.emoji} ${el.name}`}
+                onClick={() => setMobileLang(el.code)}
+                color={selected ? 'primary' : 'default'}
+                variant={selected ? 'filled' : 'outlined'}
+                sx={{
+                  flex: '1 1 0',
+                  minWidth: 0,
+                  height: COMPACT.chipHeight,
+                  fontSize: COMPACT.chipFontSize,
+                  fontWeight: selected ? 600 : 400,
+                  '& .MuiChip-label': {
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    px: 0.25,
+                  },
+                }}
+              />
+            );
+          })}
+        </Box>
+      )}
+
+      {/* PHONE: prompt until a page is chosen, so the grid isn't an empty box */}
+      {isMobile && !parent && (
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{ textAlign: 'center', py: 3 }}
+        >
+          Choose a page above to start editing.
+        </Typography>
+      )}
+
+      {/* GRID: all columns on desktop, Path plus one language on phones.
+          Paginated on both, so only one page of rows is rendered at a time */}
+      {(!isMobile || parent) && (
+        <Box
+          ref={gridContainerRef}
+          sx={{ width: '100%', minWidth: 0, overflowX: 'auto' }}
+        >
           <DataGrid
             editMode="row"
             rows={messages}
             columns={columns}
             apiRef={gridRef}
-            hideFooter={true}
+            paginationModel={paginationModel}
+            onPaginationModelChange={setPaginationModel}
+            pageSizeOptions={PAGE_SIZE_OPTIONS}
             disableColumnMenu={false}
-            // columnVisibilityModel={{
-            //   // hide column id
-            //   id: false,
-            // }}
+            autoHeight
+            getRowHeight={() => 'auto'}
+            density="compact"
+            sx={gridSx}
             processRowUpdate={(updatedRow, originalRow) => {
               setIsDirty(!_.isEqual(updatedRow || {}, originalRow || {}));
               return updatedRow;
@@ -402,8 +492,8 @@ export default function TranslationForm({ labels }: Props) {
               console.log('Value update error: ', error);
             }}
           />
-        </div>
-      </div>
+        </Box>
+      )}
 
       <ConfirmationDialog
         isOpen={showResetConfirm}
@@ -424,7 +514,6 @@ export default function TranslationForm({ labels }: Props) {
       <Backdrop
         sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
         open={isSaving}
-        // onClick={handleClose}
       >
         <CircularProgress color="inherit" />
       </Backdrop>

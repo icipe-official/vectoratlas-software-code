@@ -23,7 +23,7 @@ import { getUiVersion } from '../state/config/actions/getUiVersion';
 import { NextIntlProvider } from 'next-intl';
 // import LanguageSwitcher from '../components/shared/LanguageSwitcher';
 import { useRouter } from 'next/router';
-import { Stack } from '@mui/material';
+import { Stack, useMediaQuery } from '@mui/material';
 import { getOccurrenceData } from '../state/map/actions/getOccurrenceData';
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -38,7 +38,13 @@ function MyApp({ Component, pageProps }: AppProps) {
   //const messages = {}; //await getMessages();
   const { locale, pathname } = useRouter();
 
-  const noMarginTopPaths = ['/map', '/'];
+  // True on screens narrower than the MUI "sm" breakpoint (600px)
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  // Pages that run edge to edge: no page-level margin or padding
+  const fullBleedPaths = ['/map', '/'];
+  const isFullBleed = fullBleedPaths.includes(pathname);
+
   return (
     <>
       <Script
@@ -75,11 +81,22 @@ function MyApp({ Component, pageProps }: AppProps) {
                     flexDirection: 'column',
                     flex: pathname === '/map' ? 'none' : 1,
                     height: pathname === '/map' ? '100vh' : 'auto',
-                    //marginTop: !noMarginTopPaths.includes(pathname) ? '64px' : '0',
                     // overflow: pathname === '/map' ? 'hidden' : 'visible',
-                    marginTop: !noMarginTopPaths.includes(pathname)
-                      ? '64px'
-                      : '0',
+
+                    // The navbar is sticky, so it already takes its own space.
+                    // The old 64px margin added a gap below it. Kept on desktop,
+                    // removed on phones.
+                    marginTop: isMobile
+                      ? '0'
+                      : pathname === '/map' || pathname === '/'
+                      ? '0'
+                      : '64px',
+
+                    // Side padding on phones for non-full-bleed pages
+                    paddingLeft: isMobile && !isFullBleed ? '8px' : '0',
+                    paddingRight: isMobile && !isFullBleed ? '8px' : '0',
+                    boxSizing: 'border-box',
+                    width: '100%',
                   }}
                 >
                   <Component {...pageProps} />

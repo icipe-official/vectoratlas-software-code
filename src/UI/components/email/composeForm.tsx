@@ -19,6 +19,8 @@ import {
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import SendIcon from '@mui/icons-material/Send';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { useRouter } from 'next/router';
 import { TextEditor } from '../shared/textEditor/RichTextEditor';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { useTranslations } from 'next-intl';
@@ -52,6 +54,7 @@ export const ComposeMessageForm: React.FC<ComposeMessageFormProps> = ({
   recipientsList = [],
   onSend,
 }) => {
+  const router = useRouter();
   const { user } = useUser();
   const [subject, setSubject] = useState('');
   const t = useTranslations('Email_Compose');
@@ -138,6 +141,18 @@ export const ComposeMessageForm: React.FC<ComposeMessageFormProps> = ({
       )}
 
       <CardContent sx={{ p: 4 }}>
+        {/* Back to the communication log */}
+        <Button
+          variant="text"
+          color="primary"
+          startIcon={<ArrowBackIcon />}
+          onClick={() => router.push('/communication-log')}
+          disabled={loading}
+          sx={{ mb: 2, ml: -1, textTransform: 'none' }}
+        >
+          Back
+        </Button>
+
         <Typography
           variant="h5"
           color="primary"
@@ -191,11 +206,20 @@ export const ComposeMessageForm: React.FC<ComposeMessageFormProps> = ({
                   setTouched((prev) => ({ ...prev, recipients: true }))
                 }
                 renderOption={(props, option, { selected }) => (
-                  <li {...props} key={option.email}>
+                  <li
+                    {...props}
+                    key={option.email}
+                    style={{
+                      ...props.style,
+                      minWidth: 0,
+                      maxWidth: '100%',
+                      boxSizing: 'border-box',
+                    }}
+                  >
                     <Checkbox
                       icon={icon}
                       checkedIcon={checkedIcon}
-                      style={{ marginRight: 8 }}
+                      style={{ marginRight: 8, flexShrink: 0 }}
                       checked={selected}
                       disabled={option.isDisabled}
                     />
@@ -203,15 +227,29 @@ export const ComposeMessageForm: React.FC<ComposeMessageFormProps> = ({
                       sx={{
                         display: 'flex',
                         justifyContent: 'space-between',
-                        width: '100%',
                         alignItems: 'center',
+                        gap: 1,
+                        flex: 1,
+                        minWidth: 0,
+                        maxWidth: '100%',
                       }}
                     >
-                      <Typography variant="body2">
+                      {/* Email truncates with an ellipsis instead of pushing the chip out */}
+                      <Typography
+                        variant="body2"
+                        noWrap
+                        title={
+                          option.name === option.email
+                            ? option.email
+                            : `${option.name} (${option.email})`
+                        }
+                        sx={{ minWidth: 0, flex: '1 1 auto' }}
+                      >
                         {option.name === option.email
                           ? option.email
                           : `${option.name} (${option.email})`}
                       </Typography>
+                      {/* Status chip keeps its size and stays inside the row */}
                       <Chip
                         size="small"
                         label={option.statusLabel}
@@ -223,6 +261,7 @@ export const ComposeMessageForm: React.FC<ComposeMessageFormProps> = ({
                             : 'primary'
                         }
                         variant="outlined"
+                        sx={{ flexShrink: 0, maxWidth: 'none' }}
                       />
                     </Box>
                   </li>

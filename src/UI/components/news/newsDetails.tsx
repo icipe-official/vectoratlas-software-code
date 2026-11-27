@@ -11,7 +11,6 @@ import React, { useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { getNews } from '../../state/news/actions/news.action';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { RolesEnum } from '../../state/state.types';
 import { useTranslations } from 'next-intl';
 import { AppState } from '../../state/store';
@@ -34,8 +33,6 @@ export const NewsDetails = () => {
       dispatch(getNews(id as string));
     }
   }, [id, dispatch]);
-
-  // Helper getters for locale fallback
 
   // Helper getters for locale fallback
   const getLocalizedTitle = () => {
@@ -73,16 +70,14 @@ export const NewsDetails = () => {
 
   return (
     <Container maxWidth="lg" sx={{ py: 4, px: { xs: 2, sm: 3 } }}>
-      {/* Back Button */}
+      {/* Back button: outlined, matching the other back buttons */}
       <Box sx={{ mb: 2 }}>
         <Button
-          startIcon={<ArrowBackIcon />}
+          variant="outlined"
           onClick={() => router.push('/news')}
           sx={{ textTransform: 'none' }}
         >
-          <Typography fontSize={'medium'}>
-            {t('newsDetails.backToNewsList')}
-          </Typography>
+          {t('newsDetails.backToNewsList')}
         </Button>
       </Box>
 

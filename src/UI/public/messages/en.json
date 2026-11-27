@@ -643,30 +643,31 @@
     }
   },
   "SourcesPage": {
-    "title": "Source List",
-    "edit": "Edit",
-    "delete": "Delete",
-    "deleteConfirm": {
-      "title": "Delete this source?",
-      "message": "This action cannot be undone. Are you sure you want to delete this source?",
-      "confirm": "Delete",
-      "cancel": "Cancel"
-    },
-    "filters": {
-      "titleFilter": "Filter by Title",
-      "fieldTitle": "Title",
-      "fieldAuthor": "Author",
-      "fieldJournalTitle": "Journal Title",
-      "searchPlaceholder": "Search..."
-    },
-    "grid": {
-      "author": "Author",
-      "title": "Title",
-      "journalTitle": "Journal Title",
-      "year": "Year",
-      "actions": "Actions"
-    }
+  "title": "Source List",
+  "edit": "Edit",
+  "delete": "Delete",
+  "deleteConfirm": {
+    "title": "Delete this source?",
+    "message": "This action cannot be undone. Are you sure you want to delete this source?",
+    "confirm": "Delete",
+    "cancel": "Cancel"
   },
+  "filters": {
+    "titleFilter": "Filter by Title",
+    "fieldTitle": "Title",
+    "fieldAuthor": "Author",
+    "fieldJournalTitle": "Journal Title",
+    "searchPlaceholder": "Search..."
+  },
+  "grid": {
+    "author": "Author",
+    "title": "Title",
+    "journalTitle": "Journal Title",
+    "year": "Year",
+    "actions": "Actions",
+    "notRecorded": "Not recorded"
+  }
+ },
   "NewSourcePage": {
     "title": "Add a new reference source",
     "editTitle": "Edit reference source",
@@ -1222,5 +1223,36 @@
       }
     }
   },
-  "EditPointData": {}
+  "Edit Point Data": {
+    "title": "Edit Point Data",
+    "modeOccurrence": "By Occurrence ID",
+    "modeSource": "By Source ID",
+    "seeLogs": "See Logs",
+    "tabs": {
+      "occurrence": "Occurrence",
+      "bionomics": "Bionomics",
+      "insecticideResistance": "Insecticide Resistance"
+    },
+    "occurrenceIdLabel": "Occurrence ID",
+    "sourceIdLabel": "Source ID",
+    "fetchData": "Fetch Data",
+    "fetchRecords": "Fetch Records",
+    "selectRecord": "Select a Record to Edit",
+    "recordLabel": "Record {index} (ID: {id})",
+    "editRecord": "Edit This Record",
+    "saveChanges": "Save Changes",
+    "warnOccurrenceId": "Please enter an Occurrence ID",
+    "warnSourceId": "Please enter a Source ID",
+    "failAutoFetch": "Failed to auto-fetch data",
+    "failFetch": "Failed to fetch data",
+    "failSourceRecords": "Failed to fetch source records",
+    "missingData": "Missing data or entity type.",
+    "reasonTitle": "Reason for Edit",
+    "reasonPlaceholder": "e.g., Corrected mislabelled coordinates or updated field data",
+    "reasonRequired": "You must provide a reason before proceeding!",
+    "savedTitle": "Saved Successfully",
+    "savedText": "The record has been updated.",
+    "errorTitle": "Error",
+    "errorText": "Failed to update data. Please try again."
+  }
 }

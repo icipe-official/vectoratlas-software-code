@@ -1224,5 +1224,36 @@
       }
     }
   },
-  "EditPointData": {}
+    "EditPointData": {
+    "title": "Modifier les données ponctuelles",
+    "modeOccurrence": "Par ID d'occurrence",
+    "modeSource": "Par ID de source",
+    "seeLogs": "Voir les journaux",
+    "tabs": {
+      "occurrence": "Occurrence",
+      "bionomics": "Bionomie",
+      "insecticideResistance": "Résistance aux insecticides"
+    },
+    "occurrenceIdLabel": "ID d'occurrence",
+    "sourceIdLabel": "ID de source",
+    "fetchData": "Récupérer les données",
+    "fetchRecords": "Récupérer les enregistrements",
+    "selectRecord": "Sélectionnez un enregistrement à modifier",
+    "recordLabel": "Enregistrement {index} (ID : {id})",
+    "editRecord": "Modifier cet enregistrement",
+    "saveChanges": "Enregistrer les modifications",
+    "warnOccurrenceId": "Veuillez saisir un ID d'occurrence",
+    "warnSourceId": "Veuillez saisir un ID de source",
+    "failAutoFetch": "Échec de la récupération automatique des données",
+    "failFetch": "Échec de la récupération des données",
+    "failSourceRecords": "Échec de la récupération des enregistrements source",
+    "missingData": "Données ou type d'entité manquants.",
+    "reasonTitle": "Motif de la modification",
+    "reasonPlaceholder": "ex. : coordonnées mal étiquetées corrigées ou données de champ mises à jour",
+    "reasonRequired": "Vous devez fournir un motif avant de continuer !",
+    "savedTitle": "Enregistré avec succès",
+    "savedText": "L'enregistrement a été mis à jour.",
+    "errorTitle": "Erreur",
+    "errorText": "Échec de la mise à jour des données. Veuillez réessayer."
+  }
 }

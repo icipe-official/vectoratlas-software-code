@@ -163,6 +163,8 @@ const NewsEditor = () => {
             disabled={loadingNews}
             variant="outlined"
             sx={{ width: '100%' }}
+            multiline
+            minRows={1}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             error={!titleValid}
@@ -207,6 +209,8 @@ const NewsEditor = () => {
           <TextField
             variant="outlined"
             sx={{ width: '100%' }}
+            multiline
+            minRows={1}
             value={fr.title}
             onChange={(e) => setFr({ ...fr, title: e.target.value })}
           />
@@ -237,6 +241,8 @@ const NewsEditor = () => {
           <TextField
             variant="outlined"
             sx={{ width: '100%' }}
+            multiline
+            minRows={1}
             value={pt.title}
             onChange={(e) => setPt({ ...pt, title: e.target.value })}
           />
